@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import OnboardingLayout from "../components/layout/OnboardingLayout";
-import PageUnderConstruction from "../components/PageUnderConstructionAlert";
+import OnboardingLayout from '@/components/layout/OnboardingLayout'
+import PageUnderConstructionAlert from '@/components/PageUnderConstructionAlert'
 
 export default function Login() {
   return (
     <OnboardingLayout>
-      <PageUnderConstruction title="Entrar" />
+      <PageUnderConstructionAlert />
     </OnboardingLayout>
-  );
+  )
 }
