@@ -14,6 +14,7 @@ const FullSection = ({
     <Box
       component="section"
       sx={(theme) => ({
+        backgroundColor: theme.palette.background.default,
         minHeight: 'calc(100vh - 80px)',
         width: '100vw',
         p: 0,

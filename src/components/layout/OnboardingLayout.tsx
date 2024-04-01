@@ -64,6 +64,7 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+          backgroundColor: 'background.default',
         }}
       >
         <FullSection>{children}</FullSection>
