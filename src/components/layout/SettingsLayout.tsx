@@ -12,7 +12,7 @@ import Header, { headerHeight } from './UserHeader'
 
 const drawerWidth = 180;
 
-const SettingsLayout = ({children}: {children: React.ReactNode}) => {
+const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<Providers>
 			<CssBaseline />
@@ -39,8 +39,8 @@ const SettingsLayout = ({children}: {children: React.ReactNode}) => {
 						{[{
 							key: 'profile',
 							name: 'Perfil'
-						}].map(({key, name}) => (
-							<ListItem key={'settings-'+key} disablePadding sx={(theme) => ({
+						}].map(({ key, name }) => (
+							<ListItem key={'settings-' + key} disablePadding sx={(theme) => ({
 								bgcolor: 'secondary.main',
 								borderRight: 3,
 								borderRightColor: 'primary.main'

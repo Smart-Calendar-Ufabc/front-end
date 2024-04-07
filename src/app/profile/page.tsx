@@ -16,15 +16,19 @@ export default function Settings() {
       <FormContainer>
         <FormTitle>Editar Perfil</FormTitle>
         <FormGroupProfile>
-          <Box
+          <Button
+            variant="outlined"
             sx={{
               width: 80,
               height: 80,
               borderRadius: 80,
               margin: '24px',
-              background: 'gray',
+              backgroundImage: 'url(/images/blank-profile-picture.png)',
+              backgroundSize: '170%',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
             }}
-          ></Box>
+          ></Button>
           <Button
             variant="contained"
             sx={{
