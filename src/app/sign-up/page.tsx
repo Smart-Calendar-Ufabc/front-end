@@ -15,15 +15,15 @@ export default function SignUp() {
         <FormTitle>Cadastre-se agora</FormTitle>
         <FormGroup>
           <FormGroup>
-          <TextField label ="E-mail" type="email"></TextField>
+            <TextField label="E-mail" type="email"></TextField>
           </FormGroup>
           <FormGroup>
-          <TextField label="Senha" type="password" helperText="A senha deve conter ao menos uma letra, um número e pelo menos um caractere especial."></TextField>
+            <TextField label="Senha" type="password" helperText="A senha deve conter ao menos uma letra, um número e pelo menos um caractere especial."></TextField>
           </FormGroup>
         </FormGroup>
         <Button variant="contained">Cadastrar</Button>
         <Typography>
-          Já tem ma conta? <Link to=''>Entrar</Link>
+          Já tem uma conta? <Link to=''>Entrar</Link>
         </Typography>
       </FormContainer>
     </OnboardingLayout>
