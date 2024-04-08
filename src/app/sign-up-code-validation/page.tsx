@@ -7,24 +7,21 @@ import OnboardingLayout from '@/components/layout/OnboardingLayout'
 import Link from '@/components/typography/Link'
 import { Button, FormHelperText, TextField, Typography } from '@mui/material'
 
-
-export default function SignUp() {
+export default function SignUpCodeValidation() {
   return (
     <OnboardingLayout>
       <FormContainer>
-        <FormTitle>Cadastre-se agora</FormTitle>
+        <FormTitle>Confirme seu e-mail</FormTitle>
         <FormGroup>
-          <FormGroup>
-          <TextField label ="E-mail" type="email"></TextField>
-          </FormGroup>
-          <FormGroup>
-          <TextField label="Senha" type="password" helperText="A senha deve conter ao menos uma letra, um número e pelo menos um caractere especial."></TextField>
-          </FormGroup>
-        </FormGroup>
-        <Button variant="contained">Cadastrar</Button>
         <Typography>
-          Já tem ma conta? <Link to=''>Entrar</Link>
+        Enviamos um e-mail com um código de verificação para "e-mail". (<Link to=''>não é você?</Link>)
         </Typography>
+        <Typography>Insira-o código abaixo para confirmar o seu e-mail.</Typography>
+        <FormGroup>
+        <TextField label="Código" type="code" helperText="O código deve conter 6 dígitos."></TextField>
+        </FormGroup>
+        </FormGroup>
+        <Button variant="contained">Verificar</Button>
       </FormContainer>
     </OnboardingLayout>
   )
