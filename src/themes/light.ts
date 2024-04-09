@@ -168,6 +168,13 @@ theme = createTheme(theme, {
           borderRadius: 4,
           boxShadow: 'none',
           padding: 12,
+          lineHeight: 'normal',
+          textTransform: 'none',
+          fontSize: '1rem',
+        },
+        endIcon: {
+          marginRight: 0,
+          marginLeft: 4,
         },
       },
       variants: [
@@ -176,7 +183,7 @@ theme = createTheme(theme, {
           style: {
             color: theme.palette.common.white,
             '&:hover': {
-              backgroundColor: theme.palette.primary.dark,
+              backgroundColor: theme.palette.primary.light,
               boxShadow: 'none',
             },
           },
@@ -184,10 +191,13 @@ theme = createTheme(theme, {
         {
           props: { variant: 'outlined' },
           style: {
+            backgroundColor: theme.palette.grey[100],
             borderColor: theme.palette.grey[300],
-            color: theme.palette.grey[800],
+            borderWidth: 1,
+            borderStyle: 'solid',
+            color: theme.palette.primary.light,
             '&:hover': {
-              color: theme.palette.grey[900],
+              borderColor: theme.palette.primary.light,
             },
           },
         },

@@ -7,7 +7,11 @@ interface FormTitleProps {
 
 export default function FormTitle({ children, component }: FormTitleProps) {
   return (
-    <Typography component={component || 'h1'} variant="h4">
+    <Typography
+      component={component || 'h1'}
+      variant="h4"
+      sx={{ fontWeight: 500 }}
+    >
       {children}
     </Typography>
   )
