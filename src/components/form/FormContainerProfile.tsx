@@ -17,7 +17,7 @@ export default function FormContainer({
         marginTop: '153',
         flexDirection: 'column',
         alignContent: 'center',
-        gap: '24px',
+        gap: '32px',
         width: '400px',
         height: '281px',
         alignItems: 'stretch',
