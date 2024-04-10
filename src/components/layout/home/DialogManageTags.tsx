@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -15,6 +15,7 @@ import { useTagStates } from '@/store/useTagStates'
 
 import './styles.css'
 import { Tooltip } from '@/components/typography/Tooltip'
+import { initialTags } from '@/seed/tags'
 
 interface DialogManageTagsProps {
   open: boolean
@@ -28,7 +29,7 @@ export function DialogManageTags({ open, onClose }: DialogManageTagsProps) {
   const [color, setColor] = useState<string>(defaultColor)
   const [title, setTitle] = useState<string>('')
 
-  const { tags, addTag, deleteTag } = useTagStates()
+  const { tags, setTags, addTag, deleteTag } = useTagStates()
 
   const handleAddTag = () => {
     if (title.trim() === '') return // Prevent empty tags
@@ -46,6 +47,10 @@ export function DialogManageTags({ open, onClose }: DialogManageTagsProps) {
   const handleDeleteTag = (id: string) => {
     deleteTag(id)
   }
+
+  useEffect(() => {
+    setTags(initialTags)
+  }, [setTags])
 
   return (
     <Dialog
@@ -173,7 +178,7 @@ function TagManager({ id, color, title, onDelete }: TagManagerProps) {
         <Typography>{title}</Typography>
       </Box>
       <Box>
-        <Tooltip title="Remover tag" arrow>
+        <Tooltip title="Remover tag" arrow placement="left">
           <IconButton
             onClick={() => onDelete(id)}
             title="Remover tag"
