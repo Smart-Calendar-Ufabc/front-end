@@ -6,6 +6,8 @@ import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
 import { X as CloseIcon } from '@phosphor-icons/react'
+import TextField from '@mui/material/TextField'
+import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 
 import './styles.css'
 
@@ -39,7 +41,11 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
         <CloseIcon />
       </IconButton>
       <Divider />
-      <DialogContent>CRIE AQUI...</DialogContent>
+      <DialogContent>
+        <TextField id="outlined-basic" label="Título" variant="outlined" />
+        <TimePicker label="Inicia às" name="startTime" />
+        <TimePicker label="Duração" name="startTime" />
+      </DialogContent>
       <DialogActions>
         <Button
           variant="contained"
