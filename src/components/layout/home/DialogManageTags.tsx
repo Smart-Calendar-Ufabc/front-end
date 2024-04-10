@@ -184,7 +184,7 @@ function TagManager({ id, color, title, onDelete }: TagManagerProps) {
             title="Remover tag"
             aria-label="Remover tag"
             sx={{
-              color: 'text.secondary',
+              color: 'grey.600',
               '&:hover': {
                 color: 'error.main',
                 backgroundColor: 'grey.100',
