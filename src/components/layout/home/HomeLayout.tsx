@@ -64,6 +64,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
+                flexWrap: 'wrap',
                 gap: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
