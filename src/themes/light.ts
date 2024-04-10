@@ -132,6 +132,7 @@ let theme = createTheme({
     },
     text: {
       primary: '#484848',
+      secondary: '#666666',
     },
   },
   tags: {

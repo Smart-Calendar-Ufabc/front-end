@@ -21,7 +21,8 @@ export default function ProfileMenu() {
 
   const handleLogout = () => {
     handleClose()
-    console.log('logout')
+    window.localStorage.removeItem('token')
+    window.location.href = '/'
   }
 
   return (
