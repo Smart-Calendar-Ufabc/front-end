@@ -1,12 +1,14 @@
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Providers from '@/providers/Providers'
 import Footer from '../../template/Footer'
 import Header from '../UserHeader'
-import FullSection from '../../template/FullSection'
+import Container from '@mui/material/Container'
+import { Theme } from '@mui/material/styles'
 import { Button, Typography } from '@mui/material'
+import { SystemStyleObject } from '@mui/system/styleFunctionSx'
 import { Tag as TagIcon } from '@phosphor-icons/react'
-import { useState } from 'react'
 import { DialogManageTags } from '@/components/layout/home/DialogManageTags'
 import { DialogAddTask } from './DialogAddTask'
 import { DialogAddRoutine } from './DialogAddRoutine'
@@ -21,6 +23,44 @@ const getBrazilianDate = () => {
     month: 'long',
     day: 'numeric',
   })
+}
+
+const FullSection = ({
+  children,
+  sx,
+}: {
+  children: React.ReactNode
+  sx?: SystemStyleObject<Theme>
+}) => {
+  return (
+    <Box
+      component="section"
+      sx={(theme) => ({
+        backgroundColor: theme.palette.background.default,
+        minHeight: 'calc(100vh - 80px)',
+        width: '100vw',
+        p: 0,
+        m: 0,
+        ...sx,
+        [theme.breakpoints.down('md')]: {
+          minHeight: 'auto',
+        },
+      })}
+    >
+      <Container
+        sx={{
+          py: 7.5,
+          px: 3,
+          height: '100%',
+          '&.MuiContainer-root': {
+            maxWidth: '1308px',
+          },
+        }}
+      >
+        {children}
+      </Container>
+    </Box>
+  )
 }
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
