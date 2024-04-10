@@ -4,6 +4,15 @@ import Typography from '@mui/material/Typography'
 import MuiCheckbox, { CheckboxProps } from '@mui/material/Checkbox'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
+import Menu from '@mui/material/Menu'
+import Fade from '@mui/material/Fade'
+import MenuItem from '@mui/material/MenuItem'
+import IconButton from '@mui/material/IconButton'
+import { CaretDown as MenuIcon } from '@phosphor-icons/react'
+import { useTagStates } from '@/store/useTagStates'
+import { useRoutineStates } from '@/store/useRoutineStates'
+import { DialogEditRoutine } from './dialogs/DialogEditRoutine'
+import { DialogEditTask } from './dialogs/DialogEditTask'
 
 interface ScheduleCardProps {
   id: string
@@ -15,13 +24,58 @@ interface ScheduleCardProps {
 }
 
 export const ScheduleCard = ({
+  id,
   title,
   done,
   priority,
   startTime,
   endTime,
 }: ScheduleCardProps) => {
+  const [openEditRoutineDialog, setOpenEditRoutineDialog] = useState(false)
+  const [openEditTaskDialog, setOpenEditTaskDialog] = useState(false)
   const [completed, setCompleted] = useState(done)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const { deleteTag } = useTagStates()
+  const { deleteRoutine } = useRoutineStates()
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleOpenEdit = () => {
+    switch (priority) {
+      case 'routine': {
+        setOpenEditRoutineDialog(true)
+        break
+      }
+      default: {
+        setOpenEditTaskDialog(true)
+        break
+      }
+    }
+
+    handleClose()
+  }
+
+  const handleDelete = () => {
+    switch (priority) {
+      case 'routine': {
+        deleteRoutine(id)
+        break
+      }
+      default: {
+        deleteTag(id)
+        break
+      }
+    }
+
+    handleClose()
+  }
 
   return (
     <Card
@@ -32,6 +86,55 @@ export const ScheduleCard = ({
         },
       }}
     >
+      <DialogEditRoutine
+        open={openEditRoutineDialog}
+        onClose={() => setOpenEditRoutineDialog(false)}
+      />
+      <DialogEditTask
+        open={openEditTaskDialog}
+        onClose={() => setOpenEditTaskDialog(false)}
+      />
+      <Menu
+        id="fade-menu"
+        MenuListProps={{
+          'aria-labelledby': 'fade-button',
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Fade}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&::before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 36, vertical: 24 }}
+      >
+        <MenuItem onClick={handleOpenEdit}>Editar</MenuItem>
+        <MenuItem onClick={handleDelete}>Excluir</MenuItem>
+      </Menu>
       <Box
         sx={{
           display: 'flex',
@@ -82,17 +185,39 @@ export const ScheduleCard = ({
             width: '100%',
           }}
         >
-          <Typography
-            variant="caption"
-            color="text.secondary"
+          <Box
             sx={{
-              display: 'block',
-              textAlign: 'right',
-              pt: '4px',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: 1,
             }}
           >
-            {startTime} - {endTime}
-          </Typography>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                display: 'block',
+                textAlign: 'right',
+              }}
+            >
+              {startTime} - {endTime}
+            </Typography>
+            <IconButton
+              id="fade-button"
+              aria-controls={open ? 'fade-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}
+              sx={{
+                color: 'grey.500',
+                pr: 0,
+              }}
+            >
+              <MenuIcon size={16} weight="bold" />
+            </IconButton>
+          </Box>
         </Box>
       </Box>
     </Card>

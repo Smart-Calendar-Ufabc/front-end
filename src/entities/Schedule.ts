@@ -1,4 +1,4 @@
-export interface CalendarSchedule {
+export interface Schedule {
   id: string
   title: string
   done: boolean

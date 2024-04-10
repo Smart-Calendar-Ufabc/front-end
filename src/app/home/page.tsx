@@ -2,12 +2,12 @@
 
 import Box from '@mui/material/Box'
 import HomeLayout from '@/components/layout/home/HomeLayout'
-import { CalendarSchedule } from '@/entities/CalendarSchedule'
+import { Schedule } from '@/entities/Schedule'
 import { initialSchedules } from '@/seed/schedules'
 import { WeekSchedulesCard } from '@/components/WeekSchedulesCard'
 
 type SchedulesList = {
-  [startDate: string]: CalendarSchedule[]
+  [startDate: string]: Schedule[]
 }
 
 export default function Settings() {

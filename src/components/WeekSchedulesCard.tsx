@@ -1,11 +1,11 @@
-import { CalendarSchedule } from '@/entities/CalendarSchedule'
+import { Schedule } from '@/entities/Schedule'
 import Card from '@mui/material/Card'
 import { ScheduleCard } from './ScheduleCard'
 import { Typography } from '@mui/material'
 
 interface WeekSchedulesCardProps {
   date: string
-  schedules: CalendarSchedule[]
+  schedules: Schedule[]
 }
 
 export const WeekSchedulesCard = ({
@@ -25,6 +25,15 @@ export const WeekSchedulesCard = ({
       .slice(1)
   const day = newDate.toLocaleDateString('pt-BR', { day: '2-digit' })
 
+  const isToday = (date: Date) => {
+    const today = new Date()
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    )
+  }
+
   return (
     <Card
       variant="outlined"
@@ -43,10 +52,10 @@ export const WeekSchedulesCard = ({
     >
       <Typography
         sx={{
-          color: 'grey.800',
           fontWeight: '600',
           textAlign: 'center',
           width: '100%',
+          color: isToday(newDate) ? 'primary.main' : 'grey.800',
         }}
       >
         {weekDay} {day}

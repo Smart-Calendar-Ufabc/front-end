@@ -1,7 +1,7 @@
-import { CalendarSchedule } from '@/entities/CalendarSchedule'
+import { Schedule } from '@/entities/Schedule'
 
 export const initialSchedules: {
-  [startDate: string]: CalendarSchedule[]
+  [startDate: string]: Schedule[]
 } = {
   '2024-04-10': [
     {
@@ -23,7 +23,7 @@ export const initialSchedules: {
     {
       id: '8c16a17a-6503-42c8-a36a-cc649836a2bd',
       done: true,
-      priority: 'high',
+      priority: 'routine',
       startTime: '09:00',
       endTime: '10:00',
       title: 'Task 3',
@@ -49,7 +49,7 @@ export const initialSchedules: {
     {
       id: '2dd9169e-a383-45d9-ae1b-38232da0ea2f',
       done: false,
-      priority: 'low',
+      priority: 'routine',
       startTime: '09:00',
       endTime: '10:00',
       title: 'Task 3',
@@ -75,7 +75,7 @@ export const initialSchedules: {
     {
       id: '91775f48-60ff-41b9-abad-2edbba5a1352',
       done: false,
-      priority: 'low',
+      priority: 'routine',
       startTime: '09:00',
       endTime: '10:00',
       title: 'Task 3',
@@ -101,7 +101,7 @@ export const initialSchedules: {
     {
       id: 'd99ac027-54ca-44fa-9a86-0ea521f2d508',
       done: true,
-      priority: 'high',
+      priority: 'routine',
       startTime: '09:00',
       endTime: '10:00',
       title: 'Task 3',
