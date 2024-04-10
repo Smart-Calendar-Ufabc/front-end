@@ -8,8 +8,10 @@ import Divider from '@mui/material/Divider'
 import { X as CloseIcon } from '@phosphor-icons/react'
 import TextField from '@mui/material/TextField'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 import './styles.css'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 
 interface DialogAddRoutineProps {
   open: boolean
@@ -43,8 +45,12 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
       <Divider />
       <DialogContent>
         <TextField id="outlined-basic" label="Título" variant="outlined" />
-        <TimePicker label="Inicia às" name="startTime" />
-        <TimePicker label="Duração" name="startTime" />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <TimePicker label="Inicia às" name="startTime" />
+        </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <TimePicker label="Duração" name="startTime" />
+        </LocalizationProvider>
       </DialogContent>
       <DialogActions>
         <Button
