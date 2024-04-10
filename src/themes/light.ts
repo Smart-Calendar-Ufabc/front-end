@@ -1,5 +1,45 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles'
 
+declare module '@mui/material/styles' {
+  interface Theme {
+    tags: {
+      text: {
+        high: string
+        medium: string
+        low: string
+        routine: string
+        event: string
+      }
+      backgroundColor: {
+        high: string
+        medium: string
+        low: string
+        routine: string
+        event: string
+      }
+    }
+  }
+  // allow configuration using `createTheme`
+  interface ThemeOptions {
+    tags?: {
+      text?: {
+        high?: string
+        medium?: string
+        low?: string
+        routine?: string
+        event?: string
+      }
+      backgroundColor?: {
+        high?: string
+        medium?: string
+        low?: string
+        routine?: string
+        event?: string
+      }
+    }
+  }
+}
+
 // Theme light typography and palette
 let theme = createTheme({
   breakpoints: {
@@ -81,14 +121,33 @@ let theme = createTheme({
     grey: {
       '50': '#fafafa',
       '100': '#f5f5f5',
-      '200': '#eeeeee',
-      '300': '#e0e0e0',
-      '400': '#bdbdbd',
-      '500': '#9e9e9e',
-      '600': '#757575',
-      '700': '#616161',
-      '800': '#424242',
-      '900': '#212121',
+      '200': '#f0f0f0',
+      '300': '#E2E2E2',
+      '400': '#D3D3D3',
+      '500': '#C4C4C4',
+      '600': '#AAAAAA',
+      '700': '#8B8B8B',
+      '800': '#666666',
+      '900': '#484848',
+    },
+    text: {
+      primary: '#484848',
+    },
+  },
+  tags: {
+    text: {
+      high: '#FC6E6E',
+      medium: '#FFA500',
+      low: '#5CA9D4',
+      routine: '#99BEBA',
+      event: '#996DFF',
+    },
+    backgroundColor: {
+      high: '#FC6E6E20',
+      medium: '#FFA50020',
+      low: '#5CA9D420',
+      routine: '#99BEBA20',
+      event: '#996DFF20',
     },
   },
 })
