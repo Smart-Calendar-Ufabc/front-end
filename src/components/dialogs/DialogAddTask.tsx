@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -11,7 +12,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import 'dayjs/locale/pt-br'
 
-import './styles.css'
 import {
   TextField,
   FormControl,
@@ -23,7 +23,8 @@ import {
   Stack,
   FormLabel,
 } from '@mui/material'
-import React from 'react'
+import { Dayjs } from 'dayjs'
+import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 
 interface DialogAddTaskProps {
   open: boolean
@@ -31,10 +32,30 @@ interface DialogAddTaskProps {
 }
 
 export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
-  const [priority, setPriority] = React.useState('')
+  const [title, setTitle] = useState('')
+  const [notes, setNotes] = useState('')
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low')
+  const [duration, setDuration] = useState<Dayjs | null>(null)
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null)
+  const [dueTime, setDueTime] = useState<Dayjs | null>(null)
+
+  const { addUnallocatedTask } = useUnallocatedTaskStates()
 
   const handleChangePriority = (event: SelectChangeEvent<string>) => {
-    setPriority(event.target.value as string)
+    setPriority(event.target.value as 'low' | 'medium' | 'high')
+  }
+
+  const handleAddTask = () => {
+    addUnallocatedTask({
+      id: crypto.randomUUID(),
+      title,
+      notes,
+      priority,
+      duration: duration?.format('HH:mm:ss') || '',
+      dueDate: dueDate?.format('YYYY-MM-DD') || '',
+      dueTime: dueTime?.format('HH:mm:ss') || '',
+    })
+    onClose()
   }
 
   return (
@@ -64,31 +85,35 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
       <DialogContent>
         <Stack direction="column" spacing={3}>
           <TextField
+            name="title"
             label="Título"
             type="tittle"
-            variant="outlined"
             size="small"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <TextField
-            id="outlined-multiline-flexible"
+            name="notes"
             multiline
             rows={4}
             label="Notas"
             type="note"
-            variant="outlined"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
           />
           <FormControl size="small">
             <InputLabel id="priority-select-label">Prioridade</InputLabel>
             <Select
               labelId="priority-select-label"
               id="priority-select"
-              value={priority}
+              name="priority"
               label="Prioridade"
+              value={priority}
               onChange={handleChangePriority}
             >
-              <MenuItem value="baixa">Baixa</MenuItem>
-              <MenuItem value="média">Média</MenuItem>
-              <MenuItem value="alta">Alta</MenuItem>
+              <MenuItem value="low">Baixa</MenuItem>
+              <MenuItem value="medium">Média</MenuItem>
+              <MenuItem value="high">Alta</MenuItem>
             </Select>
           </FormControl>
           <LocalizationProvider
@@ -96,17 +121,19 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
             adapterLocale="pt-br"
           >
             <TimePicker
-              name="limitDateToSell"
+              name="duration"
               label="Duração"
               ampm={false}
               slotProps={{
                 textField: {
-                  name: 'limitDateToSell',
+                  name: 'duration',
                   size: 'small',
                   type: 'text',
                   variant: 'outlined',
                 },
               }}
+              value={duration}
+              onChange={(date) => setDuration(date)}
             />
           </LocalizationProvider>
           <FormControl>
@@ -118,15 +145,18 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                   adapterLocale="pt-br"
                 >
                   <DatePicker
+                    name="dueDate"
                     label="Data"
                     slotProps={{
                       textField: {
-                        name: 'limitDateToSell',
+                        name: 'dueDate',
                         size: 'small',
                         type: 'text',
                         variant: 'outlined',
                       },
                     }}
+                    value={dueDate}
+                    onChange={(date) => setDueDate(date)}
                   />
                 </LocalizationProvider>
                 <LocalizationProvider
@@ -134,16 +164,19 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                   adapterLocale="pt-br"
                 >
                   <TimePicker
+                    name="dueTime"
                     label="Hora"
                     ampm={false}
                     slotProps={{
                       textField: {
-                        name: 'limitDateToSell',
+                        name: 'dueTime',
                         size: 'small',
                         type: 'text',
                         variant: 'outlined',
                       },
                     }}
+                    value={dueTime}
+                    onChange={(date) => setDueTime(date)}
                   />
                 </LocalizationProvider>
               </Stack>
@@ -157,7 +190,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
           pb: 3,
         }}
       >
-        <Button variant="contained" fullWidth>
+        <Button variant="contained" fullWidth onClick={handleAddTask}>
           Adicionar Tarefa
         </Button>
       </DialogActions>
