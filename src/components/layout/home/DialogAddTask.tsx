@@ -151,14 +151,13 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
           </FormControl>
         </Stack>
       </DialogContent>
-      <DialogActions>
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{
-            py: '10px',
-          }}
-        >
+      <DialogActions
+        sx={{
+          px: 3,
+          pb: 3,
+        }}
+      >
+        <Button variant="contained" fullWidth>
           Adicionar Tarefa
         </Button>
       </DialogActions>
