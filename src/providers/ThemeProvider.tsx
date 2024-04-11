@@ -1,3 +1,5 @@
+'use client'
+
 import { ThemeProvider as Theme } from '@mui/material/styles'
 import { light as lightTheme } from '../themes/light'
 // import { dark as darkTheme } from '../themes/dark'

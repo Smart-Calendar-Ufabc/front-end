@@ -1,3 +1,5 @@
+'use client'
+
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Providers from '@/providers/Providers'

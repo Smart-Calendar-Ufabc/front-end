@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, createContext, useEffect } from 'react'
 
 export const ColorModeContext = createContext<string>('light')

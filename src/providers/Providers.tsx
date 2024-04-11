@@ -1,3 +1,5 @@
+'use client'
+
 import ColorModeProvider from './ColorModeProvider'
 import ThemeProvider from './ThemeProvider'
 
