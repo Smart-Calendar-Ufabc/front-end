@@ -7,6 +7,7 @@ interface AppStates {
   setUnallocatedTasks: (unallocatedTasks: UnallocatedTask[]) => void
   addUnallocatedTask: (unallocatedTasks: UnallocatedTask) => void
   deleteUnallocatedTask: (id: string) => void
+  clearUnallocatedTasks: () => void
 }
 
 export const useUnallocatedTaskStates = create<AppStates>()((set) => ({
@@ -28,6 +29,12 @@ export const useUnallocatedTaskStates = create<AppStates>()((set) => ({
     set((state) => ({
       unallocatedTasks: state.unallocatedTasks.filter((task) => task.id !== id),
       countUnallocatedTasks: state.countUnallocatedTasks - 1,
+    }))
+  },
+  clearUnallocatedTasks: () => {
+    set(() => ({
+      unallocatedTasks: [],
+      countUnallocatedTasks: 0,
     }))
   },
 }))

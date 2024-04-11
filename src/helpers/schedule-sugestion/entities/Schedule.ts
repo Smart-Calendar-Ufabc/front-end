@@ -1,4 +1,4 @@
-export interface Schedule {
+export type Schedule = {
   id: string
   title: string
   done: boolean

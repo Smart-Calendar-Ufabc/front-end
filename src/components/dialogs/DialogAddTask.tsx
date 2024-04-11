@@ -46,14 +46,15 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
   }
 
   const handleAddTask = () => {
+    const deadline = dueDate?.set('hour', dueTime?.hour() || 0).toDate() as Date
+
     addUnallocatedTask({
       id: crypto.randomUUID(),
       title,
       notes,
       priority,
       duration: duration?.format('HH:mm:ss') || '',
-      dueDate: dueDate?.format('YYYY-MM-DD') || '',
-      dueTime: dueTime?.format('HH:mm:ss') || '',
+      deadline,
     })
     onClose()
   }

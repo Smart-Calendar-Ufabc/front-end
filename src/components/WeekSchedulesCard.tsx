@@ -67,8 +67,8 @@ export const WeekSchedulesCard = ({
           title={schedule.title}
           done={schedule.done}
           priority={schedule.priority}
-          startTime={schedule.startTime}
-          endTime={schedule.endTime}
+          startTime={`${schedule.startAt.getUTCHours().toString().padStart(2, '0')}:${schedule.startAt.getUTCMinutes().toString().padStart(2, '0')}`}
+          endTime={`${schedule.endAt.getUTCHours().toString().padStart(2, '0')}:${schedule.endAt.getUTCMinutes().toString().padStart(2, '0')}`}
         />
       ))}
     </Card>

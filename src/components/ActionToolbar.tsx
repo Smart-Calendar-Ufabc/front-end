@@ -6,17 +6,7 @@ import { DialogAddTask } from './dialogs/DialogAddTask'
 import { DialogAddRoutine } from './layout/home/DialogAddRoutine'
 import { DialogUnallocatedTasks } from './dialogs/DialogUnallocatedTasks'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
-
-const getBrazilianDate = () => {
-  const date = new Date()
-
-  return date.toLocaleDateString('pt-BR', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
+import { getBrazilianDate } from '@/helpers/date/getBrazilianDate'
 
 export default function ActionToolbar() {
   const [openDialogManageTags, setOpenDialogManageTags] =
