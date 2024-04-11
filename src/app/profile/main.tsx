@@ -2,16 +2,37 @@
 
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import FormContainer from '@/components/form/FormContainerProfile'
 import FormTitle from '@/components/form/FormTitleProfile'
-import FormGroup from '@/components/form/FormGroup'
-import FormGroupProfile from '@/components/form/FormGroupProfile'
+import FormGroup from '@mui/material/FormGroup'
+import Box from '@mui/material/Box'
 
 export default function SettingsMain() {
   return (
-    <FormContainer>
+    <Box
+      sx={{
+        display: 'flex',
+        marginLeft: '219',
+        marginTop: '153',
+        flexDirection: 'column',
+        alignContent: 'center',
+        gap: '32px',
+        width: '400px',
+        height: '281px',
+        alignItems: 'stretch',
+      }}
+    >
       <FormTitle>Editar Perfil</FormTitle>
-      <FormGroupProfile>
+      <FormGroup
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          borderTop: '1px solid lightgray',
+          borderBottom: '1px solid lightgray',
+        }}
+      >
         <Button
           variant="outlined"
           sx={{
@@ -26,22 +47,25 @@ export default function SettingsMain() {
           }}
         ></Button>
         <Button
-          variant="contained"
+          variant="outlined"
           sx={{
-            color: '#996DFF',
-            borderColor: '#E0E0E0',
             width: '126px',
             height: '40px',
-            alignSelf: 'center',
-            textTransform: 'none',
             fontSize: '18px',
-            background: '#F5F5F5',
           }}
         >
           Alterar Foto
         </Button>
-      </FormGroupProfile>
-      <FormGroup>
+      </FormGroup>
+      <FormGroup
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          gap: 3, // 24px
+          width: '100%',
+        }}
+      >
         <TextField label="Nome" type="name" />
         <Button
           variant="contained"
@@ -53,6 +77,6 @@ export default function SettingsMain() {
           Salvar Alterações
         </Button>
       </FormGroup>
-    </FormContainer>
+    </Box>
   )
 }
