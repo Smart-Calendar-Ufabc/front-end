@@ -62,11 +62,14 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
     <Dialog
       open={open}
       onClose={onClose}
-      sx={{
+      sx={(theme) => ({
         '& .MuiDialog-paper': {
           width: 400,
+          [theme.breakpoints.down('sm')]: {
+            width: '85%',
+          },
         },
-      }}
+      })}
     >
       <DialogTitle sx={{ m: 0, p: 2 }}>Adicionar Tarefa</DialogTitle>
       <IconButton

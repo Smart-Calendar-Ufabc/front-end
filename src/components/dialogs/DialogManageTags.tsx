@@ -56,11 +56,14 @@ export function DialogManageTags({ open, onClose }: DialogManageTagsProps) {
     <Dialog
       open={open}
       onClose={onClose}
-      sx={{
+      sx={(theme) => ({
         '& .MuiDialog-paper': {
-          width: 500,
+          width: 400,
+          [theme.breakpoints.down('sm')]: {
+            width: '85%',
+          },
         },
-      }}
+      })}
     >
       <DialogTitle sx={{ m: 0, p: 2 }}>Gerenciar Tags</DialogTitle>
       <IconButton
@@ -111,28 +114,43 @@ export function DialogManageTags({ open, onClose }: DialogManageTagsProps) {
             width: '100%',
           }}
         >
-          <Tooltip title="Adicionar Cor" placement="top">
-            <input
-              className="color-picker-input"
-              type="color"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
+          <Box
+            sx={(theme) => ({
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 1,
+              [theme.breakpoints.down('sm')]: {
+                width: '100%',
+              },
+            })}
+          >
+            <Tooltip title="Adicionar Cor" placement="top">
+              <input
+                className="color-picker-input"
+                type="color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+              />
+            </Tooltip>
+            <TextField
+              name="title"
+              type="text"
+              label="Título"
+              size="small"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              sx={{ flex: 1 }}
             />
-          </Tooltip>
-          <TextField
-            name="title"
-            type="text"
-            label="Título"
-            size="small"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            sx={{ flex: 1 }}
-          />
+          </Box>
           <Button
             variant="contained"
-            sx={{
+            sx={(theme) => ({
               py: '10px',
-            }}
+              [theme.breakpoints.down('sm')]: {
+                width: '100%',
+              },
+            })}
             onClick={handleAddTag}
           >
             Adicionar

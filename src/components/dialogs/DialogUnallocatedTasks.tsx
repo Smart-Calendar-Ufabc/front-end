@@ -13,6 +13,9 @@ import UnallocatedTaskCard from '../UnallocatedTaskCard'
 import Stack from '@mui/material/Stack'
 import { unallocatedTasks as initialUnallocatedTasks } from '@/seed/unallocatedTasks'
 import { useSchedulesStates } from '@/store/useSchedulesStates'
+import Box from '@mui/material/Box'
+
+import './styles.css'
 
 interface DialogUnallocatedTasksProps {
   open: boolean
@@ -23,8 +26,12 @@ export function DialogUnallocatedTasks({
   open,
   onClose,
 }: DialogUnallocatedTasksProps) {
-  const { unallocatedTasks, setUnallocatedTasks, deleteUnallocatedTask } =
-    useUnallocatedTaskStates()
+  const {
+    unallocatedTasks,
+    countUnallocatedTasks,
+    setUnallocatedTasks,
+    deleteUnallocatedTask,
+  } = useUnallocatedTaskStates()
   const { addSchedule } = useSchedulesStates()
 
   useEffect(() => {
@@ -53,13 +60,20 @@ export function DialogUnallocatedTasks({
     <Dialog
       open={open}
       onClose={onClose}
-      sx={{
+      sx={(theme) => ({
         '& .MuiDialog-paper': {
           minWidth: 500,
+          [theme.breakpoints.down('sm')]: {
+            minWidth: '85%',
+            maxWidth: '85%',
+          },
         },
-      }}
+      })}
     >
-      <DialogTitle sx={{ m: 0, p: 2 }}>Tarefas Não Alocadas</DialogTitle>
+      <DialogTitle sx={{ m: 0, p: 2 }}>
+        Tarefas Não Alocadas
+        {countUnallocatedTasks ? `:  ${countUnallocatedTasks}` : ''}
+      </DialogTitle>
       <IconButton
         aria-label="close"
         onClick={onClose}
@@ -87,17 +101,25 @@ export function DialogUnallocatedTasks({
             Não há tarefas para serem alocadas.
           </Typography>
         ) : (
-          <Stack direction="row" spacing={2}>
-            {unallocatedTasks.map((task) => (
-              <UnallocatedTaskCard
-                key={task.id}
-                id={task.id}
-                duration={task.duration}
-                priority={task.priority}
-                title={task.title}
-              />
-            ))}
-          </Stack>
+          <Box
+            display="grid"
+            className="custom-scrollbar"
+            sx={{
+              overflowX: 'auto',
+            }}
+          >
+            <Stack direction="row" spacing={2}>
+              {unallocatedTasks.map((task) => (
+                <UnallocatedTaskCard
+                  key={task.id}
+                  id={task.id}
+                  duration={task.duration}
+                  priority={task.priority}
+                  title={task.title}
+                />
+              ))}
+            </Stack>
+          </Box>
         )}
       </DialogContent>
       {unallocatedTasks.length > 0 && (
