@@ -6,18 +6,24 @@ import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
 import { X as CloseIcon } from '@phosphor-icons/react'
-import { TimePicker } from '@mui/x-date-pickers'
-import { DatePicker } from '@mui/x-date-pickers'
+import { TimePicker, DatePicker } from '@mui/x-date-pickers'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 
 import './styles.css'
-import { FormGroup, TextField, Typography, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import {
+  TextField,
+  Typography,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material'
 import FormGroupAddTask from '@/components/form/FormGroupAddTask'
 import FormGroupAddTaskTime from '@/components/form/FormGroupAddTaskTime'
 import React from 'react'
-
 
 interface DialogAddTaskProps {
   open: boolean
@@ -27,7 +33,7 @@ interface DialogAddTaskProps {
 function BasicSelect() {
   const [priority, setPriority] = React.useState('')
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: SelectChangeEvent<string>) => {
     setPriority(event.target.value as string)
   }
 
@@ -48,7 +54,6 @@ function BasicSelect() {
     </FormControl>
   )
 }
-
 
 export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
   return (
@@ -85,7 +90,8 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
             sx={{
               height: '51px',
               width: '452px',
-            }} />
+            }}
+          />
           <TextField
             id="outlined-multiline-flexible"
             multiline
@@ -98,7 +104,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
               width: '452px',
             }}
           />
-          <Typography variant="subtitle2" color={"#666666"}>
+          <Typography variant="subtitle2" color={'#666666'}>
             Opcional
           </Typography>
         </FormGroupAddTask>
@@ -108,10 +114,11 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
               label="Duração"
               sx={{
                 width: '452px',
-              }} />
+              }}
+            />
           </DemoContainer>
         </LocalizationProvider>
-        <Typography variant='h6' sx={{ marginTop: '16px', }}>
+        <Typography variant="h6" sx={{ marginTop: '16px' }}>
           Data limite de entrega
         </Typography>
         <FormGroupAddTaskTime>
@@ -129,7 +136,6 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
         <FormGroupAddTask>
           <BasicSelect />
         </FormGroupAddTask>
-
       </DialogContent>
       <DialogActions>
         <Button
@@ -142,6 +148,6 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
           Adicionar Tarefa
         </Button>
       </DialogActions>
-    </Dialog >
+    </Dialog>
   )
 }

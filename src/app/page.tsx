@@ -15,12 +15,14 @@ export default function Login() {
       <FormContainer>
         <FormTitle>Entrar</FormTitle>
         <FormGroup>
-          <TextField label="Email" type="email"/>
-          <TextField label="Senha" type="password"/>
+          <TextField label="Email" type="email" />
+          <TextField label="Senha" type="password" />
           <Link to="/password-recovery">Esqueceu a senha?</Link>
         </FormGroup>
         <Button variant="contained">Entrar</Button>
-        <Typography>Ainda não é cadastrado? <Link to="/sign-up">Criar conta.</Link></Typography>
+        <Typography>
+          Ainda não é cadastrado? <Link to="/sign-up">Criar conta.</Link>
+        </Typography>
       </FormContainer>
     </OnboardingLayout>
   )
