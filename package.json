@@ -9,6 +9,7 @@
     "lint": "next lint --fix",
     "pages:build": "npx @cloudflare/next-on-pages",
     "preview": "npm run pages:build && wrangler pages dev .vercel/output/static",
+    "predeploy": "rimraf ./node_modules/.cache/webpack",
     "deploy": "npm run pages:build && wrangler pages deploy .vercel/output/static"
   },
   "dependencies": {
