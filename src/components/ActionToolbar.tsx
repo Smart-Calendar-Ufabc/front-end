@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { Tag as TagIcon } from '@phosphor-icons/react'
-import { DialogManageTags } from '@/components/layout/home/DialogManageTags'
+import { DialogManageTags } from '@/components/dialogs/DialogManageTags'
 import { DialogAddTask } from './layout/home/DialogAddTask'
 import { DialogAddRoutine } from './layout/home/DialogAddRoutine'
 import { DialogUnallocatedTasks } from './layout/home/DialogUnallocatedTasks'

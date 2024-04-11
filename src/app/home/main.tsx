@@ -1,17 +1,37 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import { WeekSchedulesCard } from '@/components/WeekSchedulesCard'
-import { Schedule } from '@/entities/Schedule'
-import { initialSchedules } from '@/seed/schedules'
+import { schedules as schedulesSeed } from '@/seed/schedules'
 import ActionToolbar from '@/components/ActionToolbar'
-
-type SchedulesList = {
-  [startDate: string]: Schedule[]
-}
+import { Schedule } from '@/entities/Schedule'
+import { useSchedulesStates } from '@/store/useSchedulesStates'
 
 export default function HomeMain() {
-  const list: SchedulesList = initialSchedules
+  const [list, setList] = useState<Record<string, Schedule[]>>({})
+  const { schedules, setSchedules } = useSchedulesStates()
+
+  useEffect(() => {
+    setSchedules(schedulesSeed)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    setList(
+      schedules.reduce(
+        (grouped, schedule) => {
+          const key = schedule.startDate
+          if (!grouped[key]) {
+            grouped[key] = []
+          }
+          grouped[key].push(schedule)
+          return grouped
+        },
+        {} as Record<string, Schedule[]>,
+      ),
+    )
+  }, [schedules])
 
   return (
     <>

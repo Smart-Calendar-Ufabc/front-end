@@ -3,6 +3,7 @@ export interface Schedule {
   title: string
   done: boolean
   priority: 'high' | 'medium' | 'low' | 'routine' | 'event'
+  startDate: string
   startTime: string
   endTime: string
 }

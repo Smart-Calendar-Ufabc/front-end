@@ -13,9 +13,9 @@ import { useTheme } from '@mui/material/styles'
 import { X as CloseIcon, Trash as TrashIcon } from '@phosphor-icons/react'
 import { useTagStates } from '@/store/useTagStates'
 
-import './styles.css'
 import { Tooltip } from '@/components/typography/Tooltip'
 import { initialTags } from '@/seed/tags'
+import AlertDialog from './AlertDialog'
 
 interface DialogManageTagsProps {
   open: boolean
@@ -151,50 +151,70 @@ interface TagManagerProps {
 }
 
 function TagManager({ id, color, title, onDelete }: TagManagerProps) {
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+
+  const handleDelete = () => {
+    onDelete(id)
+    setOpenDeleteDialog(false)
+  }
+
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true)
+  }
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1,
-        justifyContent: 'space-between',
-      }}
-    >
+    <>
+      <AlertDialog
+        open={openDeleteDialog}
+        title="Deseja realmente excluir esta tag?"
+        message="Esta ação não poderá ser desfeita. Ao excluir esta tag, ela será removida de todas os agendamentos associadas a ela."
+        onConfirm={handleDelete}
+        onClose={() => setOpenDeleteDialog(false)}
+      />
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           gap: 1,
+          justifyContent: 'space-between',
         }}
       >
         <Box
           sx={{
-            backgroundColor: color,
-            borderRadius: 1,
-            height: 20,
-            width: 20,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
           }}
-        />
-        <Typography>{title}</Typography>
-      </Box>
-      <Box>
-        <Tooltip title="Remover tag" arrow placement="left">
-          <IconButton
-            onClick={() => onDelete(id)}
-            title="Remover tag"
-            aria-label="Remover tag"
+        >
+          <Box
             sx={{
-              color: 'grey.600',
-              '&:hover': {
-                color: 'error.main',
-                backgroundColor: 'grey.100',
-              },
+              backgroundColor: color,
+              borderRadius: 1,
+              height: 20,
+              width: 20,
             }}
-          >
-            <TrashIcon />
-          </IconButton>
-        </Tooltip>
+          />
+          <Typography>{title}</Typography>
+        </Box>
+        <Box>
+          <Tooltip title="Remover tag" arrow placement="left">
+            <IconButton
+              onClick={handleOpenDeleteDialog}
+              title="Remover tag"
+              aria-label="Remover tag"
+              sx={{
+                color: 'grey.600',
+                '&:hover': {
+                  color: 'error.main',
+                  backgroundColor: 'grey.100',
+                },
+              }}
+            >
+              <TrashIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
-    </Box>
+    </>
   )
 }

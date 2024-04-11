@@ -43,7 +43,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
       onClose={onClose}
       sx={{
         '& .MuiDialog-paper': {
-          minWidth: 400,
+          width: 400,
         },
       }}
     >

@@ -9,10 +9,10 @@ import Fade from '@mui/material/Fade'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import { CaretDown as MenuIcon } from '@phosphor-icons/react'
-import { useTagStates } from '@/store/useTagStates'
-import { useRoutineStates } from '@/store/useRoutineStates'
 import { DialogEditRoutine } from './dialogs/DialogEditRoutine'
 import { DialogEditTask } from './dialogs/DialogEditTask'
+import { useSchedulesStates } from '@/store/useSchedulesStates'
+import AlertDialog from './dialogs/AlertDialog'
 
 interface ScheduleCardProps {
   id: string
@@ -33,11 +33,11 @@ export const ScheduleCard = ({
 }: ScheduleCardProps) => {
   const [openEditRoutineDialog, setOpenEditRoutineDialog] = useState(false)
   const [openEditTaskDialog, setOpenEditTaskDialog] = useState(false)
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [completed, setCompleted] = useState(done)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
-  const { deleteTag } = useTagStates()
-  const { deleteRoutine } = useRoutineStates()
+  const { deleteSchedule } = useSchedulesStates()
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -62,18 +62,13 @@ export const ScheduleCard = ({
     handleClose()
   }
 
-  const handleDelete = () => {
-    switch (priority) {
-      case 'routine': {
-        deleteRoutine(id)
-        break
-      }
-      default: {
-        deleteTag(id)
-        break
-      }
-    }
+  const handleOpenDeleteModal = () => {
+    setOpenDeleteDialog(true)
+    handleClose()
+  }
 
+  const handleDelete = () => {
+    deleteSchedule(id)
     handleClose()
   }
 
@@ -86,6 +81,12 @@ export const ScheduleCard = ({
         },
       }}
     >
+      <AlertDialog
+        open={openDeleteDialog}
+        title="Deseja realmente excluir este agendamento?"
+        onConfirm={handleDelete}
+        onClose={() => setOpenDeleteDialog(false)}
+      />
       <DialogEditRoutine
         open={openEditRoutineDialog}
         onClose={() => setOpenEditRoutineDialog(false)}
@@ -133,7 +134,7 @@ export const ScheduleCard = ({
         anchorOrigin={{ horizontal: 36, vertical: 24 }}
       >
         <MenuItem onClick={handleOpenEdit}>Editar</MenuItem>
-        <MenuItem onClick={handleDelete}>Excluir</MenuItem>
+        <MenuItem onClick={handleOpenDeleteModal}>Excluir</MenuItem>
       </Menu>
       <Box
         sx={{
@@ -198,6 +199,7 @@ export const ScheduleCard = ({
               variant="caption"
               color="text.secondary"
               sx={{
+                pt: 0.5,
                 display: 'block',
                 textAlign: 'right',
               }}
@@ -213,6 +215,8 @@ export const ScheduleCard = ({
               sx={{
                 color: 'grey.500',
                 pr: 0,
+                pb: 0,
+                pt: 0.25,
               }}
             >
               <MenuIcon size={16} weight="bold" />

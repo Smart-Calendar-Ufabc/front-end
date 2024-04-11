@@ -1,27 +1,28 @@
+import { Schedule } from '@/entities/Schedule'
 import { create } from 'zustand'
 
 interface AppStates {
-  tags: { id: string; title: string; color: string }[]
-  setTags: (tags: { id: string; title: string; color: string }[]) => void
-  addTag: (tag: { id: string; title: string; color: string }) => void
-  deleteTag: (id: string) => void
+  schedules: Schedule[]
+  setSchedules: (schedules: Schedule[]) => void
+  addSchedule: (schedule: Schedule) => void
+  deleteSchedule: (id: string) => void
 }
 
-export const useTagStates = create<AppStates>()((set) => ({
-  tags: [],
-  setTags: (tags) => {
+export const useSchedulesStates = create<AppStates>()((set) => ({
+  schedules: [],
+  setSchedules: (schedules) => {
     set(() => ({
-      tags,
+      schedules,
     }))
   },
-  addTag: (tag) => {
+  addSchedule: (tag) => {
     set((state) => ({
-      tags: [...state.tags, tag],
+      schedules: [...state.schedules, tag],
     }))
   },
-  deleteTag: (id) => {
+  deleteSchedule: (id) => {
     set((state) => ({
-      tags: state.tags.filter((tag) => tag.id !== id),
+      schedules: state.schedules.filter((schedule) => schedule.id !== id),
     }))
   },
 }))
