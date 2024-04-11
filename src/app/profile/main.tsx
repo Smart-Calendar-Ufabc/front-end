@@ -9,7 +9,7 @@ import Box from '@mui/material/Box'
 export default function SettingsMain() {
   return (
     <Box
-      sx={{
+      sx={(theme) => ({
         display: 'flex',
         marginLeft: '219',
         marginTop: '153',
@@ -19,18 +19,26 @@ export default function SettingsMain() {
         width: '400px',
         height: '281px',
         alignItems: 'stretch',
-      }}
+        [theme.breakpoints.down('md')]: {
+          maxWidth: '400px',
+          width: '100%',
+        },
+        [theme.breakpoints.down('sm')]: {
+          width: '100%',
+        },
+      })}
     >
       <FormTitle>Editar Perfil</FormTitle>
       <FormGroup
         sx={{
           display: 'flex',
           alignItems: 'center',
-          gap: '5px',
+          gap: 3,
           flexDirection: 'row',
           justifyContent: 'center',
           borderTop: '1px solid lightgray',
           borderBottom: '1px solid lightgray',
+          p: 3,
         }}
       >
         <Button
@@ -39,7 +47,6 @@ export default function SettingsMain() {
             width: 80,
             height: 80,
             borderRadius: 80,
-            margin: '24px',
             backgroundImage: 'url(/images/blank-profile-picture.png)',
             backgroundSize: '170%',
             backgroundRepeat: 'no-repeat',
@@ -52,6 +59,7 @@ export default function SettingsMain() {
             width: '126px',
             height: '40px',
             fontSize: '18px',
+            flex: 'none',
           }}
         >
           Alterar Foto

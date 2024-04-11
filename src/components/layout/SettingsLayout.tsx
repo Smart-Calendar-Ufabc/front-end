@@ -26,7 +26,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <Drawer
-          sx={{
+          sx={(theme) => ({
             width: drawerWidth,
             flexShrink: 0,
             '& .MuiDrawer-paper': {
@@ -34,7 +34,10 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               boxSizing: 'border-box',
               mt: headerHeight,
             },
-          }}
+            [theme.breakpoints.down('sm')]: {
+              display: 'none',
+            },
+          })}
           variant="permanent"
           anchor="left"
         >
@@ -63,14 +66,18 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         </Drawer>
         <Box
           component="main"
-          sx={{
+          sx={(theme) => ({
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-start',
             justifyContent: 'flex-start',
             width: '100%',
             p: 4,
-          }}
+            [theme.breakpoints.down('sm')]: {
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+          })}
         >
           {children}
         </Box>
