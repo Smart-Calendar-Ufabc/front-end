@@ -1,10 +1,10 @@
-'use client'
-
 import Box from '@mui/material/Box'
 import HomeLayout from '@/components/layout/home/HomeLayout'
 import { Schedule } from '@/entities/Schedule'
 import { initialSchedules } from '@/seed/schedules'
 import { WeekSchedulesCard } from '@/components/WeekSchedulesCard'
+
+export const runtime = 'edge'
 
 type SchedulesList = {
   [startDate: string]: Schedule[]

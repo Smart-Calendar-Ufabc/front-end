@@ -1,11 +1,13 @@
-'use client'
-
 import FormContainer from '@/components/form/FormContainer'
 import FormGroup from '@/components/form/FormGroup'
 import FormTitle from '@/components/form/FormTitle'
 import OnboardingLayout from '@/components/layout/OnboardingLayout'
 import Link from '@/components/typography/Link'
-import { Button, TextField, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+
+export const runtime = 'edge'
 
 export default function SignUp() {
   return (

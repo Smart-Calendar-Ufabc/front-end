@@ -1,5 +1,3 @@
-'use client'
-
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import SettingsLayout from '@/components/layout/SettingsLayout'
@@ -7,6 +5,8 @@ import FormContainer from '@/components/form/FormContainerProfile'
 import FormTitle from '@/components/form/FormTitleProfile'
 import FormGroup from '@/components/form/FormGroup'
 import FormGroupProfile from '@/components/form/FormGroupProfile'
+
+export const runtime = 'edge'
 
 export default function Settings() {
   return (
