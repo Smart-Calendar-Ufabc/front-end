@@ -6,23 +6,23 @@ import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
 import { X as CloseIcon } from '@phosphor-icons/react'
-import { TimePicker, DatePicker } from '@mui/x-date-pickers'
+import { DatePicker, TimePicker } from '@mui/x-date-pickers'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import 'dayjs/locale/pt-br'
 
 import './styles.css'
 import {
   TextField,
-  Typography,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
+  FormGroup,
+  Stack,
+  FormLabel,
 } from '@mui/material'
-import FormGroupAddTask from '@/components/form/FormGroupAddTask'
-import FormGroupAddTaskTime from '@/components/form/FormGroupAddTaskTime'
 import React from 'react'
 
 interface DialogAddTaskProps {
@@ -30,40 +30,20 @@ interface DialogAddTaskProps {
   onClose: () => void
 }
 
-function BasicSelect() {
+export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
   const [priority, setPriority] = React.useState('')
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
+  const handleChangePriority = (event: SelectChangeEvent<string>) => {
     setPriority(event.target.value as string)
   }
 
-  return (
-    <FormControl fullWidth>
-      <InputLabel id="priority-select-label">Prioridade</InputLabel>
-      <Select
-        labelId="priority-select-label"
-        id="priority-select"
-        value={priority}
-        label="Priority"
-        onChange={handleChange}
-      >
-        <MenuItem value="baixa">Baixa</MenuItem>
-        <MenuItem value="média">Média</MenuItem>
-        <MenuItem value="alta">Alta</MenuItem>
-      </Select>
-    </FormControl>
-  )
-}
-
-export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
   return (
     <Dialog
       open={open}
       onClose={onClose}
       sx={{
         '& .MuiDialog-paper': {
-          minWidth: 500,
-          minHeight: 650,
+          minWidth: 400,
         },
       }}
     >
@@ -82,15 +62,12 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
       </IconButton>
       <Divider />
       <DialogContent>
-        <FormGroupAddTask>
+        <Stack direction="column" spacing={3}>
           <TextField
             label="Título"
             type="tittle"
             variant="outlined"
-            sx={{
-              height: '51px',
-              width: '452px',
-            }}
+            size="small"
           />
           <TextField
             id="outlined-multiline-flexible"
@@ -99,43 +76,80 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
             label="Notas"
             type="note"
             variant="outlined"
-            sx={{
-              height: '96px',
-              width: '452px',
-            }}
           />
-          <Typography variant="subtitle2" color={'#666666'}>
-            Opcional
-          </Typography>
-        </FormGroupAddTask>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={['TimePicker']}>
+          <FormControl size="small">
+            <InputLabel id="priority-select-label">Prioridade</InputLabel>
+            <Select
+              labelId="priority-select-label"
+              id="priority-select"
+              value={priority}
+              label="Prioridade"
+              onChange={handleChangePriority}
+            >
+              <MenuItem value="baixa">Baixa</MenuItem>
+              <MenuItem value="média">Média</MenuItem>
+              <MenuItem value="alta">Alta</MenuItem>
+            </Select>
+          </FormControl>
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale="pt-br"
+          >
             <TimePicker
+              name="limitDateToSell"
               label="Duração"
-              sx={{
-                width: '452px',
+              ampm={false}
+              slotProps={{
+                textField: {
+                  name: 'limitDateToSell',
+                  size: 'small',
+                  type: 'text',
+                  variant: 'outlined',
+                },
               }}
             />
-          </DemoContainer>
-        </LocalizationProvider>
-        <Typography variant="h6" sx={{ marginTop: '16px' }}>
-          Data limite de entrega
-        </Typography>
-        <FormGroupAddTaskTime>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']}>
-              <DatePicker label="mm/dd/aa" />
-            </DemoContainer>
           </LocalizationProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['TimePicker']}>
-              <TimePicker label="23:59" />
-            </DemoContainer>
-          </LocalizationProvider>
-        </FormGroupAddTaskTime>
-        <FormGroupAddTask>
-          <BasicSelect />
-        </FormGroupAddTask>
+          <FormControl>
+            <FormLabel component="legend">Data Limite de Entrega</FormLabel>
+            <FormGroup>
+              <Stack direction="row" spacing={2} mt={2}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale="pt-br"
+                >
+                  <DatePicker
+                    label="Data"
+                    slotProps={{
+                      textField: {
+                        name: 'limitDateToSell',
+                        size: 'small',
+                        type: 'text',
+                        variant: 'outlined',
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale="pt-br"
+                >
+                  <TimePicker
+                    label="Hora"
+                    ampm={false}
+                    slotProps={{
+                      textField: {
+                        name: 'limitDateToSell',
+                        size: 'small',
+                        type: 'text',
+                        variant: 'outlined',
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </Stack>
+            </FormGroup>
+          </FormControl>
+        </Stack>
       </DialogContent>
       <DialogActions>
         <Button
