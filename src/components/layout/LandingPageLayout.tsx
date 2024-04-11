@@ -41,7 +41,7 @@ const Header = () => {
       })}
     >
       <Box>
-        <LogoType direction="vertical" />
+        <LogoType />
       </Box>
       <MobileUp>
         <Box sx={{ display: 'flex', gap: 2 }}>
