@@ -21,7 +21,6 @@ import {
   Stack,
   FormLabel,
   FormHelperText,
-  Box,
 } from '@mui/material'
 import { Dayjs } from 'dayjs'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
@@ -122,187 +121,179 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
         <CloseIcon />
       </IconButton>
       <Divider />
-      <Box component="form" onSubmit={formik.handleSubmit}>
-        <DialogContent>
-          <Stack direction="column" spacing={3}>
-            <TextField
-              name="title"
-              label="Título"
-              type="tittle"
-              size="small"
+      <DialogContent>
+        <Stack direction="column" spacing={3}>
+          <TextField
+            name="title"
+            label="Título"
+            type="tittle"
+            size="small"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.title}
+            error={formik.touched.title && Boolean(formik.errors.title)}
+            helperText={formik.touched.title && formik.errors.title}
+          />
+          <TextField
+            name="notes"
+            multiline
+            rows={4}
+            label="Notas"
+            type="note"
+            value={formik.values.notes}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.notes && Boolean(formik.errors.notes)}
+            helperText={
+              formik.touched.notes && Boolean(formik.errors.notes) ? (
+                formik.touched.notes && formik.errors.notes
+              ) : (
+                <FormHelperTag>Opcional</FormHelperTag>
+              )
+            }
+          />
+          <FormControl size="small">
+            <InputLabel id="priority-select-label">Prioridade</InputLabel>
+            <Select
+              name="priority"
+              labelId="priority-select-label"
+              id="priority-select"
+              label="Prioridade"
+              value={formik.values.priority}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.title}
-              error={formik.touched.title && Boolean(formik.errors.title)}
-              helperText={formik.touched.title && formik.errors.title}
-            />
-            <TextField
-              name="notes"
-              multiline
-              rows={4}
-              label="Notas"
-              type="note"
-              value={formik.values.notes}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.notes && Boolean(formik.errors.notes)}
-              helperText={
-                formik.touched.notes && Boolean(formik.errors.notes) ? (
-                  formik.touched.notes && formik.errors.notes
-                ) : (
-                  <FormHelperTag>Opcional</FormHelperTag>
-                )
-              }
-            />
+              error={formik.touched.priority && Boolean(formik.errors.priority)}
+            >
+              <MenuItem value="low">Baixa</MenuItem>
+              <MenuItem value="medium">Média</MenuItem>
+              <MenuItem value="high">Alta</MenuItem>
+            </Select>
+            <FormHelperText
+              error={formik.touched.priority && Boolean(formik.errors.priority)}
+            >
+              {formik.touched.priority && formik.errors.priority}
+            </FormHelperText>
+          </FormControl>
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale="pt-br"
+          >
             <FormControl size="small">
-              <InputLabel id="priority-select-label">Prioridade</InputLabel>
-              <Select
-                name="priority"
-                labelId="priority-select-label"
-                id="priority-select"
-                label="Prioridade"
-                value={formik.values.priority}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.priority && Boolean(formik.errors.priority)
-                }
-              >
-                <MenuItem value="low">Baixa</MenuItem>
-                <MenuItem value="medium">Média</MenuItem>
-                <MenuItem value="high">Alta</MenuItem>
-              </Select>
+              <TimePicker
+                name="duration"
+                label="Duração"
+                ampm={false}
+                slotProps={{
+                  textField: {
+                    name: 'duration',
+                    size: 'small',
+                    type: 'text',
+                    variant: 'outlined',
+                    error:
+                      formik.touched.duration &&
+                      Boolean(formik.errors.duration),
+                  },
+                }}
+                value={formik.values.duration}
+                onChange={(newValue) => {
+                  formik.setFieldValue('duration', newValue)
+                }}
+              />
               <FormHelperText
                 error={
-                  formik.touched.priority && Boolean(formik.errors.priority)
+                  formik.touched.duration && Boolean(formik.errors.duration)
                 }
               >
-                {formik.touched.priority && formik.errors.priority}
+                {formik.touched.duration && formik.errors.duration}
               </FormHelperText>
             </FormControl>
-            <LocalizationProvider
-              dateAdapter={AdapterDayjs}
-              adapterLocale="pt-br"
-            >
-              <FormControl size="small">
-                <TimePicker
-                  name="duration"
-                  label="Duração"
-                  ampm={false}
-                  slotProps={{
-                    textField: {
-                      name: 'duration',
-                      size: 'small',
-                      type: 'text',
-                      variant: 'outlined',
-                      error:
-                        formik.touched.duration &&
-                        Boolean(formik.errors.duration),
-                    },
-                  }}
-                  value={formik.values.duration}
-                  onChange={(newValue) => {
-                    formik.setFieldValue('duration', newValue)
-                  }}
-                />
-                <FormHelperText
-                  error={
-                    formik.touched.duration && Boolean(formik.errors.duration)
-                  }
-                >
-                  {formik.touched.duration && formik.errors.duration}
-                </FormHelperText>
-              </FormControl>
-            </LocalizationProvider>
-            <FormControl>
-              <FormLabel component="legend">Data Limite de Entrega</FormLabel>
-              <FormGroup>
-                <Stack direction="row" spacing={2} mt={2}>
+          </LocalizationProvider>
+          <FormControl>
+            <FormLabel component="legend">Data Limite de Entrega</FormLabel>
+            <FormGroup>
+              <Stack direction="row" spacing={2} mt={2}>
+                <FormControl sx={{ flex: 1 }}>
                   <LocalizationProvider
                     dateAdapter={AdapterDayjs}
                     adapterLocale="pt-br"
                   >
-                    <FormControl size="small">
-                      <DatePicker
-                        name="dueDate"
-                        label="Data"
-                        slotProps={{
-                          textField: {
-                            name: 'dueDate',
-                            size: 'small',
-                            type: 'text',
-                            variant: 'outlined',
-                            error:
-                              formik.touched.dueDate &&
-                              Boolean(formik.errors.dueDate),
-                          },
-                        }}
-                        value={formik.values.dueDate}
-                        onChange={(newValue) => {
-                          formik.setFieldValue('dueDate', newValue)
-                        }}
-                      />
-                      <FormHelperText
-                        error={
-                          formik.touched.dueDate &&
-                          Boolean(formik.errors.dueDate)
-                        }
-                      >
-                        {formik.touched.dueDate && formik.errors.dueDate}
-                      </FormHelperText>
-                    </FormControl>
+                    <DatePicker
+                      name="dueDate"
+                      label="Data"
+                      slotProps={{
+                        textField: {
+                          name: 'dueDate',
+                          size: 'small',
+                          type: 'text',
+                          variant: 'outlined',
+                          error:
+                            formik.touched.dueDate &&
+                            Boolean(formik.errors.dueDate),
+                        },
+                      }}
+                      value={formik.values.dueDate}
+                      onChange={(newValue) => {
+                        formik.setFieldValue('dueDate', newValue)
+                      }}
+                    />
+                    <FormHelperText
+                      error={
+                        formik.touched.dueDate && Boolean(formik.errors.dueDate)
+                      }
+                    >
+                      {formik.touched.dueDate && formik.errors.dueDate}
+                    </FormHelperText>
                   </LocalizationProvider>
+                </FormControl>
+                <FormControl sx={{ flex: 1 }}>
                   <LocalizationProvider
                     dateAdapter={AdapterDayjs}
                     adapterLocale="pt-br"
                   >
-                    <FormControl size="small">
-                      <TimePicker
-                        name="dueTime"
-                        label="Hora"
-                        ampm={false}
-                        slotProps={{
-                          textField: {
-                            name: 'dueTime',
-                            size: 'small',
-                            type: 'text',
-                            variant: 'outlined',
-                            error:
-                              formik.touched.dueTime &&
-                              Boolean(formik.errors.dueTime),
-                          },
-                        }}
-                        value={formik.values.dueTime}
-                        onChange={(newValue) => {
-                          formik.setFieldValue('dueTime', newValue)
-                        }}
-                      />
-                      <FormHelperText
-                        error={
-                          formik.touched.dueTime &&
-                          Boolean(formik.errors.dueTime)
-                        }
-                      >
-                        {formik.touched.dueTime && formik.errors.dueTime}
-                      </FormHelperText>
-                    </FormControl>
+                    <TimePicker
+                      name="dueTime"
+                      label="Hora"
+                      ampm={false}
+                      slotProps={{
+                        textField: {
+                          name: 'dueTime',
+                          size: 'small',
+                          type: 'text',
+                          variant: 'outlined',
+                          error:
+                            formik.touched.dueTime &&
+                            Boolean(formik.errors.dueTime),
+                        },
+                      }}
+                      value={formik.values.dueTime}
+                      onChange={(newValue) => {
+                        formik.setFieldValue('dueTime', newValue)
+                      }}
+                    />
+                    <FormHelperText
+                      error={
+                        formik.touched.dueTime && Boolean(formik.errors.dueTime)
+                      }
+                    >
+                      {formik.touched.dueTime && formik.errors.dueTime}
+                    </FormHelperText>
                   </LocalizationProvider>
-                </Stack>
-              </FormGroup>
-            </FormControl>
-          </Stack>
-        </DialogContent>
-        <DialogActions
-          sx={{
-            px: 3,
-            pb: 3,
-          }}
-        >
-          <Button variant="contained" fullWidth type="submit">
-            Adicionar Tarefa
-          </Button>
-        </DialogActions>
-      </Box>
+                </FormControl>
+              </Stack>
+            </FormGroup>
+          </FormControl>
+        </Stack>
+      </DialogContent>
+      <DialogActions
+        sx={{
+          px: 3,
+          pb: 3,
+        }}
+      >
+        <Button variant="contained" fullWidth onClick={formik.submitForm}>
+          Adicionar Tarefa
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }
