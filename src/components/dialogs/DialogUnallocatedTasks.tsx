@@ -20,6 +20,8 @@ import { createScheduleSuggestion } from '@/helpers/schedule-sugestion/createSch
 import { Schedule } from '@/entities/Schedule'
 import { ScheduleSuggestionCard } from '../ScheduleSuggestionCard'
 import { getBrazilianDate } from '@/helpers/date/getBrazilianDate'
+import Mobile from '../layout/responsive/Mobile'
+import MobileUp from '../layout/responsive/MobileUp'
 
 interface DialogUnallocatedTasksProps {
   open: boolean
@@ -45,6 +47,7 @@ export function DialogUnallocatedTasks({
     onClose()
     const data = createScheduleSuggestion(unallocatedTasks, schedules)
     if (data) {
+      console.log('suggestion', data)
       setSchedulesSuggestion(data)
     }
     setOpenSuggestionSchedule(true)
@@ -63,19 +66,20 @@ export function DialogUnallocatedTasks({
   }, [setUnallocatedTasks])
 
   useEffect(() => {
-    setList(
-      schedulesSuggestion.reduce(
-        (grouped, schedule) => {
-          const key = schedule.startAt.toISOString().split('T')[0]
-          if (!grouped[key]) {
-            grouped[key] = []
-          }
-          grouped[key].push(schedule)
-          return grouped
-        },
-        {} as Record<string, Schedule[]>,
-      ),
+    const newList = schedulesSuggestion.reduce(
+      (grouped, schedule) => {
+        const key =
+          schedule.startAt.toISOString().split('T')[0] + 'T00:00:00.000Z'
+        if (!grouped[key]) {
+          grouped[key] = []
+        }
+        grouped[key].push(schedule)
+        return grouped
+      },
+      {} as Record<string, Schedule[]>,
     )
+
+    setList(newList)
   }, [schedulesSuggestion])
 
   return (
@@ -85,7 +89,8 @@ export function DialogUnallocatedTasks({
         onClose={() => setOpenSuggestionSchedule(false)}
         sx={(theme) => ({
           '& .MuiDialog-paper': {
-            width: 500,
+            minWidth: 500,
+            maxWidth: '80%',
             [theme.breakpoints.down('sm')]: {
               minWidth: '85%',
               maxWidth: '85%',
@@ -108,40 +113,57 @@ export function DialogUnallocatedTasks({
         </IconButton>
         <Divider />
         <DialogContent>
-          <Box
-            display="grid"
-            className="custom-scrollbar"
-            sx={{
-              overflowX: 'auto',
-            }}
-          >
-            <Stack
-              direction="column"
-              spacing={2}
+          <Box display="grid">
+            <Box
               sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
                 alignItems: 'flex-start',
                 justifyContent: 'flex-start',
               }}
             >
-              {Object.entries(list).map(([startDate, schedules]) => (
-                <Box key={startDate}>
-                  <Typography mb={1}>
-                    {getBrazilianDate(new Date(startDate))}
-                  </Typography>
-                  <Stack direction="row" spacing={2}>
-                    {schedules.map((task) => (
-                      <ScheduleSuggestionCard
-                        key={task.id}
-                        title={task.title}
-                        priority={task.priority}
-                        startTime={`${task.startAt.getUTCHours().toString().padStart(2, '0').toString().padStart(2, '0')}:${task.startAt.getUTCMinutes().toString().padStart(2, '0')}`}
-                        endTime={`${task.endAt.getUTCHours().toString().padStart(2, '0')}:${task.endAt.getUTCMinutes().toString().padStart(2, '0')}`}
-                      />
-                    ))}
-                  </Stack>
-                </Box>
-              ))}
-            </Stack>
+              {Object.entries(list)
+                .sort(
+                  ([startDateA], [startDateB]) =>
+                    new Date(startDateA).getTime() -
+                    new Date(startDateB).getTime(),
+                )
+                .map(([startDate, schedules]) => (
+                  <Box key={startDate} display="grid">
+                    <Typography mb={2}>
+                      {getBrazilianDate(new Date(schedules[0].startAt))}
+                    </Typography>
+                    <Box>
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{
+                          alignItems: 'stretch',
+                          justifyContent: 'flex-start',
+                          '&.MuiStack-root': {
+                            pr: 3,
+                          },
+                        }}
+                      >
+                        {schedules
+                          .sort(
+                            (a, b) => a.startAt.getTime() - b.startAt.getTime(),
+                          )
+                          .map((task) => (
+                            <ScheduleSuggestionCard
+                              key={task.id}
+                              title={task.title}
+                              priority={task.priority}
+                              startTime={`${task.startAt.getUTCHours().toString().padStart(2, '0').toString().padStart(2, '0')}:${task.startAt.getUTCMinutes().toString().padStart(2, '0')}`}
+                              endTime={`${task.endAt.getUTCHours().toString().padStart(2, '0')}:${task.endAt.getUTCMinutes().toString().padStart(2, '0')}`}
+                            />
+                          ))}
+                      </Stack>
+                    </Box>
+                  </Box>
+                ))}
+            </Box>
           </Box>
         </DialogContent>
         {schedulesSuggestion.length > 0 && (
@@ -170,6 +192,7 @@ export function DialogUnallocatedTasks({
         sx={(theme) => ({
           '& .MuiDialog-paper': {
             minWidth: 500,
+            maxWidth: '80%',
             [theme.breakpoints.down('sm')]: {
               minWidth: '85%',
               maxWidth: '85%',
@@ -208,26 +231,54 @@ export function DialogUnallocatedTasks({
               Não há tarefas para serem alocadas.
             </Typography>
           ) : (
-            <Box
-              display="grid"
-              className="custom-scrollbar"
-              sx={(theme) => ({
-                [theme.breakpoints.down('sm')]: {
-                  overflowX: 'auto',
-                },
-              })}
-            >
-              <Stack direction="row" spacing={2}>
-                {unallocatedTasks.map((task) => (
-                  <UnallocatedTaskCard
-                    key={task.id}
-                    id={task.id}
-                    duration={task.duration}
-                    priority={task.priority}
-                    title={task.title}
-                  />
-                ))}
-              </Stack>
+            <Box display="grid">
+              <Mobile>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    alignItems: 'stretch',
+                    justifyContent: 'flex-start',
+                    '&.MuiStack-root': {
+                      pr: 3,
+                    },
+                  }}
+                >
+                  {unallocatedTasks.map((task) => (
+                    <UnallocatedTaskCard
+                      key={task.id}
+                      id={task.id}
+                      duration={task.duration}
+                      priority={task.priority}
+                      title={task.title}
+                    />
+                  ))}
+                </Stack>
+              </Mobile>
+              <MobileUp>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: 2,
+                    flexWrap: 'wrap',
+                    alignItems: 'stretch',
+                    justifyContent: 'flex-start',
+                    '&.MuiStack-root': {
+                      pr: 3,
+                    },
+                  }}
+                >
+                  {unallocatedTasks.map((task) => (
+                    <UnallocatedTaskCard
+                      key={task.id}
+                      id={task.id}
+                      duration={task.duration}
+                      priority={task.priority}
+                      title={task.title}
+                    />
+                  ))}
+                </Box>
+              </MobileUp>
             </Box>
           )}
         </DialogContent>

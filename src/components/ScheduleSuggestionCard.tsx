@@ -19,6 +19,7 @@ export const ScheduleSuggestionCard = ({
   return (
     <Card
       sx={{
+        width: '180px',
         '&.MuiCard-root': {
           borderWidth: '1px',
           borderStyle: 'solid',
@@ -32,45 +33,28 @@ export const ScheduleSuggestionCard = ({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
+          justifyContent: 'space-between',
           gap: 1,
           minWidth: 140,
           p: 1,
+          height: '100%',
         }}
       >
-        <Box
+        <Typography
           sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 1,
-            width: '100%',
+            fontSize: '0.875rem',
           }}
         >
-          <Typography
-            sx={{
-              fontSize: '0.875rem',
-            }}
-          >
-            {title}
-          </Typography>
-        </Box>
-        <PriorityTag variant="little" priority={priority} />
-        <Box
-          sx={{
-            borderTopWidth: '1px',
-            borderTopStyle: 'solid',
-            borderTopColor: 'divider',
-            width: '100%',
-          }}
-        >
+          {title}
+        </Typography>
+        <Box sx={{ width: '100%' }}>
+          <PriorityTag variant="little" priority={priority} />
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              gap: 1,
+              borderTopWidth: '1px',
+              borderTopStyle: 'solid',
+              borderTopColor: 'divider',
+              mt: 1,
             }}
           >
             <Typography

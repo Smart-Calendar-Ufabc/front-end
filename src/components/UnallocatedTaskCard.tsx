@@ -75,6 +75,7 @@ export default function UnallocatedTaskCard({
   return (
     <Card
       sx={{
+        width: '180px',
         '&.MuiCard-root': {
           borderWidth: '1px',
           borderStyle: 'solid',
@@ -143,8 +144,10 @@ export default function UnallocatedTaskCard({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
+          justifyContent: 'space-between',
           gap: 1,
           minWidth: 140,
+          height: 140,
           p: 1,
         }}
       >
@@ -152,7 +155,7 @@ export default function UnallocatedTaskCard({
           sx={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             justifyContent: 'space-between',
             gap: 1,
             width: '100%',
@@ -181,35 +184,38 @@ export default function UnallocatedTaskCard({
             <MenuIcon size={16} weight="bold" />
           </IconButton>
         </Box>
-        <PriorityTag variant="little" priority={priority} />
-        <Box
-          sx={{
-            borderTopWidth: '1px',
-            borderTopStyle: 'solid',
-            borderTopColor: 'divider',
-            width: '100%',
-          }}
-        >
+        <Box sx={{ width: '100%' }}>
+          <PriorityTag variant="little" priority={priority} />
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              gap: 1,
+              borderTopWidth: '1px',
+              borderTopStyle: 'solid',
+              borderTopColor: 'divider',
+              width: '100%',
+              mt: 1,
             }}
           >
-            <Typography
-              variant="caption"
-              color="text.secondary"
+            <Box
               sx={{
-                pt: 0.5,
-                display: 'block',
-                textAlign: 'right',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                gap: 1,
               }}
             >
-              {getBrazilianDuration()}
-            </Typography>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{
+                  pt: 0.5,
+                  display: 'block',
+                  textAlign: 'right',
+                }}
+              >
+                {getBrazilianDuration()}
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Box>

@@ -142,7 +142,7 @@ export const ScheduleCard = ({
           flexDirection: 'column',
           alignItems: 'flex-start',
           gap: 1,
-          minWidth: 140,
+          width: 140,
           p: 1,
         }}
       >
@@ -150,7 +150,7 @@ export const ScheduleCard = ({
           sx={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             justifyContent: 'space-between',
             gap: 1,
             width: '100%',
