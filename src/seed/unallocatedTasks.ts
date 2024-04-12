@@ -1,18 +1,110 @@
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
 
+const sumRandomDaysFromNow = (): Date => {
+  const date = new Date()
+  const randomDays = Math.floor(Math.random() * 30)
+  date.setUTCDate(date.getUTCDate() + randomDays)
+  return date
+}
+
+const durations = [
+  '00:30',
+  '01:00',
+  '02:00',
+  '03:00',
+  '04:00',
+  '05:00',
+  '06:00',
+]
+
+const priorities: ('low' | 'medium' | 'high')[] = [
+  'low',
+  'high',
+  'medium',
+  'high',
+  'medium',
+  'low',
+]
+
+const deadlines = [
+  sumRandomDaysFromNow(),
+  sumRandomDaysFromNow(),
+  sumRandomDaysFromNow(),
+  sumRandomDaysFromNow(),
+]
+
+const titles = [
+  'Criar telas de autenticação',
+  'Criar telas de calendário',
+  'Criar telas para gerenciar tarefas',
+  'Criar telas de recuparação de senha',
+  'Criar modal de adicionar tarefa',
+  'Criar modal de editar tarefa',
+  'Criar modal de excluir tarefa',
+  'Criar modal de adicionar rotina',
+  'Criar modal de editar rotina',
+  'Criar modal de gerenciar tags',
+]
+
+const getRandomElement = <T>(array: T[]): T => {
+  return array[Math.floor(Math.random() * array.length)]
+}
+
 export const unallocatedTasks: UnallocatedTask[] = [
   {
-    id: 'e6786a2e-fec8-4472-8a26-fb623e633f8e',
-    title: 'Task 1',
-    priority: 'high',
-    duration: '01:00',
-    deadline: new Date('2024-04-19T09:00:00.000Z'),
+    id: crypto.randomUUID(),
+    title: getRandomElement(titles),
+    priority: getRandomElement(priorities),
+    duration: getRandomElement(durations),
+    deadline: getRandomElement(deadlines),
   },
   {
-    id: '67985943-c969-456e-bb43-301d4d421018',
-    title: 'Task 2',
-    priority: 'low',
-    duration: '02:00',
-    deadline: new Date('2024-04-22T09:00:00.000Z'),
+    id: crypto.randomUUID(),
+    title: getRandomElement(titles),
+    priority: getRandomElement(priorities),
+    duration: getRandomElement(durations),
+    deadline: getRandomElement(deadlines),
+  },
+  {
+    id: crypto.randomUUID(),
+    title: getRandomElement(titles),
+    priority: getRandomElement(priorities),
+    duration: getRandomElement(durations),
+    deadline: getRandomElement(deadlines),
+  },
+  {
+    id: crypto.randomUUID(),
+    title: getRandomElement(titles),
+    priority: getRandomElement(priorities),
+    duration: getRandomElement(durations),
+    deadline: getRandomElement(deadlines),
+  },
+  {
+    id: crypto.randomUUID(),
+    title: getRandomElement(titles),
+    priority: getRandomElement(priorities),
+    duration: getRandomElement(durations),
+    deadline: getRandomElement(deadlines),
+  },
+  {
+    id: crypto.randomUUID(),
+    title: getRandomElement(titles),
+    priority: getRandomElement(priorities),
+    duration: getRandomElement(durations),
+    deadline: getRandomElement(deadlines),
+  },
+  {
+    id: crypto.randomUUID(),
+    title: getRandomElement(titles),
+    priority: getRandomElement(priorities),
+    duration: getRandomElement(durations),
+    deadline: getRandomElement(deadlines),
+  },
+  {
+    id: crypto.randomUUID(),
+    title: getRandomElement(titles),
+    priority: getRandomElement(priorities),
+    duration: getRandomElement(durations),
+    deadline: getRandomElement(deadlines),
   },
 ]
