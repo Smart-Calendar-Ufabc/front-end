@@ -79,8 +79,12 @@ export default function UnallocatedTaskCard({
     handleClose()
   }
 
-  const handleOpenAllocateSuggestion = useCallback(() => {
+  const handleOpenAllocateSuggestions = () => {
     handleClose()
+    handleAllocate()
+  }
+
+  const handleAllocate = useCallback(() => {
     const thisUnallocatedTask = unallocatedTasks.find((task) => task.id === id)
     const data = createScheduleSuggestion(
       thisUnallocatedTask ? [thisUnallocatedTask] : [],
@@ -91,6 +95,16 @@ export default function UnallocatedTaskCard({
     }
     setOpenSuggestionSchedule(true)
   }, [id, unallocatedTasks, schedules, setSchedulesSuggestion])
+
+  // const handleReallocate = useCallback(() => {
+  //   const data = createScheduleSuggestion(
+  //     unallocatedTasks.filter((task) => task.id === id),
+  //     schedules,
+  //   )
+  //   if (data) {
+  //     setSchedulesSuggestion(data)
+  //   }
+  // }, [id, unallocatedTasks, schedules, setSchedulesSuggestion])
 
   return (
     <Card
@@ -115,6 +129,7 @@ export default function UnallocatedTaskCard({
         schedulesSuggestions={schedulesSuggestion}
         onClose={() => setOpenSuggestionSchedule(false)}
         onApprove={() => deleteUnallocatedTask(id)}
+        // onReschedule={handleReallocate}
       />
       <DialogEditRoutine
         open={openEditRoutineDialog}
@@ -162,7 +177,7 @@ export default function UnallocatedTaskCard({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 36, vertical: 24 }}
       >
-        <MenuItem onClick={handleOpenAllocateSuggestion}>Alocar</MenuItem>
+        <MenuItem onClick={handleOpenAllocateSuggestions}>Alocar</MenuItem>
         <MenuItem onClick={handleOpenEdit}>Editar</MenuItem>
         <MenuItem onClick={handleOpenDeleteModal}>Excluir</MenuItem>
       </Menu>

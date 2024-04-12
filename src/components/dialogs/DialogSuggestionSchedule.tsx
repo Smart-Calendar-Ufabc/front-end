@@ -20,6 +20,7 @@ interface DialogSuggestionScheduleProps {
   open: boolean
   onClose: () => void
   onApprove: () => void
+  onReschedule?: () => void
 }
 
 export function DialogSuggestionSchedule({
@@ -51,6 +52,10 @@ export function DialogSuggestionSchedule({
 
         if (key) {
           newList[key] = newList[key]?.filter((schedule) => schedule.id !== id)
+        }
+
+        if (newList[key]?.length === 0) {
+          delete newList[key]
         }
 
         return newList
@@ -96,7 +101,7 @@ export function DialogSuggestionSchedule({
       sx={(theme) => ({
         '& .MuiDialog-paper': {
           width: '80%',
-          maxWidth: 820,
+          maxWidth: 500,
           [theme.breakpoints.down('sm')]: {
             minWidth: '85%',
             maxWidth: '85%',
@@ -129,59 +134,89 @@ export function DialogSuggestionSchedule({
               justifyContent: 'flex-start',
             }}
           >
-            {Object.entries(list)
-              .sort(
-                ([startDateA], [startDateB]) =>
-                  new Date(startDateA).getTime() -
-                  new Date(startDateB).getTime(),
-              )
-              .map(([startDate, schedules]) => (
-                <Box key={startDate} display="grid">
-                  <Typography mb={2}>
-                    {getBrazilianDate(new Date(schedules[0].startAt))}
-                  </Typography>
-                  <Box>
-                    <Stack
-                      direction="row"
-                      spacing={2}
-                      sx={{
-                        alignItems: 'stretch',
-                        justifyContent: 'flex-start',
-                        '&.MuiStack-root': {
-                          pr: 3,
-                        },
-                      }}
-                    >
-                      {schedules
-                        .sort(
-                          (a, b) => a.startAt.getTime() - b.startAt.getTime(),
-                        )
-                        .map((task) => (
-                          <ScheduleSuggestionCard
-                            key={task.id}
-                            id={task.id}
-                            title={task.title}
-                            priority={task.priority}
-                            startTime={`${task.startAt.getUTCHours().toString().padStart(2, '0').toString().padStart(2, '0')}:${task.startAt.getUTCMinutes().toString().padStart(2, '0')}`}
-                            endTime={`${task.endAt.getUTCHours().toString().padStart(2, '0')}:${task.endAt.getUTCMinutes().toString().padStart(2, '0')}`}
-                            onApprove={handleApproveSuggestion}
-                            onRemove={handleRemoveFromSuggestions}
-                          />
-                        ))}
-                    </Stack>
+            {Object.entries(list).length === 0 ? (
+              <Typography
+                color="text.secondary"
+                sx={{
+                  minHeight: 100,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  width: '100%',
+                }}
+              >
+                Não há sugestões de agendamento.
+              </Typography>
+            ) : (
+              Object.entries(list)
+                .sort(
+                  ([startDateA], [startDateB]) =>
+                    new Date(startDateA).getTime() -
+                    new Date(startDateB).getTime(),
+                )
+                .map(([startDate, schedules]) => (
+                  <Box key={startDate} display="grid">
+                    <Typography mb={2}>
+                      {getBrazilianDate(new Date(schedules[0].startAt))}
+                    </Typography>
+                    <Box>
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{
+                          alignItems: 'stretch',
+                          justifyContent: 'flex-start',
+                          '&.MuiStack-root': {
+                            pr: 3,
+                          },
+                        }}
+                      >
+                        {schedules
+                          .sort(
+                            (a, b) => a.startAt.getTime() - b.startAt.getTime(),
+                          )
+                          .map((task) => (
+                            <ScheduleSuggestionCard
+                              key={task.id}
+                              id={task.id}
+                              title={task.title}
+                              priority={task.priority}
+                              startTime={`${task.startAt.getUTCHours().toString().padStart(2, '0').toString().padStart(2, '0')}:${task.startAt.getUTCMinutes().toString().padStart(2, '0')}`}
+                              endTime={`${task.endAt.getUTCHours().toString().padStart(2, '0')}:${task.endAt.getUTCMinutes().toString().padStart(2, '0')}`}
+                              onApprove={handleApproveSuggestion}
+                              onRemove={handleRemoveFromSuggestions}
+                            />
+                          ))}
+                      </Stack>
+                    </Box>
                   </Box>
-                </Box>
-              ))}
+                ))
+            )}
           </Box>
         </Box>
       </DialogContent>
-      {schedulesSuggestions.length > 0 && (
+      {Object.entries(list).length > 0 && (
         <DialogActions
           sx={{
             px: 3,
             pb: 3,
           }}
         >
+          {/* {onReschedule && (
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={onReschedule}
+              sx={{
+                py: '10px',
+              }}
+              endIcon={<CLockIcon />}
+            >
+              Reagendar
+            </Button>
+          )} */}
+
           <Button
             variant="contained"
             fullWidth

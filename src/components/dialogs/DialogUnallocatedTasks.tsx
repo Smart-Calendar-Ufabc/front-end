@@ -50,6 +50,13 @@ export function DialogUnallocatedTasks({
     setOpenSuggestionSchedule(true)
   }, [unallocatedTasks, schedules, setSchedulesSuggestion, onClose])
 
+  const handleRegenerateScheduleSuggestion = useCallback(() => {
+    const data = createScheduleSuggestion(unallocatedTasks, schedules)
+    if (data) {
+      setSchedulesSuggestion(data)
+    }
+  }, [schedules, unallocatedTasks, setSchedulesSuggestion])
+
   useEffect(() => {
     setUnallocatedTasks(initialUnallocatedTasks)
   }, [setUnallocatedTasks])
@@ -61,6 +68,7 @@ export function DialogUnallocatedTasks({
         onClose={() => setOpenSuggestionSchedule(false)}
         schedulesSuggestions={schedulesSuggestion}
         onApprove={clearUnallocatedTasks}
+        onReschedule={handleRegenerateScheduleSuggestion}
       />
       <Dialog
         open={open}
