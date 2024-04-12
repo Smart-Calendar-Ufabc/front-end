@@ -2,7 +2,7 @@ import { PriorityTag } from '@/components/PriorityTag'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import Menu from '@mui/material/Menu'
 import Fade from '@mui/material/Fade'
 import MenuItem from '@mui/material/MenuItem'
@@ -12,6 +12,10 @@ import { DialogEditRoutine } from './dialogs/DialogEditRoutine'
 import { DialogEditTask } from './dialogs/DialogEditTask'
 import AlertDialog from './dialogs/AlertDialog'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
+import { Schedule } from '@/entities/Schedule'
+import { createScheduleSuggestion } from '@/helpers/schedule-sugestion/createScheduleSuggestion'
+import { useSchedulesStates } from '@/store/useSchedulesStates'
+import { DialogSuggestionSchedule } from './dialogs/DialogSuggestionSchedule'
 
 interface UnallocatedTaskCardProps {
   id: string
@@ -29,9 +33,12 @@ export default function UnallocatedTaskCard({
   const [openEditRoutineDialog, setOpenEditRoutineDialog] = useState(false)
   const [openEditTaskDialog, setOpenEditTaskDialog] = useState(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [openSuggestionSchedule, setOpenSuggestionSchedule] = useState(false)
+  const [schedulesSuggestion, setSchedulesSuggestion] = useState<Schedule[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
-  const { deleteUnallocatedTask } = useUnallocatedTaskStates()
+  const { schedules } = useSchedulesStates()
+  const { unallocatedTasks, deleteUnallocatedTask } = useUnallocatedTaskStates()
 
   const getBrazilianDuration = () => {
     const hour = duration.split(':')[0].replace(/^0/, '')
@@ -72,6 +79,19 @@ export default function UnallocatedTaskCard({
     handleClose()
   }
 
+  const handleOpenAllocateSuggestion = useCallback(() => {
+    handleClose()
+    const thisUnallocatedTask = unallocatedTasks.find((task) => task.id === id)
+    const data = createScheduleSuggestion(
+      thisUnallocatedTask ? [thisUnallocatedTask] : [],
+      schedules,
+    )
+    if (data) {
+      setSchedulesSuggestion(data)
+    }
+    setOpenSuggestionSchedule(true)
+  }, [id, unallocatedTasks, schedules, setSchedulesSuggestion])
+
   return (
     <Card
       sx={{
@@ -89,6 +109,12 @@ export default function UnallocatedTaskCard({
         title="Deseja realmente excluir esta tarefa?"
         onConfirm={handleDelete}
         onClose={() => setOpenDeleteDialog(false)}
+      />
+      <DialogSuggestionSchedule
+        open={openSuggestionSchedule}
+        schedulesSuggestions={schedulesSuggestion}
+        onClose={() => setOpenSuggestionSchedule(false)}
+        onApprove={() => deleteUnallocatedTask(id)}
       />
       <DialogEditRoutine
         open={openEditRoutineDialog}
@@ -136,6 +162,7 @@ export default function UnallocatedTaskCard({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 36, vertical: 24 }}
       >
+        <MenuItem onClick={handleOpenAllocateSuggestion}>Alocar</MenuItem>
         <MenuItem onClick={handleOpenEdit}>Editar</MenuItem>
         <MenuItem onClick={handleOpenDeleteModal}>Excluir</MenuItem>
       </Menu>
