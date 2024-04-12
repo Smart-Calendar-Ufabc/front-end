@@ -38,7 +38,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
 
   const validationSchema = yup.object({
     title: yup.string().required('Título é obrigatório'),
-    notes: yup.string(),
+    notes: yup.string().max(3, 'Máximo de 3 caracteres'),
     priority: yup.string().required('Prioridade é obrigatória'),
     duration: yup.string().required('Duração é obrigatória'),
     dueDate: yup.date().required('Data é obrigatória'),
@@ -126,7 +126,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
           <TextField
             name="title"
             label="Título"
-            type="tittle"
+            type="text"
             size="small"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -139,7 +139,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
             multiline
             rows={4}
             label="Notas"
-            type="note"
+            type="text"
             value={formik.values.notes}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
