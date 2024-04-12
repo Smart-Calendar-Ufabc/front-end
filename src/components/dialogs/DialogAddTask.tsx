@@ -27,6 +27,7 @@ import { Dayjs } from 'dayjs'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import { FormHelperTag } from '../typography/FormHelperTag'
 
 interface DialogAddTaskProps {
   open: boolean
@@ -145,7 +146,13 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.notes && Boolean(formik.errors.notes)}
-              helperText={formik.touched.notes && formik.errors.notes}
+              helperText={
+                formik.touched.notes && Boolean(formik.errors.notes) ? (
+                  formik.touched.notes && formik.errors.notes
+                ) : (
+                  <FormHelperTag>Opcional</FormHelperTag>
+                )
+              }
             />
             <FormControl size="small">
               <InputLabel id="priority-select-label">Prioridade</InputLabel>
@@ -165,7 +172,11 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                 <MenuItem value="medium">Média</MenuItem>
                 <MenuItem value="high">Alta</MenuItem>
               </Select>
-              <FormHelperText>
+              <FormHelperText
+                error={
+                  formik.touched.priority && Boolean(formik.errors.priority)
+                }
+              >
                 {formik.touched.priority && formik.errors.priority}
               </FormHelperText>
             </FormControl>
@@ -190,9 +201,15 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                     },
                   }}
                   value={formik.values.duration}
-                  onChange={formik.handleChange}
+                  onChange={(newValue) => {
+                    formik.setFieldValue('duration', newValue)
+                  }}
                 />
-                <FormHelperText>
+                <FormHelperText
+                  error={
+                    formik.touched.duration && Boolean(formik.errors.duration)
+                  }
+                >
                   {formik.touched.duration && formik.errors.duration}
                 </FormHelperText>
               </FormControl>
@@ -215,12 +232,22 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                             size: 'small',
                             type: 'text',
                             variant: 'outlined',
+                            error:
+                              formik.touched.dueDate &&
+                              Boolean(formik.errors.dueDate),
                           },
                         }}
                         value={formik.values.dueDate}
-                        onChange={formik.handleChange}
+                        onChange={(newValue) => {
+                          formik.setFieldValue('dueDate', newValue)
+                        }}
                       />
-                      <FormHelperText>
+                      <FormHelperText
+                        error={
+                          formik.touched.dueDate &&
+                          Boolean(formik.errors.dueDate)
+                        }
+                      >
                         {formik.touched.dueDate && formik.errors.dueDate}
                       </FormHelperText>
                     </FormControl>
@@ -240,12 +267,22 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                             size: 'small',
                             type: 'text',
                             variant: 'outlined',
+                            error:
+                              formik.touched.dueTime &&
+                              Boolean(formik.errors.dueTime),
                           },
                         }}
                         value={formik.values.dueTime}
-                        onChange={formik.handleChange}
+                        onChange={(newValue) => {
+                          formik.setFieldValue('dueTime', newValue)
+                        }}
                       />
-                      <FormHelperText color="error.main">
+                      <FormHelperText
+                        error={
+                          formik.touched.dueTime &&
+                          Boolean(formik.errors.dueTime)
+                        }
+                      >
                         {formik.touched.dueTime && formik.errors.dueTime}
                       </FormHelperText>
                     </FormControl>
