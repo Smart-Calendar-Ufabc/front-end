@@ -1,3 +1,5 @@
+'use client'
+
 import FormContainer from '@/components/form/FormContainer'
 import FormGroup from '@/components/form/FormGroup'
 import FormTitle from '@/components/form/FormTitle'
@@ -7,8 +9,6 @@ import { useAppStates } from '@/store/useAppStates'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-
-export const runtime = 'edge'
 
 export default function SignUpCodeValidation() {
   const { signUp } = useAppStates()
