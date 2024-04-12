@@ -21,7 +21,8 @@ export default function HomeMain() {
     setList(
       schedules.reduce(
         (grouped, schedule) => {
-          const key = schedule.startAt.toISOString().split('T')[0]
+          const key =
+            schedule.startAt.toISOString().split('T')[0] + 'T00:00:00Z'
           if (!grouped[key]) {
             grouped[key] = []
           }

@@ -56,6 +56,13 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
       duration: duration?.format('HH:mm:ss') || '',
       deadline,
     })
+
+    setTitle('')
+    setNotes('')
+    setPriority('low')
+    setDuration(null)
+    setDueDate(null)
+    setDueTime(null)
     onClose()
   }
 

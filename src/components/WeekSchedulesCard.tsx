@@ -13,24 +13,19 @@ export const WeekSchedulesCard = ({
   schedules,
 }: WeekSchedulesCardProps) => {
   const newDate = new Date(date)
-  const weekDay =
-    newDate
-      .toLocaleDateString('pt-BR', { weekday: 'short' })
-      .replace('.', '')
-      .charAt(0)
-      .toUpperCase() +
-    newDate
-      .toLocaleDateString('pt-BR', { weekday: 'short' })
-      .replace('.', '')
-      .slice(1)
-  const day = newDate.toLocaleDateString('pt-BR', { day: '2-digit' })
+
+  const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+  const weekUTCDay = newDate.getUTCDay()
+  const weekDay = days[weekUTCDay]
+
+  const day = newDate.getUTCDate()
 
   const isToday = (date: Date) => {
     const today = new Date()
     return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
+      date.getUTCDate() === today.getUTCDate() &&
+      date.getUTCMonth() === today.getUTCMonth() &&
+      date.getUTCFullYear() === today.getUTCFullYear()
     )
   }
 
@@ -60,17 +55,19 @@ export const WeekSchedulesCard = ({
       >
         {weekDay} {day}
       </Typography>
-      {schedules.map((schedule) => (
-        <ScheduleCard
-          key={schedule.id}
-          id={schedule.id}
-          title={schedule.title}
-          done={schedule.done}
-          priority={schedule.priority}
-          startTime={`${schedule.startAt.getUTCHours().toString().padStart(2, '0')}:${schedule.startAt.getUTCMinutes().toString().padStart(2, '0')}`}
-          endTime={`${schedule.endAt.getUTCHours().toString().padStart(2, '0')}:${schedule.endAt.getUTCMinutes().toString().padStart(2, '0')}`}
-        />
-      ))}
+      {schedules
+        .sort((a, b) => a.startAt.getTime() - b.startAt.getTime())
+        .map((schedule) => (
+          <ScheduleCard
+            key={schedule.id}
+            id={schedule.id}
+            title={schedule.title}
+            done={schedule.done}
+            priority={schedule.priority}
+            startTime={`${schedule.startAt.getUTCHours().toString().padStart(2, '0')}:${schedule.startAt.getUTCMinutes().toString().padStart(2, '0')}`}
+            endTime={`${schedule.endAt.getUTCHours().toString().padStart(2, '0')}:${schedule.endAt.getUTCMinutes().toString().padStart(2, '0')}`}
+          />
+        ))}
     </Card>
   )
 }
