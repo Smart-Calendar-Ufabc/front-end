@@ -26,6 +26,19 @@ import {
 import { Dayjs } from 'dayjs'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+const createTaskSchema = z.object({
+  title: z.string(),
+  notes: z.string(),
+  priority: z.enum(['low', 'medium', 'high']),
+  duration: z.string(),
+  dueDate: z.string(),
+  dueTime: z.string(),
+})
+
 interface DialogAddTaskProps {
   open: boolean
   onClose: () => void
@@ -41,11 +54,17 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
 
   const { addUnallocatedTask } = useUnallocatedTaskStates()
 
+  const { register, handleSubmit } = useForm({
+    resolver: zodResolver(createTaskSchema),
+  })
+
   const handleChangePriority = (event: SelectChangeEvent<string>) => {
     setPriority(event.target.value as 'low' | 'medium' | 'high')
   }
 
-  const handleAddTask = () => {
+  const handleAddTask = (data: unknown) => {
+    console.log(data)
+
     const deadline = dueDate?.set('hour', dueTime?.hour() || 0).toDate() as Date
 
     addUnallocatedTask({
@@ -70,6 +89,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
     <Dialog
       open={open}
       onClose={onClose}
+      onSubmit={handleSubmit(handleAddTask)}
       sx={(theme) => ({
         '& .MuiDialog-paper': {
           width: 400,
@@ -96,30 +116,28 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
       <DialogContent>
         <Stack direction="column" spacing={3}>
           <TextField
-            name="title"
             label="Título"
             type="tittle"
             size="small"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            {...register('title', { required: true })}
           />
           <TextField
-            name="notes"
             multiline
             rows={4}
             label="Notas"
             type="note"
             value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            {...register('notes', { required: false })}
           />
           <FormControl size="small">
             <InputLabel id="priority-select-label">Prioridade</InputLabel>
             <Select
               labelId="priority-select-label"
               id="priority-select"
-              name="priority"
               label="Prioridade"
               value={priority}
+              {...register('priority', { required: true })}
               onChange={handleChangePriority}
             >
               <MenuItem value="low">Baixa</MenuItem>
@@ -132,7 +150,6 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
             adapterLocale="pt-br"
           >
             <TimePicker
-              name="duration"
               label="Duração"
               ampm={false}
               slotProps={{
@@ -144,6 +161,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                 },
               }}
               value={duration}
+              {...register('duration', { required: true })}
               onChange={(date) => setDuration(date)}
             />
           </LocalizationProvider>
@@ -156,7 +174,6 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                   adapterLocale="pt-br"
                 >
                   <DatePicker
-                    name="dueDate"
                     label="Data"
                     slotProps={{
                       textField: {
@@ -167,6 +184,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                       },
                     }}
                     value={dueDate}
+                    {...register('dueDate', { required: true })}
                     onChange={(date) => setDueDate(date)}
                   />
                 </LocalizationProvider>
@@ -175,7 +193,6 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                   adapterLocale="pt-br"
                 >
                   <TimePicker
-                    name="dueTime"
                     label="Hora"
                     ampm={false}
                     slotProps={{
@@ -187,6 +204,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                       },
                     }}
                     value={dueTime}
+                    {...register('dueTime', { required: true })}
                     onChange={(date) => setDueTime(date)}
                   />
                 </LocalizationProvider>
@@ -201,7 +219,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
           pb: 3,
         }}
       >
-        <Button variant="contained" fullWidth onClick={handleAddTask}>
+        <Button variant="contained" fullWidth type="submit">
           Adicionar Tarefa
         </Button>
       </DialogActions>
