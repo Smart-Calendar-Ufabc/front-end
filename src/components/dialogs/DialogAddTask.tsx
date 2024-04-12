@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -18,26 +17,16 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
   FormGroup,
   Stack,
   FormLabel,
+  FormHelperText,
+  Box,
 } from '@mui/material'
 import { Dayjs } from 'dayjs'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
-
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-
-const createTaskSchema = z.object({
-  title: z.string(),
-  notes: z.string(),
-  priority: z.enum(['low', 'medium', 'high']),
-  duration: z.string(),
-  dueDate: z.string(),
-  dueTime: z.string(),
-})
+import { useFormik } from 'formik'
+import * as yup from 'yup'
 
 interface DialogAddTaskProps {
   open: boolean
@@ -45,51 +34,70 @@ interface DialogAddTaskProps {
 }
 
 export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
-  const [title, setTitle] = useState('')
-  const [notes, setNotes] = useState('')
-  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low')
-  const [duration, setDuration] = useState<Dayjs | null>(null)
-  const [dueDate, setDueDate] = useState<Dayjs | null>(null)
-  const [dueTime, setDueTime] = useState<Dayjs | null>(null)
-
   const { addUnallocatedTask } = useUnallocatedTaskStates()
 
-  const { register, handleSubmit } = useForm({
-    resolver: zodResolver(createTaskSchema),
+  const validationSchema = yup.object({
+    title: yup.string().required('Título é obrigatório'),
+    notes: yup.string(),
+    priority: yup.string().required('Prioridade é obrigatória'),
+    duration: yup.string().required('Duração é obrigatória'),
+    dueDate: yup.date().required('Data é obrigatória'),
+    dueTime: yup.date().required('Hora é obrigatória'),
   })
 
-  const handleChangePriority = (event: SelectChangeEvent<string>) => {
-    setPriority(event.target.value as 'low' | 'medium' | 'high')
-  }
+  const formik = useFormik({
+    initialValues: {
+      title: '',
+      notes: '',
+      priority: '',
+      duration: null,
+      dueDate: null,
+      dueTime: null,
+    } as {
+      title: string
+      notes: string
+      priority: 'low' | 'medium' | 'high' | ''
+      duration: Dayjs | null
+      dueDate: Dayjs | null
+      dueTime: Dayjs | null
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      const dueDate = values.dueDate
+      let deadline: Date = new Date()
+      if (dueDate) {
+        deadline = dueDate.set('hour', dueDate.hour()).toDate()
+      }
 
-  const handleAddTask = (data: unknown) => {
-    console.log(data)
+      let duration = values.duration || null
+      if (duration) {
+        duration = duration
+          .set('hour', duration.hour())
+          .set('minute', duration.minute())
+          .set('second', duration.second())
+      }
 
-    const deadline = dueDate?.set('hour', dueTime?.hour() || 0).toDate() as Date
+      addUnallocatedTask({
+        id: crypto.randomUUID(),
+        title: values.title,
+        notes: values.notes,
+        priority: values.priority as 'low' | 'medium' | 'high',
+        duration: values.duration
+          ? values.duration.get('hour') + ':' + values.duration.get('minute')
+          : '00:00',
+        deadline,
+      })
 
-    addUnallocatedTask({
-      id: crypto.randomUUID(),
-      title,
-      notes,
-      priority,
-      duration: duration?.format('HH:mm:ss') || '',
-      deadline,
-    })
+      formik.resetForm()
 
-    setTitle('')
-    setNotes('')
-    setPriority('low')
-    setDuration(null)
-    setDueDate(null)
-    setDueTime(null)
-    onClose()
-  }
+      onClose()
+    },
+  })
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      onSubmit={handleSubmit(handleAddTask)}
       sx={(theme) => ({
         '& .MuiDialog-paper': {
           width: 400,
@@ -113,116 +121,151 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
         <CloseIcon />
       </IconButton>
       <Divider />
-      <DialogContent>
-        <Stack direction="column" spacing={3}>
-          <TextField
-            label="Título"
-            type="tittle"
-            size="small"
-            value={title}
-            {...register('title', { required: true })}
-          />
-          <TextField
-            multiline
-            rows={4}
-            label="Notas"
-            type="note"
-            value={notes}
-            {...register('notes', { required: false })}
-          />
-          <FormControl size="small">
-            <InputLabel id="priority-select-label">Prioridade</InputLabel>
-            <Select
-              labelId="priority-select-label"
-              id="priority-select"
-              label="Prioridade"
-              value={priority}
-              {...register('priority', { required: true })}
-              onChange={handleChangePriority}
-            >
-              <MenuItem value="low">Baixa</MenuItem>
-              <MenuItem value="medium">Média</MenuItem>
-              <MenuItem value="high">Alta</MenuItem>
-            </Select>
-          </FormControl>
-          <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            adapterLocale="pt-br"
-          >
-            <TimePicker
-              label="Duração"
-              ampm={false}
-              slotProps={{
-                textField: {
-                  name: 'duration',
-                  size: 'small',
-                  type: 'text',
-                  variant: 'outlined',
-                },
-              }}
-              value={duration}
-              {...register('duration', { required: true })}
-              onChange={(date) => setDuration(date)}
+      <Box component="form" onSubmit={formik.handleSubmit}>
+        <DialogContent>
+          <Stack direction="column" spacing={3}>
+            <TextField
+              name="title"
+              label="Título"
+              type="tittle"
+              size="small"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.title}
+              error={formik.touched.title && Boolean(formik.errors.title)}
+              helperText={formik.touched.title && formik.errors.title}
             />
-          </LocalizationProvider>
-          <FormControl>
-            <FormLabel component="legend">Data Limite de Entrega</FormLabel>
-            <FormGroup>
-              <Stack direction="row" spacing={2} mt={2}>
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  adapterLocale="pt-br"
-                >
-                  <DatePicker
-                    label="Data"
-                    slotProps={{
-                      textField: {
-                        name: 'dueDate',
-                        size: 'small',
-                        type: 'text',
-                        variant: 'outlined',
-                      },
-                    }}
-                    value={dueDate}
-                    {...register('dueDate', { required: true })}
-                    onChange={(date) => setDueDate(date)}
-                  />
-                </LocalizationProvider>
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  adapterLocale="pt-br"
-                >
-                  <TimePicker
-                    label="Hora"
-                    ampm={false}
-                    slotProps={{
-                      textField: {
-                        name: 'dueTime',
-                        size: 'small',
-                        type: 'text',
-                        variant: 'outlined',
-                      },
-                    }}
-                    value={dueTime}
-                    {...register('dueTime', { required: true })}
-                    onChange={(date) => setDueTime(date)}
-                  />
-                </LocalizationProvider>
-              </Stack>
-            </FormGroup>
-          </FormControl>
-        </Stack>
-      </DialogContent>
-      <DialogActions
-        sx={{
-          px: 3,
-          pb: 3,
-        }}
-      >
-        <Button variant="contained" fullWidth type="submit">
-          Adicionar Tarefa
-        </Button>
-      </DialogActions>
+            <TextField
+              name="notes"
+              multiline
+              rows={4}
+              label="Notas"
+              type="note"
+              value={formik.values.notes}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.notes && Boolean(formik.errors.notes)}
+              helperText={formik.touched.notes && formik.errors.notes}
+            />
+            <FormControl size="small">
+              <InputLabel id="priority-select-label">Prioridade</InputLabel>
+              <Select
+                name="priority"
+                labelId="priority-select-label"
+                id="priority-select"
+                label="Prioridade"
+                value={formik.values.priority}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.priority && Boolean(formik.errors.priority)
+                }
+              >
+                <MenuItem value="low">Baixa</MenuItem>
+                <MenuItem value="medium">Média</MenuItem>
+                <MenuItem value="high">Alta</MenuItem>
+              </Select>
+              <FormHelperText>
+                {formik.touched.priority && formik.errors.priority}
+              </FormHelperText>
+            </FormControl>
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale="pt-br"
+            >
+              <FormControl size="small">
+                <TimePicker
+                  name="duration"
+                  label="Duração"
+                  ampm={false}
+                  slotProps={{
+                    textField: {
+                      name: 'duration',
+                      size: 'small',
+                      type: 'text',
+                      variant: 'outlined',
+                      error:
+                        formik.touched.duration &&
+                        Boolean(formik.errors.duration),
+                    },
+                  }}
+                  value={formik.values.duration}
+                  onChange={formik.handleChange}
+                />
+                <FormHelperText>
+                  {formik.touched.duration && formik.errors.duration}
+                </FormHelperText>
+              </FormControl>
+            </LocalizationProvider>
+            <FormControl>
+              <FormLabel component="legend">Data Limite de Entrega</FormLabel>
+              <FormGroup>
+                <Stack direction="row" spacing={2} mt={2}>
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale="pt-br"
+                  >
+                    <FormControl size="small">
+                      <DatePicker
+                        name="dueDate"
+                        label="Data"
+                        slotProps={{
+                          textField: {
+                            name: 'dueDate',
+                            size: 'small',
+                            type: 'text',
+                            variant: 'outlined',
+                          },
+                        }}
+                        value={formik.values.dueDate}
+                        onChange={formik.handleChange}
+                      />
+                      <FormHelperText>
+                        {formik.touched.dueDate && formik.errors.dueDate}
+                      </FormHelperText>
+                    </FormControl>
+                  </LocalizationProvider>
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale="pt-br"
+                  >
+                    <FormControl size="small">
+                      <TimePicker
+                        name="dueTime"
+                        label="Hora"
+                        ampm={false}
+                        slotProps={{
+                          textField: {
+                            name: 'dueTime',
+                            size: 'small',
+                            type: 'text',
+                            variant: 'outlined',
+                          },
+                        }}
+                        value={formik.values.dueTime}
+                        onChange={formik.handleChange}
+                      />
+                      <FormHelperText color="error.main">
+                        {formik.touched.dueTime && formik.errors.dueTime}
+                      </FormHelperText>
+                    </FormControl>
+                  </LocalizationProvider>
+                </Stack>
+              </FormGroup>
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            px: 3,
+            pb: 3,
+          }}
+        >
+          <Button variant="contained" fullWidth type="submit">
+            Adicionar Tarefa
+          </Button>
+        </DialogActions>
+      </Box>
     </Dialog>
   )
 }
