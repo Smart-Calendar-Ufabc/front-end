@@ -2,6 +2,7 @@ import { allocateTask } from './utils/allocateTask'
 import { Schedule } from './entities/Schedule'
 import { UnallocatedTask } from './entities/UnallocatedTask'
 import { sortByPriorityAndDeadline } from './utils/sortByPriorityAndDeadline'
+import { blockedTimes } from '@/seed/blockedTimes'
 
 export const createScheduleSuggestion = (
   tasksToAllocate: UnallocatedTask[],
@@ -16,8 +17,11 @@ export const createScheduleSuggestion = (
   const newSchedules: Schedule[] = []
 
   sortedTasks.forEach((task) => {
+    const initialSchedules = sortByStartDate([...schedules, ...newSchedules])
     try {
-      const newSchedule = allocateTask(schedules, task)
+      const newSchedule = allocateTask(initialSchedules, task, {
+        blockedTimes,
+      })
       if (newSchedule) {
         newSchedules.push(newSchedule)
       }
@@ -27,4 +31,8 @@ export const createScheduleSuggestion = (
   })
 
   return newSchedules
+}
+
+const sortByStartDate = (schedules: Schedule[]): Schedule[] => {
+  return schedules.sort((a, b) => a.startAt.getTime() - b.startAt.getTime())
 }
