@@ -20,6 +20,7 @@ import Mobile from '../layout/responsive/Mobile'
 import MobileUp from '../layout/responsive/MobileUp'
 import { DialogSuggestionSchedule } from './DialogSuggestionSchedule'
 import { useSchedulesSuggestionsStates } from '@/store/useSchedulesSuggestionStates'
+import { useProfileStates } from '@/store/useProfileStates'
 
 interface DialogUnallocatedTasksProps {
   open: boolean
@@ -35,15 +36,20 @@ export function DialogUnallocatedTasks({
   const { unallocatedTasks, countUnallocatedTasks, setUnallocatedTasks } =
     useUnallocatedTaskStates()
   const { schedules } = useSchedulesStates()
+  const { profile } = useProfileStates()
 
   const handleGenerateScheduleSuggestion = useCallback(() => {
     onClose()
-    const data = createScheduleSuggestion(unallocatedTasks, schedules)
+    const data = createScheduleSuggestion(
+      unallocatedTasks,
+      schedules,
+      profile?.blockedTimes,
+    )
     if (data) {
       setSchedulesSuggestions(data)
     }
     setOpenSuggestionSchedule(true)
-  }, [unallocatedTasks, schedules, setSchedulesSuggestions, onClose])
+  }, [unallocatedTasks, schedules, setSchedulesSuggestions, profile, onClose])
 
   const handleRegenerateScheduleSuggestion = useCallback(() => {
     const data = createScheduleSuggestion(unallocatedTasks, schedules)

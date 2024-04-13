@@ -1,13 +1,13 @@
-import { BlockedTimeType } from '@/seed/blockedTimes'
 import { DeadlineExceededException } from '@/errors/DeadlineExceededException'
 import { Schedule } from '@/entities/Schedule'
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
+import { BlockedTimeType } from '@/entities/Profile'
 
 export const allocateTask = (
   schedules: Schedule[],
   taskToAllocate: UnallocatedTask,
   options: {
-    blockedTimes: BlockedTimeType
+    blockedTimes?: BlockedTimeType
   },
 ): Schedule | null => {
   let newSchedule: Schedule | null = null
@@ -40,7 +40,10 @@ export const allocateTask = (
         deadline: taskToAllocate.deadline,
       }
 
-      if (isTaskWithinPeriodBlocked(newSchedule, options.blockedTimes)) {
+      if (
+        options?.blockedTimes &&
+        isTaskWithinPeriodBlocked(newSchedule, options.blockedTimes)
+      ) {
         return false
       }
 
@@ -77,7 +80,10 @@ export const allocateTask = (
         deadline: taskToAllocate.deadline,
       }
 
-      if (isTaskWithinPeriodBlocked(newSchedule, options.blockedTimes)) {
+      if (
+        options?.blockedTimes &&
+        isTaskWithinPeriodBlocked(newSchedule, options.blockedTimes)
+      ) {
         return false
       }
 

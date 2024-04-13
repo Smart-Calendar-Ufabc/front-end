@@ -2,18 +2,22 @@
 
 import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
+import ActionToolbar from '@/components/ActionToolbar'
 import { WeekSchedulesCard } from '@/components/WeekSchedulesCard'
 import { schedules as schedulesSeed } from '@/seed/schedules'
-import ActionToolbar from '@/components/ActionToolbar'
 import { Schedule } from '@/entities/Schedule'
 import { useSchedulesStates } from '@/store/useSchedulesStates'
+import { useProfileStates } from '@/store/useProfileStates'
+import { profile } from '@/seed/profile'
 
 export default function HomeMain() {
   const [list, setList] = useState<Record<string, Schedule[]>>({})
   const { schedules, setSchedules } = useSchedulesStates()
+  const { setProfile } = useProfileStates.getState()
 
   useEffect(() => {
     setSchedules(schedulesSeed)
+    setProfile(profile)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

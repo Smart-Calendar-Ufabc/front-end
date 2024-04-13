@@ -16,6 +16,7 @@ import { createScheduleSuggestion } from '@/helpers/schedule/createScheduleSugge
 import { useSchedulesStates } from '@/store/useSchedulesStates'
 import { DialogSuggestionSchedule } from './dialogs/DialogSuggestionSchedule'
 import { useSchedulesSuggestionsStates } from '@/store/useSchedulesSuggestionStates'
+import { useProfileStates } from '@/store/useProfileStates'
 
 interface UnallocatedTaskCardProps {
   id: string
@@ -39,6 +40,7 @@ export default function UnallocatedTaskCard({
   const { schedules } = useSchedulesStates()
   const { setSchedulesSuggestions } = useSchedulesSuggestionsStates()
   const { unallocatedTasks, deleteUnallocatedTask } = useUnallocatedTaskStates()
+  const { profile } = useProfileStates()
 
   const getBrazilianDuration = () => {
     const hour = duration.split(':')[0].replace(/^0/, '')
@@ -89,12 +91,13 @@ export default function UnallocatedTaskCard({
     const data = createScheduleSuggestion(
       thisUnallocatedTask ? [thisUnallocatedTask] : [],
       schedules,
+      profile?.blockedTimes,
     )
     if (data) {
       setSchedulesSuggestions(data)
     }
     setOpenSuggestionSchedule(true)
-  }, [id, unallocatedTasks, schedules, setSchedulesSuggestions])
+  }, [id, unallocatedTasks, schedules, profile, setSchedulesSuggestions])
 
   return (
     <Card

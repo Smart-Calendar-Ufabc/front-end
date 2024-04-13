@@ -1,14 +1,15 @@
 import { allocateTask } from './utils/allocateTask'
 import { sortByPriorityAndDeadline } from './utils/sortByPriorityAndDeadline'
-import { blockedTimes } from '@/seed/blockedTimes'
 import { DeadlineExceededException } from '@/errors/DeadlineExceededException'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 import { Schedule } from '@/entities/Schedule'
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
+import { BlockedTimeType } from '@/seed/blockedTimes'
 
 export const createScheduleSuggestion = (
   tasksToAllocate: UnallocatedTask[],
   schedules: Schedule[],
+  blockedTimes?: BlockedTimeType,
 ): Schedule[] | null => {
   const { addUnallocatedTaskInSuggestion } = useUnallocatedTaskStates.getState()
 
