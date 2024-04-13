@@ -126,10 +126,16 @@ export default function SettingsMain() {
         </Button>
       </FormGroup>
       <Stack
-        sx={{
-          width: 500,
+        sx={(theme) => ({
+          minWidth: 500,
           mt: 5,
-        }}
+          [theme.breakpoints.down('md')]: {
+            minWidth: '100%',
+          },
+          [theme.breakpoints.down('sm')]: {
+            width: '100%',
+          },
+        })}
       >
         <TextField
           label="Nome"
@@ -153,10 +159,15 @@ export default function SettingsMain() {
             adapterLocale="pt-br"
           >
             <Box
-              sx={{
+              sx={(theme) => ({
                 display: 'flex',
                 gap: 4,
-              }}
+                [theme.breakpoints.down('sm')]: {
+                  flexDirection: 'column',
+                  gap: 0,
+                  mb: 4,
+                },
+              })}
             >
               <FormGroup sx={{ mb: 4 }}>
                 <TimePicker
