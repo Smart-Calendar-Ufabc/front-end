@@ -5,4 +5,5 @@ export interface Schedule {
   priority: 'high' | 'medium' | 'low' | 'routine' | 'event'
   startAt: Date
   endAt: Date
+  deadline: Date
 }

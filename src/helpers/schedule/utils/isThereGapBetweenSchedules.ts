@@ -1,4 +1,4 @@
-import { Schedule } from '../entities/Schedule'
+import { Schedule } from '@/entities/Schedule'
 
 export const isThereGapBetweenSchedules = (
   newScheduleDuration: number,

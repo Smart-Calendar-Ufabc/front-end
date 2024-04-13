@@ -6,7 +6,8 @@ import { DialogAddTask } from './dialogs/DialogAddTask'
 import { DialogAddRoutine } from './layout/home/DialogAddRoutine'
 import { DialogUnallocatedTasks } from './dialogs/DialogUnallocatedTasks'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
-import { getBrazilianDate } from '@/helpers/date/getBrazilianDate'
+import { getBrazilianDate } from '@/helpers/date'
+import { Tooltip } from './typography/Tooltip'
 
 export default function ActionToolbar() {
   const [openDialogManageTags, setOpenDialogManageTags] =
@@ -46,39 +47,48 @@ export default function ActionToolbar() {
               overflowX: 'auto',
             }}
           >
-            <Button
-              variant="outlined"
-              onClick={() => setOpenDialogUnallocatedTasks(true)}
-              endIcon={
-                countUnallocatedTasks ? (
-                  <Icon
-                    sx={{
-                      backgroundColor: 'primary.main',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: '50%',
-                      color: 'rgba(255, 255, 255, 0.8)',
-                    }}
-                  >
-                    <span style={{ fontSize: '.875rem' }}>
-                      {countUnallocatedTasks}
-                    </span>
-                  </Icon>
-                ) : undefined
-              }
-              sx={(theme) => ({
-                '&::before': {
-                  content: '"Tarefas Não Alocadas"',
-                },
-                [theme.breakpoints.down('md')]: {
-                  flex: 'none',
+            <Tooltip
+              title={'Não existem tarefas para serem alocadas'}
+              disableHoverListener={Boolean(countUnallocatedTasks)}
+            >
+              <Button
+                variant="outlined"
+                disabled={!countUnallocatedTasks}
+                onClick={() => setOpenDialogUnallocatedTasks(true)}
+                endIcon={
+                  countUnallocatedTasks ? (
+                    <Icon
+                      sx={{
+                        backgroundColor: 'primary.main',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '50%',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                      }}
+                    >
+                      <span style={{ fontSize: '.875rem' }}>
+                        {countUnallocatedTasks}
+                      </span>
+                    </Icon>
+                  ) : undefined
+                }
+                sx={(theme) => ({
                   '&::before': {
-                    content: '"Não Alocadas"',
+                    content: '"Tarefas Não Alocadas"',
                   },
-                },
-              })}
-            ></Button>
+                  '&.Mui-disabled': {
+                    pointerEvents: 'auto',
+                  },
+                  [theme.breakpoints.down('md')]: {
+                    flex: 'none',
+                    '&::before': {
+                      content: '"Não Alocadas"',
+                    },
+                  },
+                })}
+              />
+            </Tooltip>
             <Button
               variant="outlined"
               endIcon={<TagIcon />}

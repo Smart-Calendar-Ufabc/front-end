@@ -7,15 +7,7 @@ const sumRandomDaysFromNow = (): Date => {
   return date
 }
 
-const durations = [
-  '00:30',
-  '01:00',
-  '02:00',
-  '03:00',
-  '04:00',
-  '05:00',
-  '06:00',
-]
+const durations = ['00:30', '01:00', '01:30', '02:00', '02:15', '03:00']
 
 const priorities: ('low' | 'medium' | 'high')[] = [
   'low',

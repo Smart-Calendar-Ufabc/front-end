@@ -8,6 +8,8 @@ import { useState } from 'react'
 import Menu from '@mui/material/Menu'
 import Fade from '@mui/material/Fade'
 import MenuItem from '@mui/material/MenuItem'
+import { SxProps, Theme } from '@mui/material/styles'
+import { getBrazilianTime } from '@/helpers/date'
 
 interface ScheduleSuggestionCardProps {
   id: string
@@ -15,6 +17,8 @@ interface ScheduleSuggestionCardProps {
   priority: 'high' | 'medium' | 'low' | 'routine' | 'event'
   startTime: string
   endTime: string
+  deadline: Date
+  sx?: SxProps<Theme>
   onApprove: (id: string) => void
   onRemove: (id: string) => void
 }
@@ -25,6 +29,8 @@ export const ScheduleSuggestionCard = ({
   priority,
   startTime,
   endTime,
+  deadline,
+  sx,
   onApprove,
   onRemove,
 }: ScheduleSuggestionCardProps) => {
@@ -50,19 +56,20 @@ export const ScheduleSuggestionCard = ({
   return (
     <Card
       sx={{
-        width: '180px',
+        width: '200px',
         '&.MuiCard-root': {
           borderWidth: '1px',
           borderStyle: 'solid',
           borderColor: 'grey.200',
           boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
         },
+        ...sx,
       }}
     >
       <Menu
-        id="fade-menu"
+        id={`fade-menu-${id}`}
         MenuListProps={{
-          'aria-labelledby': 'fade-button',
+          'aria-labelledby': `fade-button-${id}`,
         }}
         anchorEl={anchorEl}
         open={open}
@@ -112,38 +119,59 @@ export const ScheduleSuggestionCard = ({
           height: '100%',
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 1,
-            width: '100%',
-          }}
-        >
-          <Typography
+        <Box>
+          <Box
             sx={{
-              fontSize: '0.875rem',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              gap: 1,
+              width: '100%',
             }}
           >
-            {title}
-          </Typography>
-          <IconButton
-            id="fade-button"
-            aria-controls={open ? 'fade-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            onClick={handleOpenMenu}
+            <Typography
+              sx={{
+                fontSize: '0.875rem',
+              }}
+            >
+              {title}
+            </Typography>
+            <IconButton
+              id={`fade-button-${id}`}
+              aria-controls={open ? 'fade-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleOpenMenu}
+              sx={{
+                color: 'grey.500',
+                pr: 0,
+                pb: 0,
+                pt: 0.25,
+              }}
+            >
+              <MenuIcon size={16} weight="bold" />
+            </IconButton>
+          </Box>
+          <Box
             sx={{
-              color: 'grey.500',
-              pr: 0,
-              pb: 0,
-              pt: 0.25,
+              backgroundColor: 'grey.100',
+              borderRadius: 1,
+              px: 1,
+              py: 0.5,
+              mt: 1,
             }}
           >
-            <MenuIcon size={16} weight="bold" />
-          </IconButton>
+            <Typography variant="caption">
+              <b>Prazo final</b>:<br />
+              {new Date(deadline).toLocaleDateString('pt-BR', {
+                day: 'numeric',
+                year: 'numeric',
+                month: 'numeric',
+              })}
+              {' às ' + getBrazilianTime(deadline)}
+            </Typography>
+          </Box>
         </Box>
         <Box sx={{ width: '100%' }}>
           <PriorityTag variant="little" priority={priority} />

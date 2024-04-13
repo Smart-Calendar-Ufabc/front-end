@@ -1,5 +1,5 @@
 import HomeLayout from '@/components/layout/home/HomeLayout'
-import HomeMain from './main'
+import HomeMain from './component'
 
 export const runtime = 'edge'
 

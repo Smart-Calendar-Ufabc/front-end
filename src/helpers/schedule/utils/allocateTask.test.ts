@@ -1,4 +1,5 @@
-import { describe, expect, it } from '@jest/globals'
+import { beforeAll, describe, expect, it } from '@jest/globals'
+import { advanceTo } from 'jest-date-mock'
 import { allocateTask } from './allocateTask'
 
 type UnallocatedTask = {
@@ -20,6 +21,10 @@ type Schedule = {
 }
 
 describe('allocateTask', () => {
+  beforeAll(() => {
+    advanceTo(new Date('2022-01-01T07:00:00'))
+  })
+
   it('should allocate a task if there is a gap between schedules', () => {
     const schedules: Schedule[] = [
       {
@@ -47,7 +52,15 @@ describe('allocateTask', () => {
       priority: 'low',
     }
 
-    const result = allocateTask(schedules, taskToAllocate)
+    const result = allocateTask(schedules, taskToAllocate, {
+      blockedTimes: {
+        dates: [],
+        intervals: [],
+        weekDays: [],
+      },
+    })
+
+    console.log(result)
 
     expect(result).not.toBeNull()
     expect(result?.startAt).toEqual(new Date('2022-01-01T09:00:00'))
@@ -82,7 +95,13 @@ describe('allocateTask', () => {
       priority: 'low',
     }
 
-    const result = allocateTask(schedules, taskToAllocate)
+    const result = allocateTask(schedules, taskToAllocate, {
+      blockedTimes: {
+        dates: [],
+        intervals: [],
+        weekDays: [],
+      },
+    })
 
     expect(result).not.toBeNull()
     expect(result?.startAt).toEqual(new Date('2022-01-01T10:00:00'))
@@ -117,7 +136,15 @@ describe('allocateTask', () => {
       priority: 'low',
     }
 
-    expect(() => allocateTask(schedules, taskToAllocate)).toThrowError(
+    expect(() =>
+      allocateTask(schedules, taskToAllocate, {
+        blockedTimes: {
+          dates: [],
+          intervals: [],
+          weekDays: [],
+        },
+      }),
+    ).toThrowError(
       'Não há tempo disponível para alocar a tarefa antes do prazo de entrega.',
     )
   })

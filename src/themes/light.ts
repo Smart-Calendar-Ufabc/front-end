@@ -320,6 +320,15 @@ theme = createTheme(theme, {
           color: theme.palette.text.primary,
         },
       },
+      variants: [
+        {
+          props: { variant: 'subtitle1' },
+          style: {
+            fontSize: '1rem',
+            fontWeight: 500,
+          },
+        },
+      ],
     },
   },
 })

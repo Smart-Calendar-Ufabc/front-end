@@ -1,6 +1,7 @@
 import { BlockedTimeType } from '@/seed/blockedTimes'
-import { Schedule } from '../entities/Schedule'
-import { UnallocatedTask } from '../entities/UnallocatedTask'
+import { DeadlineExceededException } from '@/errors/DeadlineExceededException'
+import { Schedule } from '@/entities/Schedule'
+import { UnallocatedTask } from '@/entities/UnallocatedTask'
 
 export const allocateTask = (
   schedules: Schedule[],
@@ -26,25 +27,24 @@ export const allocateTask = (
       )
 
       if (taskToAllocate.deadline.getTime() < newScheduleEndAt.getTime()) {
-        throw new Error(
-          'Não há tempo disponível para alocar a tarefa antes do prazo de entrega.',
-        )
+        throw new DeadlineExceededException()
       }
 
       newSchedule = {
-        id: crypto.randomUUID(),
+        id: taskToAllocate.id,
         title: taskToAllocate.title,
         done: false,
         priority: taskToAllocate.priority,
         startAt: new Date(previousSchedule.endAt),
         endAt: new Date(newScheduleEndAt),
+        deadline: taskToAllocate.deadline,
       }
 
       if (isItInPast(newSchedule.startAt) || isItInPast(newSchedule.endAt)) {
         return false
       }
 
-      if (isTaskWithinPeriodBlocked(options.blockedTimes, newSchedule)) {
+      if (isTaskWithinPeriodBlocked(newSchedule, options.blockedTimes)) {
         return false
       }
 
@@ -54,39 +54,38 @@ export const allocateTask = (
     const [hours, minutes] = taskToAllocate.duration
       .split(':')
       .map((time) => parseInt(time, 10))
-    const taskDuration = hours * 60 + minutes // convert hours to minutes
+    const taskDurationMs = (hours * 60 + minutes) * 60 * 1000
 
     if (
       isThereGapBetweenSchedules(
-        taskDuration,
+        taskDurationMs,
         previousSchedule,
         currentSchedule,
       )
     ) {
       const newScheduleEndAt = new Date(
-        previousSchedule.endAt.getTime() + taskDuration * 60 * 1000,
+        previousSchedule.endAt.getTime() + taskDurationMs,
       )
 
       if (taskToAllocate.deadline.getTime() < newScheduleEndAt.getTime()) {
-        throw new Error(
-          'Não há tempo disponível para alocar a tarefa antes do prazo de entrega.',
-        )
+        throw new DeadlineExceededException()
       }
 
       newSchedule = {
-        id: crypto.randomUUID(),
+        id: taskToAllocate.id,
         title: taskToAllocate.title,
         done: false,
         priority: taskToAllocate.priority,
         startAt: new Date(previousSchedule.endAt),
         endAt: new Date(newScheduleEndAt),
+        deadline: taskToAllocate.deadline,
       }
 
       if (isItInPast(newSchedule.startAt) || isItInPast(newSchedule.endAt)) {
         return false
       }
 
-      if (isTaskWithinPeriodBlocked(options.blockedTimes, newSchedule)) {
+      if (isTaskWithinPeriodBlocked(newSchedule, options.blockedTimes)) {
         return false
       }
 
@@ -102,53 +101,65 @@ export const allocateTask = (
 }
 
 export const isThereGapBetweenSchedules = (
-  newScheduleDuration: number,
+  newScheduleDurationMs: number,
   previousSchedule: Schedule,
   currentSchedule: Schedule,
 ) => {
   const diff =
     currentSchedule.startAt.getTime() - previousSchedule.endAt.getTime()
-  const newScheduleDurationInMs = newScheduleDuration * 60 * 1000 // convert minutes to milliseconds
 
-  return diff >= newScheduleDurationInMs
+  return diff >= newScheduleDurationMs
 }
 
-const isTaskWithinPeriodBlocked = (
+export const isTaskWithinPeriodBlocked = (
+  schedule: Schedule,
   blockedTimes: BlockedTimeType,
-  newSchedule: Schedule,
 ): boolean => {
-  const isBlockedDate = blockedTimes.dates.some((date) => {
+  const scheduleDurationMs =
+    schedule.endAt.getTime() - schedule.startAt.getTime()
+
+  const isBlockedInterval = blockedTimes.intervals.some((interval) => {
+    let startDate: Date
+    let endDate: Date
+
+    if (interval.startHour < interval.endHour) {
+      startDate = new Date()
+      startDate.setUTCHours(interval.startHour)
+      endDate = new Date()
+      endDate.setUTCHours(interval.endHour)
+    } else {
+      startDate = new Date()
+      startDate.setUTCHours(interval.startHour)
+      endDate = new Date()
+      endDate.setUTCHours(interval.endHour)
+      endDate.setUTCDate(endDate.getUTCDate() + 1)
+    }
+
+    const diff = endDate.getTime() - startDate.getTime()
+
+    return diff >= scheduleDurationMs
+  })
+
+  if (isBlockedInterval) {
+    return true
+  }
+
+  const isBlockedInDates = blockedTimes.dates.some((date) => {
     return (
-      date.getTime() >= newSchedule.startAt.getTime() &&
-      date.getTime() <= newSchedule.endAt.getTime()
+      date.getTime() >= schedule.startAt.getTime() &&
+      date.getTime() <= schedule.endAt.getTime()
     )
   })
 
-  if (isBlockedDate) {
+  if (isBlockedInDates) {
     return true
   }
 
-  const isBlockedWeekDay = blockedTimes.weekDays.some((weekDay) => {
-    return newSchedule.startAt.getUTCDay() === weekDay
+  const isBlockedInWeekDays = blockedTimes.weekDays.some((weekDay) => {
+    return schedule.startAt.getUTCDay() === weekDay
   })
 
-  if (isBlockedWeekDay) {
-    return true
-  }
-
-  const isBlockedTime = blockedTimes.intervals.some((interval) => {
-    const startDate = new Date(newSchedule.startAt)
-    const startHourUTC = startDate.getUTCHours()
-
-    const endDate = new Date(newSchedule.endAt)
-
-    const periodInMilliseconds = startDate.getTime() - endDate.getTime()
-    const periodInHours = Math.abs(periodInMilliseconds / 1000 / 60 / 60)
-
-    return startHourUTC + periodInHours >= interval.startHour
-  })
-
-  return isBlockedTime
+  return isBlockedInWeekDays
 }
 
 const isItInPast = (date: Date): boolean => {

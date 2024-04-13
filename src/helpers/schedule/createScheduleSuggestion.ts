@@ -1,13 +1,17 @@
 import { allocateTask } from './utils/allocateTask'
-import { Schedule } from './entities/Schedule'
-import { UnallocatedTask } from './entities/UnallocatedTask'
 import { sortByPriorityAndDeadline } from './utils/sortByPriorityAndDeadline'
 import { blockedTimes } from '@/seed/blockedTimes'
+import { DeadlineExceededException } from '@/errors/DeadlineExceededException'
+import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
+import { Schedule } from '@/entities/Schedule'
+import { UnallocatedTask } from '@/entities/UnallocatedTask'
 
 export const createScheduleSuggestion = (
   tasksToAllocate: UnallocatedTask[],
   schedules: Schedule[],
 ): Schedule[] | null => {
+  const { addUnallocatedTaskInSuggestion } = useUnallocatedTaskStates.getState()
+
   if (tasksToAllocate.length === 0) {
     return null
   }
@@ -22,11 +26,19 @@ export const createScheduleSuggestion = (
       const newSchedule = allocateTask(initialSchedules, task, {
         blockedTimes,
       })
+
       if (newSchedule) {
         newSchedules.push(newSchedule)
       }
     } catch (error) {
-      console.error(error)
+      if (error instanceof DeadlineExceededException) {
+        addUnallocatedTaskInSuggestion(task, {
+          key: 'deadline-exceeded',
+          message: `Não há tempo disponível na agenda para realizar esta tarefa antes do prazo de entrega.`,
+        })
+      } else {
+        console.error(error)
+      }
     }
   })
 

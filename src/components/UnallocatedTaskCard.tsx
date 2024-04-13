@@ -12,10 +12,10 @@ import { DialogEditRoutine } from './dialogs/DialogEditRoutine'
 import { DialogEditTask } from './dialogs/DialogEditTask'
 import AlertDialog from './dialogs/AlertDialog'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
-import { Schedule } from '@/entities/Schedule'
-import { createScheduleSuggestion } from '@/helpers/schedule-sugestion/createScheduleSuggestion'
+import { createScheduleSuggestion } from '@/helpers/schedule/createScheduleSuggestion'
 import { useSchedulesStates } from '@/store/useSchedulesStates'
 import { DialogSuggestionSchedule } from './dialogs/DialogSuggestionSchedule'
+import { useSchedulesSuggestionsStates } from '@/store/useSchedulesSuggestionStates'
 
 interface UnallocatedTaskCardProps {
   id: string
@@ -34,10 +34,10 @@ export default function UnallocatedTaskCard({
   const [openEditTaskDialog, setOpenEditTaskDialog] = useState(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [openSuggestionSchedule, setOpenSuggestionSchedule] = useState(false)
-  const [schedulesSuggestion, setSchedulesSuggestion] = useState<Schedule[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const { schedules } = useSchedulesStates()
+  const { setSchedulesSuggestions } = useSchedulesSuggestionsStates()
   const { unallocatedTasks, deleteUnallocatedTask } = useUnallocatedTaskStates()
 
   const getBrazilianDuration = () => {
@@ -91,20 +91,10 @@ export default function UnallocatedTaskCard({
       schedules,
     )
     if (data) {
-      setSchedulesSuggestion(data)
+      setSchedulesSuggestions(data)
     }
     setOpenSuggestionSchedule(true)
-  }, [id, unallocatedTasks, schedules, setSchedulesSuggestion])
-
-  // const handleReallocate = useCallback(() => {
-  //   const data = createScheduleSuggestion(
-  //     unallocatedTasks.filter((task) => task.id === id),
-  //     schedules,
-  //   )
-  //   if (data) {
-  //     setSchedulesSuggestion(data)
-  //   }
-  // }, [id, unallocatedTasks, schedules, setSchedulesSuggestion])
+  }, [id, unallocatedTasks, schedules, setSchedulesSuggestions])
 
   return (
     <Card
@@ -126,10 +116,7 @@ export default function UnallocatedTaskCard({
       />
       <DialogSuggestionSchedule
         open={openSuggestionSchedule}
-        schedulesSuggestions={schedulesSuggestion}
         onClose={() => setOpenSuggestionSchedule(false)}
-        onApprove={() => deleteUnallocatedTask(id)}
-        // onReschedule={handleReallocate}
       />
       <DialogEditRoutine
         open={openEditRoutineDialog}
@@ -189,7 +176,7 @@ export default function UnallocatedTaskCard({
           justifyContent: 'space-between',
           gap: 1,
           minWidth: 140,
-          height: 140,
+          height: '100%',
           p: 1,
         }}
       >
@@ -201,11 +188,18 @@ export default function UnallocatedTaskCard({
             justifyContent: 'space-between',
             gap: 1,
             width: '100%',
+            height: '100%',
           }}
         >
           <Typography
             sx={{
               fontSize: '0.875rem',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: 3, // Change this number to the maximum number of lines you want
+              whiteSpace: 'normal',
             }}
           >
             {title}

@@ -8,7 +8,6 @@ import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
 import { X as CloseIcon } from '@phosphor-icons/react'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
-import Typography from '@mui/material/Typography'
 import UnallocatedTaskCard from '../UnallocatedTaskCard'
 import Stack from '@mui/material/Stack'
 import { unallocatedTasks as initialUnallocatedTasks } from '@/seed/unallocatedTasks'
@@ -16,11 +15,11 @@ import { useSchedulesStates } from '@/store/useSchedulesStates'
 import Box from '@mui/material/Box'
 
 import './styles.css'
-import { createScheduleSuggestion } from '@/helpers/schedule-sugestion/createScheduleSuggestion'
-import { Schedule } from '@/entities/Schedule'
+import { createScheduleSuggestion } from '@/helpers/schedule/createScheduleSuggestion'
 import Mobile from '../layout/responsive/Mobile'
 import MobileUp from '../layout/responsive/MobileUp'
 import { DialogSuggestionSchedule } from './DialogSuggestionSchedule'
+import { useSchedulesSuggestionsStates } from '@/store/useSchedulesSuggestionStates'
 
 interface DialogUnallocatedTasksProps {
   open: boolean
@@ -32,42 +31,42 @@ export function DialogUnallocatedTasks({
   onClose,
 }: DialogUnallocatedTasksProps) {
   const [openSuggestionSchedule, setOpenSuggestionSchedule] = useState(false)
-  const [schedulesSuggestion, setSchedulesSuggestion] = useState<Schedule[]>([])
-  const {
-    unallocatedTasks,
-    countUnallocatedTasks,
-    setUnallocatedTasks,
-    clearUnallocatedTasks,
-  } = useUnallocatedTaskStates()
+  const { setSchedulesSuggestions } = useSchedulesSuggestionsStates()
+  const { unallocatedTasks, countUnallocatedTasks, setUnallocatedTasks } =
+    useUnallocatedTaskStates()
   const { schedules } = useSchedulesStates()
 
   const handleGenerateScheduleSuggestion = useCallback(() => {
     onClose()
     const data = createScheduleSuggestion(unallocatedTasks, schedules)
     if (data) {
-      setSchedulesSuggestion(data)
+      setSchedulesSuggestions(data)
     }
     setOpenSuggestionSchedule(true)
-  }, [unallocatedTasks, schedules, setSchedulesSuggestion, onClose])
+  }, [unallocatedTasks, schedules, setSchedulesSuggestions, onClose])
 
   const handleRegenerateScheduleSuggestion = useCallback(() => {
     const data = createScheduleSuggestion(unallocatedTasks, schedules)
     if (data) {
-      setSchedulesSuggestion(data)
+      setSchedulesSuggestions(data)
     }
-  }, [schedules, unallocatedTasks, setSchedulesSuggestion])
+  }, [schedules, unallocatedTasks, setSchedulesSuggestions])
 
   useEffect(() => {
     setUnallocatedTasks(initialUnallocatedTasks)
   }, [setUnallocatedTasks])
+
+  useEffect(() => {
+    if (!countUnallocatedTasks) {
+      onClose()
+    }
+  }, [countUnallocatedTasks, onClose])
 
   return (
     <>
       <DialogSuggestionSchedule
         open={openSuggestionSchedule}
         onClose={() => setOpenSuggestionSchedule(false)}
-        schedulesSuggestions={schedulesSuggestion}
-        onApprove={clearUnallocatedTasks}
         onReschedule={handleRegenerateScheduleSuggestion}
       />
       <Dialog
@@ -102,69 +101,55 @@ export function DialogUnallocatedTasks({
         </IconButton>
         <Divider />
         <DialogContent>
-          {unallocatedTasks.length === 0 ? (
-            <Typography
-              color="text.secondary"
-              sx={{
-                minHeight: 100,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              Não há tarefas para serem alocadas.
-            </Typography>
-          ) : (
-            <Box display="grid">
-              <Mobile>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{
-                    alignItems: 'stretch',
-                    justifyContent: 'flex-start',
-                    '&.MuiStack-root': {
-                      pr: 3,
-                    },
-                  }}
-                >
-                  {unallocatedTasks.map((task) => (
-                    <UnallocatedTaskCard
-                      key={task.id}
-                      id={task.id}
-                      duration={task.duration}
-                      priority={task.priority}
-                      title={task.title}
-                    />
-                  ))}
-                </Stack>
-              </Mobile>
-              <MobileUp>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: 2,
-                    flexWrap: 'wrap',
-                    alignItems: 'stretch',
-                    justifyContent: 'flex-start',
-                    '&.MuiStack-root': {
-                      pr: 3,
-                    },
-                  }}
-                >
-                  {unallocatedTasks.map((task) => (
-                    <UnallocatedTaskCard
-                      key={task.id}
-                      id={task.id}
-                      duration={task.duration}
-                      priority={task.priority}
-                      title={task.title}
-                    />
-                  ))}
-                </Box>
-              </MobileUp>
-            </Box>
-          )}
+          <Box display="grid">
+            <Mobile>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  alignItems: 'stretch',
+                  justifyContent: 'flex-start',
+                  '&.MuiStack-root': {
+                    pr: 3,
+                  },
+                }}
+              >
+                {unallocatedTasks.map((task) => (
+                  <UnallocatedTaskCard
+                    key={task.id}
+                    id={task.id}
+                    duration={task.duration}
+                    priority={task.priority}
+                    title={task.title}
+                  />
+                ))}
+              </Stack>
+            </Mobile>
+            <MobileUp>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  flexWrap: 'wrap',
+                  alignItems: 'stretch',
+                  justifyContent: 'flex-start',
+                  '&.MuiStack-root': {
+                    pr: 3,
+                  },
+                }}
+              >
+                {unallocatedTasks.map((task) => (
+                  <UnallocatedTaskCard
+                    key={task.id}
+                    id={task.id}
+                    duration={task.duration}
+                    priority={task.priority}
+                    title={task.title}
+                  />
+                ))}
+              </Box>
+            </MobileUp>
+          </Box>
         </DialogContent>
         {unallocatedTasks.length > 0 && (
           <DialogActions
