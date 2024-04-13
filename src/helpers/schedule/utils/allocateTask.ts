@@ -40,10 +40,6 @@ export const allocateTask = (
         deadline: taskToAllocate.deadline,
       }
 
-      if (isItInPast(newSchedule.startAt) || isItInPast(newSchedule.endAt)) {
-        return false
-      }
-
       if (isTaskWithinPeriodBlocked(newSchedule, options.blockedTimes)) {
         return false
       }
@@ -81,10 +77,6 @@ export const allocateTask = (
         deadline: taskToAllocate.deadline,
       }
 
-      if (isItInPast(newSchedule.startAt) || isItInPast(newSchedule.endAt)) {
-        return false
-      }
-
       if (isTaskWithinPeriodBlocked(newSchedule, options.blockedTimes)) {
         return false
       }
@@ -115,53 +107,65 @@ export const isTaskWithinPeriodBlocked = (
   schedule: Schedule,
   blockedTimes: BlockedTimeType,
 ): boolean => {
-  const scheduleDurationMs =
-    schedule.endAt.getTime() - schedule.startAt.getTime()
+  const isBlockedInWeekDay = checkIfIsWithinBlockedWeekDay(
+    schedule,
+    blockedTimes.weekDays,
+  )
 
-  const isBlockedInterval = blockedTimes.intervals.some((interval) => {
-    let startDate: Date
-    let endDate: Date
-
-    if (interval.startHour < interval.endHour) {
-      startDate = new Date()
-      startDate.setUTCHours(interval.startHour)
-      endDate = new Date()
-      endDate.setUTCHours(interval.endHour)
-    } else {
-      startDate = new Date()
-      startDate.setUTCHours(interval.startHour)
-      endDate = new Date()
-      endDate.setUTCHours(interval.endHour)
-      endDate.setUTCDate(endDate.getUTCDate() + 1)
-    }
-
-    const diff = endDate.getTime() - startDate.getTime()
-
-    return diff >= scheduleDurationMs
-  })
-
-  if (isBlockedInterval) {
+  if (isBlockedInWeekDay) {
     return true
   }
 
-  const isBlockedInDates = blockedTimes.dates.some((date) => {
-    return (
-      date.getTime() >= schedule.startAt.getTime() &&
-      date.getTime() <= schedule.endAt.getTime()
-    )
-  })
+  const isBlockedInterval = checkIfIsWithinBlockedInterval(
+    schedule,
+    blockedTimes.intervals,
+  )
 
-  if (isBlockedInDates) {
-    return true
-  }
-
-  const isBlockedInWeekDays = blockedTimes.weekDays.some((weekDay) => {
-    return schedule.startAt.getUTCDay() === weekDay
-  })
-
-  return isBlockedInWeekDays
+  return isBlockedInterval
 }
 
-const isItInPast = (date: Date): boolean => {
-  return date.getTime() < new Date().getTime()
+const checkIfIsWithinBlockedWeekDay = (
+  schedule: Schedule,
+  blockedWeekDays: number[],
+) => {
+  return blockedWeekDays.some((blockedWeekDay) => {
+    const isBlocked = schedule.startAt.getUTCDay() === blockedWeekDay
+
+    if (isBlocked) {
+      return true
+    }
+
+    return false
+  })
+}
+
+const checkIfIsWithinBlockedInterval = (
+  schedule: Schedule,
+  intervals: { startHour: number; endHour: number }[],
+): boolean => {
+  return intervals.some((interval) => {
+    if (interval.startHour < interval.endHour) {
+      // intervalo normal (sem passar para o dia seguinte) e.g. 8:00 - 12:00
+
+      const startDateInterval = new Date(schedule.startAt)
+      startDateInterval.setUTCHours(interval.startHour)
+      startDateInterval.setMinutes(0)
+
+      if (schedule.endAt > startDateInterval) {
+        return true
+      }
+    } else {
+      // intervalo que passa para o dia seguinte e.g. 22:00 - 6:00
+
+      const startDateInterval = new Date(schedule.startAt)
+      startDateInterval.setUTCHours(interval.startHour)
+      startDateInterval.setMinutes(0)
+
+      if (schedule.endAt > startDateInterval) {
+        return true
+      }
+    }
+
+    return false
+  })
 }

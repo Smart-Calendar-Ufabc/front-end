@@ -8,7 +8,7 @@ export type BlockedTimeType = {
 }
 
 export const blockedTimes: BlockedTimeType = {
-  dates: [new Date('2024-04-12T00:00:00Z')],
+  dates: [],
   weekDays: [0, 6], // Sunday and Saturday
   intervals: [
     {

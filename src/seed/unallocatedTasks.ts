@@ -1,12 +1,5 @@
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
 
-const sumRandomDaysFromNow = (): Date => {
-  const date = new Date()
-  const randomDays = Math.floor(Math.random() * 30)
-  date.setUTCDate(date.getUTCDate() + randomDays)
-  return date
-}
-
 const durations = ['00:30', '01:00', '01:30', '02:00', '02:15', '03:00']
 
 const priorities: ('low' | 'medium' | 'high')[] = [
@@ -16,13 +9,6 @@ const priorities: ('low' | 'medium' | 'high')[] = [
   'high',
   'medium',
   'low',
-]
-
-const deadlines = [
-  sumRandomDaysFromNow(),
-  sumRandomDaysFromNow(),
-  sumRandomDaysFromNow(),
-  sumRandomDaysFromNow(),
 ]
 
 const titles = [
@@ -42,61 +28,80 @@ const getRandomElement = <T>(array: T[]): T => {
   return array[Math.floor(Math.random() * array.length)]
 }
 
+const getDateFromNowAndAddDaysAndSetHoursAndMinutes = (
+  days: number,
+  hours: number,
+  minutes: number,
+) => {
+  const date = new Date()
+  date.setUTCDate(date.getUTCDate() + days)
+  date.setUTCHours(hours)
+  date.setUTCMinutes(minutes)
+  return date
+}
+
 export const unallocatedTasks: UnallocatedTask[] = [
   {
     id: crypto.randomUUID(),
     title: getRandomElement(titles),
     priority: getRandomElement(priorities),
-    duration: getRandomElement(durations),
-    deadline: getRandomElement(deadlines),
+    duration: '00:30',
+    deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(15, 23, 59),
   },
   {
     id: crypto.randomUUID(),
     title: getRandomElement(titles),
     priority: getRandomElement(priorities),
     duration: getRandomElement(durations),
-    deadline: getRandomElement(deadlines),
+    deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(15, 23, 59),
   },
   {
     id: crypto.randomUUID(),
     title: getRandomElement(titles),
     priority: getRandomElement(priorities),
     duration: getRandomElement(durations),
-    deadline: getRandomElement(deadlines),
+    deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(15, 23, 59),
   },
   {
     id: crypto.randomUUID(),
     title: getRandomElement(titles),
     priority: getRandomElement(priorities),
     duration: getRandomElement(durations),
-    deadline: getRandomElement(deadlines),
+    deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(15, 23, 59),
   },
   {
     id: crypto.randomUUID(),
     title: getRandomElement(titles),
     priority: getRandomElement(priorities),
     duration: getRandomElement(durations),
-    deadline: getRandomElement(deadlines),
+    deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(15, 23, 59),
   },
   {
     id: crypto.randomUUID(),
     title: getRandomElement(titles),
     priority: getRandomElement(priorities),
     duration: getRandomElement(durations),
-    deadline: getRandomElement(deadlines),
+    deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(15, 23, 59),
   },
   {
     id: crypto.randomUUID(),
     title: getRandomElement(titles),
     priority: getRandomElement(priorities),
     duration: getRandomElement(durations),
-    deadline: getRandomElement(deadlines),
+    deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(15, 23, 59),
   },
   {
     id: crypto.randomUUID(),
     title: getRandomElement(titles),
     priority: getRandomElement(priorities),
     duration: getRandomElement(durations),
-    deadline: getRandomElement(deadlines),
+    deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(15, 23, 59),
+  },
+  {
+    id: crypto.randomUUID(),
+    title: getRandomElement(titles),
+    priority: getRandomElement(priorities),
+    duration: getRandomElement(durations),
+    deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(15, 23, 59),
   },
 ]

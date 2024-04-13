@@ -129,7 +129,8 @@ export function DialogSuggestionSchedule({
                 justifyContent: 'flex-start',
               }}
             >
-              {Object.entries(list).length === 0 ? (
+              {schedulesSuggestions.length === 0 &&
+              unallocatedTasksInSuggestion.length === 0 ? (
                 <Typography
                   color="text.secondary"
                   sx={{
