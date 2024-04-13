@@ -141,15 +141,21 @@ const checkIfIsWithinBlockedWeekDay = (
 
 const checkIfIsWithinBlockedInterval = (
   schedule: Schedule,
-  intervals: { startHour: number; endHour: number }[],
+  intervals: {
+    start: {
+      hour: number
+      minutes: number
+    }
+    end: { hour: number; minutes: number }
+  }[],
 ): boolean => {
   return intervals.some((interval) => {
-    if (interval.startHour < interval.endHour) {
+    if (interval.start.hour < interval.end.hour) {
       // intervalo normal (sem passar para o dia seguinte) e.g. 8:00 - 12:00
 
       const startDateInterval = new Date(schedule.startAt)
-      startDateInterval.setUTCHours(interval.startHour)
-      startDateInterval.setMinutes(0)
+      startDateInterval.setUTCHours(interval.start.hour)
+      startDateInterval.setMinutes(interval.start.minutes)
 
       if (schedule.endAt > startDateInterval) {
         return true
@@ -158,8 +164,8 @@ const checkIfIsWithinBlockedInterval = (
       // intervalo que passa para o dia seguinte e.g. 22:00 - 6:00
 
       const startDateInterval = new Date(schedule.startAt)
-      startDateInterval.setUTCHours(interval.startHour)
-      startDateInterval.setMinutes(0)
+      startDateInterval.setUTCHours(interval.start.hour)
+      startDateInterval.setMinutes(interval.start.minutes)
 
       if (schedule.endAt > startDateInterval) {
         return true

@@ -2,8 +2,11 @@ export type BlockedTimeType = {
   dates: Date[]
   weekDays: number[]
   intervals: {
-    startHour: number
-    endHour: number
+    start: {
+      hour: number
+      minutes: number
+    }
+    end: { hour: number; minutes: number }
   }[]
 }
 
@@ -12,8 +15,14 @@ export const blockedTimes: BlockedTimeType = {
   weekDays: [0, 6], // Sunday and Saturday
   intervals: [
     {
-      startHour: 22, // 22:00
-      endHour: 8, // 08:00
+      start: {
+        hour: 22,
+        minutes: 22,
+      },
+      end: {
+        hour: 8,
+        minutes: 0,
+      },
     },
   ],
 }
