@@ -17,7 +17,7 @@ export const blockedTimes: BlockedTimeType = {
     {
       start: {
         hour: 22,
-        minutes: 22,
+        minutes: 0,
       },
       end: {
         hour: 8,

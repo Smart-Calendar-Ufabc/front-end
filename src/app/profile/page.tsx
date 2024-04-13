@@ -1,5 +1,5 @@
 import SettingsLayout from '@/components/layout/SettingsLayout'
-import SettingsMain from './main'
+import SettingsMain from './component'
 
 export const runtime = 'edge'
 
