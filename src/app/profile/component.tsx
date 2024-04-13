@@ -146,7 +146,7 @@ export default function SettingsMain() {
           }}
         >
           <FormLabel component="legend" sx={{ mb: 3 }}>
-            Data Limite de Entrega
+            Período de Sono
           </FormLabel>
           <LocalizationProvider
             dateAdapter={AdapterDayjs}
