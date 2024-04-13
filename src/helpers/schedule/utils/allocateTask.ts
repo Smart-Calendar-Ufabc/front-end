@@ -33,7 +33,7 @@ export const allocateTask = (
       newSchedule = {
         id: taskToAllocate.id,
         title: taskToAllocate.title,
-        done: false,
+        status: 'pending',
         priority: taskToAllocate.priority,
         startAt: new Date(previousSchedule.endAt),
         endAt: new Date(newScheduleEndAt),
@@ -73,7 +73,7 @@ export const allocateTask = (
       newSchedule = {
         id: taskToAllocate.id,
         title: taskToAllocate.title,
-        done: false,
+        status: 'pending',
         priority: taskToAllocate.priority,
         startAt: new Date(previousSchedule.endAt),
         endAt: new Date(newScheduleEndAt),

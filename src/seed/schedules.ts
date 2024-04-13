@@ -16,7 +16,7 @@ export const schedules: Schedule[] = [
   {
     id: 'e6786a2e-fec8-4472-8a26-fb623e633f8e',
     title: 'Task 1',
-    done: false,
+    status: 'pending',
     priority: 'high',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(0, 9, 0),
@@ -25,7 +25,7 @@ export const schedules: Schedule[] = [
   {
     id: '67985943-c969-456e-bb43-301d4d421018',
     title: 'Task 2',
-    done: false,
+    status: 'pending',
     priority: 'low',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(0, 12, 0),
@@ -33,7 +33,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '8c16a17a-6503-42c8-a36a-cc649836a2bd',
-    done: true,
+    status: 'done',
     priority: 'routine',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(1, 9, 0),
@@ -42,7 +42,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '93d7ee4c-770d-4734-a69f-ba6512d835ef',
-    done: false,
+    status: 'pending',
     priority: 'medium',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(1, 14, 0),
@@ -51,7 +51,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '329b4011-3f78-458a-a8c5-9a60f7db8255',
-    done: true,
+    status: 'done',
     priority: 'low',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(1, 18, 0),
@@ -60,7 +60,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '2dd9169e-a383-45d9-ae1b-38232da0ea2f',
-    done: false,
+    status: 'pending',
     priority: 'routine',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(2, 9, 0),
@@ -69,7 +69,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '70283f27-07cb-4cb9-a2ac-d31a90e265b1',
-    done: false,
+    status: 'pending',
     priority: 'high',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(2, 10, 0),
@@ -78,7 +78,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '86e71a20-cf69-4fca-bbd2-6df84bddb714',
-    done: true,
+    status: 'done',
     priority: 'medium',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(2, 12, 0),
@@ -87,7 +87,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '91775f48-60ff-41b9-abad-2edbba5a1352',
-    done: false,
+    status: 'pending',
     priority: 'routine',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(2, 18, 0),
@@ -96,7 +96,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '90dc170a-321a-449f-a00d-6f84dab2ccd5',
-    done: false,
+    status: 'pending',
     priority: 'medium',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(3, 9, 0),
@@ -105,7 +105,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: 'd99ac027-54ca-44fa-9a86-0ea521f2d508',
-    done: true,
+    status: 'done',
     priority: 'routine',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(3, 11, 0),
@@ -114,7 +114,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '36176366-4106-47ff-a0f0-92f9432626b0',
-    done: true,
+    status: 'done',
     priority: 'medium',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(3, 13, 0),
@@ -123,7 +123,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '33abeb36-b7dd-4397-9ace-c2144f3e3dc5',
-    done: false,
+    status: 'pending',
     priority: 'medium',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(3, 14, 0),
@@ -132,7 +132,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '8aca4515-b83e-4d69-8bc3-06d709930222',
-    done: false,
+    status: 'pending',
     priority: 'high',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(4, 9, 0),
@@ -141,7 +141,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '614c94e2-f8d5-4a46-a6e6-6d1509ff5971',
-    done: false,
+    status: 'pending',
     priority: 'low',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(4, 10, 0),
@@ -150,7 +150,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: '0a4c541f-5250-4456-bfb1-50e33d61691e',
-    done: true,
+    status: 'done',
     priority: 'low',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(4, 12, 0),
@@ -159,7 +159,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: 'fae64e2d-82e3-4393-94cb-d46270a9039d',
-    done: false,
+    status: 'pending',
     priority: 'medium',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 9, 0),
@@ -168,7 +168,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: 'e90c4559-3bf2-419e-8b50-90450d7f080d',
-    done: false,
+    status: 'pending',
     priority: 'medium',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 10, 0),
@@ -177,7 +177,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: 'bf53a8df-1218-4094-8a65-8eeee9074626',
-    done: true,
+    status: 'done',
     priority: 'medium',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 11, 0),
@@ -186,7 +186,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: 'fb9c5ab0-68e6-4bef-96f3-80bde7564eec',
-    done: false,
+    status: 'pending',
     priority: 'high',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 15, 0),
@@ -195,7 +195,7 @@ export const schedules: Schedule[] = [
   },
   {
     id: 'e9fa5a8d-1598-406f-b4ce-ca75c4bdb6fa',
-    done: true,
+    status: 'done',
     priority: 'medium',
     deadline: getDateFromNowAndAddDaysAndSetHoursAndMinutes(5, 23, 59),
     startAt: getDateFromNowAndAddDaysAndSetHoursAndMinutes(6, 9, 0),

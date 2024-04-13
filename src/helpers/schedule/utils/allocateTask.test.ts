@@ -1,24 +1,8 @@
 import { beforeAll, describe, expect, it } from '@jest/globals'
 import { advanceTo } from 'jest-date-mock'
 import { allocateTask } from './allocateTask'
-
-type UnallocatedTask = {
-  id: string
-  title: string
-  notes?: string
-  priority: 'low' | 'medium' | 'high'
-  duration: string
-  deadline: Date
-}
-
-type Schedule = {
-  id: string
-  title: string
-  done: boolean
-  priority: 'high' | 'medium' | 'low' | 'routine' | 'event'
-  startAt: Date
-  endAt: Date
-}
+import { Schedule } from '@/entities/Schedule'
+import { UnallocatedTask } from '@/entities/UnallocatedTask'
 
 describe('allocateTask', () => {
   beforeAll(() => {
@@ -31,17 +15,19 @@ describe('allocateTask', () => {
         id: '1',
         title: 'Test Schedule',
         priority: 'low',
-        done: false,
+        status: 'pending',
         startAt: new Date('2022-01-01T08:00:00'),
         endAt: new Date('2022-01-01T09:00:00'),
+        deadline: new Date('2022-01-14T12:00:00'),
       },
       {
         id: '2',
         title: 'Test Schedule',
         priority: 'low',
-        done: false,
+        status: 'pending',
         startAt: new Date('2022-01-01T10:00:00'),
         endAt: new Date('2022-01-01T11:00:00'),
+        deadline: new Date('2022-01-14T12:00:00'),
       },
     ]
     const taskToAllocate: UnallocatedTask = {
@@ -73,17 +59,19 @@ describe('allocateTask', () => {
         id: '1',
         title: 'Test Schedule 1',
         priority: 'low',
-        done: false,
+        status: 'pending',
         startAt: new Date('2022-01-01T08:00:00'),
         endAt: new Date('2022-01-01T09:00:00'),
+        deadline: new Date('2022-01-14T12:00:00'),
       },
       {
         id: '2',
         title: 'Test Schedule 2',
         priority: 'low',
-        done: false,
+        status: 'pending',
         startAt: new Date('2022-01-01T09:00:00'),
         endAt: new Date('2022-01-01T10:00:00'),
+        deadline: new Date('2022-01-14T12:00:00'),
       },
     ]
 
@@ -114,17 +102,19 @@ describe('allocateTask', () => {
         id: '1',
         title: 'Test Schedule',
         priority: 'low',
-        done: false,
+        status: 'pending',
         endAt: new Date('2022-01-01T09:00:00'),
         startAt: new Date('2022-01-01T08:00:00'),
+        deadline: new Date('2022-01-14T12:00:00'),
       },
       {
         id: '2',
         title: 'Test Schedule',
         priority: 'low',
-        done: false,
+        status: 'pending',
         startAt: new Date('2022-01-01T09:00:00'),
         endAt: new Date('2022-01-01T10:00:00'),
+        deadline: new Date('2022-01-14T12:00:00'),
       },
     ]
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals'
-import { Schedule } from '../entities/Schedule'
 import { isThereGapBetweenSchedules } from './isThereGapBetweenSchedules'
+import { Schedule } from '@/entities/Schedule'
 
 describe('isThereGapBetweenSchedules', () => {
   it('should return true if there is a gap between schedules', () => {
@@ -8,17 +8,19 @@ describe('isThereGapBetweenSchedules', () => {
       id: '1',
       title: 'Test Schedule',
       priority: 'low',
-      done: false,
+      status: 'pending',
       startAt: new Date('2022-01-01T08:00:00'),
       endAt: new Date('2022-01-01T09:00:00'),
+      deadline: new Date('2022-01-10T09:00:00'),
     }
     const nextSchedule: Schedule = {
       id: '2',
       title: 'Test Schedule',
       priority: 'low',
-      done: false,
+      status: 'pending',
       startAt: new Date('2022-01-01T10:00:00'),
       endAt: new Date('2022-01-01T11:00:00'),
+      deadline: new Date('2022-01-10T09:00:00'),
     }
     const newScheduleDuration = 30 // 30 minutes
 
@@ -36,17 +38,19 @@ describe('isThereGapBetweenSchedules', () => {
       id: '1',
       title: 'Test Schedule',
       priority: 'low',
-      done: false,
+      status: 'pending',
       startAt: new Date('2022-01-01T08:00:00'),
       endAt: new Date('2022-01-01T09:00:00'),
+      deadline: new Date('2022-01-10T09:00:00'),
     }
     const nextSchedule: Schedule = {
       id: '2',
       title: 'Test Schedule',
       priority: 'low',
-      done: false,
+      status: 'pending',
       startAt: new Date('2022-01-01T09:30:00'),
       endAt: new Date('2022-01-01T11:00:00'),
+      deadline: new Date('2022-01-10T09:00:00'),
     }
     const newScheduleDuration = 30 // 30 minutes
 
@@ -64,17 +68,19 @@ describe('isThereGapBetweenSchedules', () => {
       id: '1',
       title: 'Test Schedule',
       priority: 'low',
-      done: false,
+      status: 'pending',
       startAt: new Date('2022-01-01T08:00:00'),
       endAt: new Date('2022-01-01T09:00:00'),
+      deadline: new Date('2022-01-10T09:00:00'),
     }
     const nextSchedule: Schedule = {
       id: '2',
       title: 'Test Schedule',
       priority: 'low',
-      done: false,
+      status: 'pending',
       startAt: new Date('2022-01-01T09:30:00'),
       endAt: new Date('2022-01-01T11:00:00'),
+      deadline: new Date('2022-01-10T09:00:00'),
     }
     const newScheduleDuration = 45 // 45 minutes
 

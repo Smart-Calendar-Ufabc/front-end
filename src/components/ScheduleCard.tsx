@@ -18,7 +18,7 @@ interface ScheduleCardProps {
   id: string
   title: string
   priority: 'high' | 'medium' | 'low' | 'routine' | 'event'
-  done: boolean
+  status: 'pending' | 'in-progress' | 'done'
   startTime: string
   endTime: string
 }
@@ -26,7 +26,7 @@ interface ScheduleCardProps {
 export const ScheduleCard = ({
   id,
   title,
-  done,
+  status,
   priority,
   startTime,
   endTime,
@@ -34,7 +34,7 @@ export const ScheduleCard = ({
   const [openEditRoutineDialog, setOpenEditRoutineDialog] = useState(false)
   const [openEditTaskDialog, setOpenEditTaskDialog] = useState(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-  const [completed, setCompleted] = useState(done)
+  const [completed, setCompleted] = useState(status === 'done')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const { deleteSchedule } = useSchedulesStates()
