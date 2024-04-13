@@ -38,7 +38,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
 
   const validationSchema = yup.object({
     title: yup.string().required('Título é obrigatório'),
-    notes: yup.string().max(3, 'Máximo de 3 caracteres'),
+    notes: yup.string(),
     priority: yup.string().required('Prioridade é obrigatória'),
     duration: yup.string().required('Duração é obrigatória'),
     dueDate: yup.date().required('Data é obrigatória'),
