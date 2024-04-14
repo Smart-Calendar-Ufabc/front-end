@@ -1,8 +1,8 @@
-# Smart Calendar
+# Ease Calendar
 
 ## 💻 Sobre o projeto
 
-O Smart Calendar é um projeto que visa facilitar a organização da agenda de seus usuários. Com ele, os usuários podem cadastrar compromissos fixos e tarefas com datas de término e duração específicas. O diferencial desse calendário está na sua capacidade de distribuir automaticamente essas tarefas nos horários livres do usuário, levando em consideração a prioridade de prazo de cada uma. Assim, o Smart Calendar otimiza o tempo do usuário, garantindo que ele cumpra seus compromissos de forma eficiente e sem conflitos de horário. Esta aplicação foi desenvolvida como projeto final da disciplina de Engenharia de Software da UFABC.
+O Ease Calendar é um projeto que visa facilitar a organização da agenda de seus usuários. Com ele, os usuários podem cadastrar compromissos fixos e tarefas com datas de término e duração específicas. O diferencial desse calendário está na sua capacidade de distribuir automaticamente essas tarefas nos horários livres do usuário, levando em consideração a prioridade de prazo de cada uma. Assim, o Ease Calendar otimiza o tempo do usuário, garantindo que ele cumpra seus compromissos de forma eficiente e sem conflitos de horário. Esta aplicação foi desenvolvida como projeto final da disciplina de Engenharia de Software da UFABC.
 
 ## 🛠 Tecnologias
 
@@ -19,7 +19,7 @@ Antes de começar, você vai precisar ter instalado em sua máquina as seguintes
 
 ### 🎲 Rodando o Front End
 
-Crie uma pasta chamada `smart-calendar`. Abra o terminal nessa paste e clone o repositório:
+Crie uma pasta chamada `ease-calendar`. Abra o terminal nessa paste e clone o repositório:
 
 ```bash
 git clone https://github.com/Smart-Calendar-Ufabc/front-end.git
