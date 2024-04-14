@@ -1,0 +1,17 @@
+name: Jest Unit Testing
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    name: Run Jest Unit Tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: npm install
+      - name: Running Tests
+        run: npm test

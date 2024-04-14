@@ -19,7 +19,11 @@
     },
     "testMatch": [
       "**/*.test.ts"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "testPathIgnorePatterns": ["<rootDir>/.next/", "<rootDir>/node_modules/", "<rootDir>/src/errors/*.ts"]
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",

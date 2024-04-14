@@ -3,6 +3,7 @@ import { advanceTo } from 'jest-date-mock'
 import { allocateTask } from './allocateTask'
 import { Schedule } from '@/entities/Schedule'
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
+import { DeadlineExceededException } from '@/errors/DeadlineExceededException'
 
 describe('allocateTask', () => {
   beforeAll(() => {
@@ -45,8 +46,6 @@ describe('allocateTask', () => {
         weekDays: [],
       },
     })
-
-    console.log(result)
 
     expect(result).not.toBeNull()
     expect(result?.startAt).toEqual(new Date('2022-01-01T09:00:00'))
@@ -96,7 +95,7 @@ describe('allocateTask', () => {
     expect(result?.endAt).toEqual(new Date('2022-01-01T10:30:00'))
   })
 
-  it('should throw an error if the task cannot be allocated before the deadline', () => {
+  it('should throw an error if the task cannot be allocated before the deadline', async () => {
     const schedules: Schedule[] = [
       {
         id: '1',
@@ -134,8 +133,6 @@ describe('allocateTask', () => {
           weekDays: [],
         },
       }),
-    ).toThrowError(
-      'Não há tempo disponível para alocar a tarefa antes do prazo de entrega.',
-    )
+    ).toThrowError(DeadlineExceededException)
   })
 })

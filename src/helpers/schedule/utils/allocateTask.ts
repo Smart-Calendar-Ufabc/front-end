@@ -1,7 +1,7 @@
-import { DeadlineExceededException } from '@/errors/DeadlineExceededException'
 import { Schedule } from '@/entities/Schedule'
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
 import { BlockedTimeType } from '@/entities/Profile'
+import { DeadlineExceededException } from '@/errors/DeadlineExceededException'
 
 export const allocateTask = (
   schedules: Schedule[],
