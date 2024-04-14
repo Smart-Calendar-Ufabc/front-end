@@ -1,18 +1,14 @@
-import { beforeAll, describe, expect, it, jest } from '@jest/globals'
-import { advanceTo } from 'jest-date-mock'
+import { afterAll, beforeAll, describe, expect, it, jest } from '@jest/globals'
 import { allocateTask } from './allocateTask'
 import { Schedule } from '@/entities/Schedule'
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
 import { DeadlineExceededException } from '@/errors/DeadlineExceededException'
 
-const dateNowDescriptor = Object.getOwnPropertyDescriptor(Date, 'now')
-if (dateNowDescriptor && dateNowDescriptor.configurable) {
-  jest.doMock('jest-date-mock')
-}
-
 describe('allocateTask', () => {
   beforeAll(() => {
-    advanceTo(new Date('2022-01-01T07:00:00'))
+    jest
+      .spyOn(Date, 'now')
+      .mockImplementation(() => new Date('2022-01-01T07:00:00').getTime())
   })
 
   it('should allocate a task if there is a gap between schedules', () => {
@@ -139,5 +135,9 @@ describe('allocateTask', () => {
         },
       }),
     ).toThrowError(DeadlineExceededException)
+  })
+
+  afterAll(() => {
+    jest.spyOn(Date, 'now').mockRestore()
   })
 })
