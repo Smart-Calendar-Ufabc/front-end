@@ -1,9 +1,14 @@
-import { beforeAll, describe, expect, it } from '@jest/globals'
+import { beforeAll, describe, expect, it, jest } from '@jest/globals'
 import { advanceTo } from 'jest-date-mock'
 import { allocateTask } from './allocateTask'
 import { Schedule } from '@/entities/Schedule'
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
 import { DeadlineExceededException } from '@/errors/DeadlineExceededException'
+
+const dateNowDescriptor = Object.getOwnPropertyDescriptor(Date, 'now')
+if (dateNowDescriptor && dateNowDescriptor.configurable) {
+  jest.doMock('jest-date-mock')
+}
 
 describe('allocateTask', () => {
   beforeAll(() => {
