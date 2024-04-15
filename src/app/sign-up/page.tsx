@@ -26,11 +26,7 @@ export default function SignUp() {
     password: yup
       .string()
       .required('Informe a senha')
-      .min(6, 'Senha deve ter ao menos 6 caracteres')
-      .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
-        'Senha deve conter ao menos uma letra, um número e pelo menos um caractere especial.',
-      ),
+      .min(6, 'Senha deve ter ao menos 6 caracteres'),
   })
 
   const formik = useFormik({
@@ -106,7 +102,7 @@ export default function SignUp() {
               helperText={
                 formik.touched.password && Boolean(formik.errors.password)
                   ? formik.errors.password
-                  : 'A senha deve conter ao menos uma letra, um número e pelo menos um caractere especial.'
+                  : 'A senha deve conter ao menos 6 caracteres.'
               }
             />
           </FormGroup>
