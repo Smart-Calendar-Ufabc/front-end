@@ -45,7 +45,9 @@ export default function SignUp() {
 
       if (status === 200 && data?.code) {
         setOnboarding({ email: values.email, code: data.code })
-        window.location.href = '/sign-up/code-validation'
+        if (typeof window !== 'undefined') {
+          window.location.href = '/sign-up/code-validation'
+        }
       } else if (status === 409) {
         setIsLoading(false)
         formik.setErrors({

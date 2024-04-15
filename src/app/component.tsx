@@ -35,8 +35,10 @@ export default function FormLogin() {
       const { data, status } = await loginFetch(values)
       if (status === 200 && data?.token) {
         setAuthToken(data.token)
-        window.localStorage.setItem('authToken', data.token)
-        window.location.href = '/home'
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem('authToken', data.token)
+          window.location.href = '/home'
+        }
       } else if (data?.errors) {
         setIsLoading(false)
         formik.setErrors({

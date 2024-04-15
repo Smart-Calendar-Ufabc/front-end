@@ -6,8 +6,12 @@ import { redirect } from 'next/navigation'
 import { useAppStates } from '@/store/useAppStates'
 
 export default function Login() {
-  const authToken = window.localStorage.getItem('authToken')
   const { setAuthToken } = useAppStates()
+
+  const authToken =
+    typeof window !== 'undefined'
+      ? window.localStorage.getItem('authToken')
+      : null
 
   if (authToken) {
     setAuthToken(authToken)

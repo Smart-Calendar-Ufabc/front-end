@@ -24,8 +24,11 @@ export default function ProfileMenu() {
   const handleLogout = () => {
     handleClose()
     setAuthToken(null)
-    window.localStorage.removeItem('authToken')
-    window.location.href = '/'
+
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('authToken')
+      window.location.href = '/'
+    }
   }
 
   return (

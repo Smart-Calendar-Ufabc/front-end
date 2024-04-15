@@ -72,12 +72,24 @@ const Header = () => {
         >
           <List>
             <ListItem disablePadding>
-              <ListItemButton onClick={() => window.open('/sign-up', '_self')}>
+              <ListItemButton
+                onClick={() =>
+                  typeof window !== 'undefined'
+                    ? window.open('/sign-up', '_self')
+                    : {}
+                }
+              >
                 <ListItemText primary={'Cadastre-se'} />
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton onClick={() => window.open('/login', '_self')}>
+              <ListItemButton
+                onClick={() =>
+                  typeof window !== 'undefined'
+                    ? window.open('/login', '_self')
+                    : {}
+                }
+              >
                 <ListItemText primary={'Entrar'} />
               </ListItemButton>
             </ListItem>
