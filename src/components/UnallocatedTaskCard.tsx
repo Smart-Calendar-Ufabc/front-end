@@ -91,7 +91,11 @@ export default function UnallocatedTaskCard({
     const data = createScheduleSuggestion(
       thisUnallocatedTask ? [thisUnallocatedTask] : [],
       schedules,
-      profile?.blockedTimes,
+      {
+        dates: [],
+        intervals: profile?.sleepHours ? [profile?.sleepHours] : [],
+        weekDays: [],
+      },
     )
     if (data) {
       setSchedulesSuggestions(data)
