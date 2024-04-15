@@ -40,11 +40,11 @@ export function DialogUnallocatedTasks({
 
   const handleGenerateScheduleSuggestion = useCallback(() => {
     onClose()
-    const data = createScheduleSuggestion(
-      unallocatedTasks,
-      schedules,
-      profile?.blockedTimes,
-    )
+    const data = createScheduleSuggestion(unallocatedTasks, schedules, {
+      dates: [],
+      intervals: profile?.sleepHours ? [profile?.sleepHours] : [],
+      weekDays: [],
+    })
     if (data) {
       setSchedulesSuggestions(data)
     }
