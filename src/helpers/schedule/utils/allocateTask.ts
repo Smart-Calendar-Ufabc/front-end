@@ -113,21 +113,27 @@ export const isTaskWithinPeriodBlocked = (
   schedule: Schedule,
   blockedTimes: BlockedTimeType,
 ): boolean => {
-  const isBlockedInWeekDay = checkIfIsWithinBlockedWeekDay(
-    schedule,
-    blockedTimes.weekDays,
-  )
+  if (blockedTimes.weekDays) {
+    const isBlockedInWeekDay = checkIfIsWithinBlockedWeekDay(
+      schedule,
+      blockedTimes.weekDays,
+    )
 
-  if (isBlockedInWeekDay) {
-    return true
+    if (isBlockedInWeekDay) {
+      return true
+    }
   }
 
-  const isBlockedInterval = checkIfIsWithinBlockedInterval(
-    schedule,
-    blockedTimes.intervals,
-  )
+  if (blockedTimes.intervals) {
+    const isBlockedInterval = checkIfIsWithinBlockedInterval(
+      schedule,
+      blockedTimes.intervals,
+    )
 
-  return isBlockedInterval
+    return isBlockedInterval
+  }
+
+  return false
 }
 
 const checkIfIsWithinBlockedWeekDay = (

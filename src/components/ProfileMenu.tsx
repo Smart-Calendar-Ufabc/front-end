@@ -6,10 +6,12 @@ import { User as UserIcon } from '@phosphor-icons/react'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Link from 'next/link'
+import { useAppStates } from '@/store/useAppStates'
 
 export default function ProfileMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
+  const { setAuthToken } = useAppStates()
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -21,7 +23,8 @@ export default function ProfileMenu() {
 
   const handleLogout = () => {
     handleClose()
-    window.localStorage.removeItem('token')
+    setAuthToken(null)
+    window.localStorage.removeItem('authToken')
     window.location.href = '/'
   }
 

@@ -7,17 +7,21 @@ import { WeekSchedulesCard } from '@/components/WeekSchedulesCard'
 import { schedules as schedulesSeed } from '@/seed/schedules'
 import { Schedule } from '@/entities/Schedule'
 import { useSchedulesStates } from '@/store/useSchedulesStates'
-import { useProfileStates } from '@/store/useProfileStates'
-import { profile } from '@/seed/profile'
+import { Skeleton } from '@mui/material'
 
 export default function HomeMain() {
   const [list, setList] = useState<Record<string, Schedule[]>>({})
+  const [firstLoad, setFirstLoad] = useState(true)
   const { schedules, setSchedules } = useSchedulesStates()
-  const { setProfile } = useProfileStates.getState()
+
+  useEffect(() => {
+    if (firstLoad) {
+      setFirstLoad(false)
+    }
+  }, [firstLoad])
 
   useEffect(() => {
     setSchedules(schedulesSeed)
-    setProfile(profile)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -58,13 +62,21 @@ export default function HomeMain() {
             mt: 3,
           }}
         >
-          {Object.entries(list).map(([startDate, schedules]) => (
-            <WeekSchedulesCard
-              key={startDate}
-              date={startDate}
-              schedules={schedules}
-            />
-          ))}
+          {firstLoad
+            ? Array.from({ length: 9 }).map((key) => (
+                <Skeleton
+                  variant="rounded"
+                  key={`skeleton-week-card-${key}`}
+                  sx={{ width: 166, height: 600 }}
+                />
+              ))
+            : Object.entries(list).map(([startDate, schedules]) => (
+                <WeekSchedulesCard
+                  key={startDate}
+                  date={startDate}
+                  schedules={schedules}
+                />
+              ))}
         </Box>
       </Box>
     </>

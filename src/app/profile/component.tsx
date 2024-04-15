@@ -8,8 +8,7 @@ import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
 import FormControl from '@mui/material/FormControl'
 import { useProfileStates } from '@/store/useProfileStates'
-import { useEffect, useState } from 'react'
-import { profile as initialProfile } from '@/seed/profile'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { TimePicker } from '@mui/x-date-pickers'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -17,53 +16,78 @@ import 'dayjs/locale/pt-br'
 
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import { BlockedTimeType } from '@/seed/blockedTimes'
 import dayjs, { Dayjs } from 'dayjs'
 import FormLabel from '@mui/material/FormLabel'
 import Stack from '@mui/material/Stack'
+import {
+  createProfileFetch,
+  getProfileFetch,
+  updateProfileFetch,
+} from '../api/profile'
+import Alert from '@mui/material/Alert'
+import { CircularProgress, Skeleton } from '@mui/material'
+import BackNavigation from '@/components/BackNavigation'
 
 export default function SettingsMain() {
+  const [openAlert, setOpenAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
   const { profile, setProfile } = useProfileStates()
   const [saved, setSaved] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const inputImageRef = useRef<HTMLInputElement>(null)
+  const [imageUploadedUrl, setImageUploadedUrl] = useState<string | null>(null)
+  const [isFetchingProfile, setIsFetchingProfile] = useState(false)
 
   const validationSchema = yup.object({
-    name: yup.string().required('Nome é obrigatório'),
-    sleepPeriodStart: yup.date(),
-    sleepPeriodEnd: yup.date(),
+    name: yup.string().required('Informe o seu nome'),
+    sleepPeriodStart: yup.date().required('Informe o período inicial do sono'),
+    sleepPeriodEnd: yup.date().required('Informe o período final do sono'),
   })
 
   const getDayjsDateFromHoursAndMinutes = (hour?: number, minutes?: number) => {
-    if (!hour || !minutes) {
-      return dayjs().hour(0).minute(0)
+    if (hour !== undefined && minutes !== undefined) {
+      return dayjs().hour(hour).minute(minutes)
     }
 
-    return dayjs().hour(hour).minute(minutes)
+    return dayjs().hour(0).minute(0)
   }
 
   const formik = useFormik({
     initialValues: {
-      name: profile?.name,
-      sleepPeriodStart: getDayjsDateFromHoursAndMinutes(
-        profile?.blockedTimes?.intervals[0].start.hour,
-        profile?.blockedTimes?.intervals[0].start.minutes,
-      ),
-      sleepPeriodEnd: getDayjsDateFromHoursAndMinutes(
-        profile?.blockedTimes?.intervals[0].end.hour,
-        profile?.blockedTimes?.intervals[0].end.minutes,
-      ),
+      name: '',
+      avatar: null,
+      sleepPeriodStart: null,
+      sleepPeriodEnd: null,
     } as {
       name: string
+      avatar: File | null
       sleepPeriodStart: Dayjs | null
       sleepPeriodEnd: Dayjs | null
     },
     validationSchema,
-    onSubmit: (values) => {
-      setProfile({
-        name: values.name,
-        blockedTimes: {
-          ...(profile?.blockedTimes as BlockedTimeType),
-          intervals: [
-            {
+    onSubmit: async (values) => {
+      setIsLoading(true)
+      if (!profile) {
+        const { status, data } = await createProfileFetch({
+          name: values.name,
+          avatar: values?.avatar || undefined,
+          sleepHours: {
+            start: {
+              hour: values?.sleepPeriodStart?.hour() || 0,
+              minutes: values?.sleepPeriodStart?.minute() || 0,
+            },
+            end: {
+              hour: values?.sleepPeriodEnd?.hour() || 0,
+              minutes: values?.sleepPeriodEnd?.minute() || 0,
+            },
+          },
+        })
+
+        if (status === 201 && data?.profile) {
+          setIsLoading(false)
+          setProfile({
+            name: values.name,
+            sleepHours: {
               start: {
                 hour: values?.sleepPeriodStart?.hour() || 0,
                 minutes: values?.sleepPeriodStart?.minute() || 0,
@@ -73,21 +97,110 @@ export default function SettingsMain() {
                 minutes: values?.sleepPeriodEnd?.minute() || 0,
               },
             },
-          ],
-        },
-      })
-      setSaved(true)
+          })
+          setSaved(true)
+        } else {
+          setIsLoading(false)
+          setOpenAlert(true)
+          setAlertMessage('Erro interno no servidor')
+        }
+      } else {
+        const { status, data } = await updateProfileFetch({
+          name: values.name,
+          avatar: values?.avatar || undefined,
+          sleepHours: {
+            start: {
+              hour: values?.sleepPeriodStart?.hour() || 0,
+              minutes: values?.sleepPeriodStart?.minute() || 0,
+            },
+            end: {
+              hour: values?.sleepPeriodEnd?.hour() || 0,
+              minutes: values?.sleepPeriodEnd?.minute() || 0,
+            },
+          },
+        })
+
+        if (status === 200 && data?.profile) {
+          setIsLoading(false)
+          setProfile({
+            name: values.name,
+            sleepHours: {
+              start: {
+                hour: values?.sleepPeriodStart?.hour() || 0,
+                minutes: values?.sleepPeriodStart?.minute() || 0,
+              },
+              end: {
+                hour: values?.sleepPeriodEnd?.hour() || 0,
+                minutes: values?.sleepPeriodEnd?.minute() || 0,
+              },
+            },
+          })
+          setSaved(true)
+        } else {
+          setIsLoading(false)
+          setOpenAlert(true)
+          setAlertMessage('Erro interno no servidor')
+        }
+      }
     },
   })
 
-  useEffect(() => {
-    setProfile(initialProfile)
+  const getProfile = useCallback(async () => {
+    try {
+      const { status, data } = await getProfileFetch()
+
+      if (status === 200 && data?.profile) {
+        setProfile(data.profile)
+        formik.setFieldValue('name', data.profile.name)
+        formik.setFieldValue(
+          'sleepPeriodStart',
+          getDayjsDateFromHoursAndMinutes(
+            data.profile?.sleepHours?.start.hour,
+            data.profile?.sleepHours?.start.minutes,
+          ),
+        )
+        formik.setFieldValue(
+          'sleepPeriodEnd',
+          getDayjsDateFromHoursAndMinutes(
+            data.profile?.sleepHours?.end.hour,
+            data.profile?.sleepHours?.end.minutes,
+          ),
+        )
+        console.log('data.profile.avatar', data.profile.avatar)
+        if (data.profile.avatar) {
+          setImageUploadedUrl(data.profile.avatar)
+        }
+      } else if (status !== 200) {
+        setOpenAlert(true)
+        setAlertMessage('Erro interno no servidor')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+    setIsFetchingProfile(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [setProfile])
+
+  useEffect(() => {
+    setIsFetchingProfile(true)
+    getProfile()
+  }, [getProfile])
 
   return (
     <Box>
+      <BackNavigation to="/home" title="Home" />
       <FormTitle>Editar Perfil</FormTitle>
+      {openAlert && (
+        <Alert
+          severity="error"
+          onClose={() => {
+            setOpenAlert(false)
+          }}
+          sx={{ mt: 2 }}
+        >
+          {alertMessage}
+        </Alert>
+      )}
       <FormGroup
         sx={{
           mt: 3,
@@ -101,29 +214,69 @@ export default function SettingsMain() {
           p: 3,
         }}
       >
-        <Button
-          variant="outlined"
-          sx={{
-            width: 80,
-            height: 80,
-            borderRadius: 80,
-            backgroundImage: 'url(/images/blank-profile-picture.png)',
-            backgroundSize: '170%',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
+        <input
+          ref={inputImageRef}
+          type="file"
+          hidden
+          accept="image/png, image/jpeg"
+          onChange={(e) => {
+            if (e.target.files) {
+              formik.setFieldValue('avatar', e.target.files[0])
+              setSaved(false)
+              if (formik.values.avatar) {
+                setImageUploadedUrl(URL.createObjectURL(formik.values.avatar))
+              }
+            }
           }}
-        ></Button>
-        <Button
-          variant="outlined"
-          sx={{
-            width: '126px',
-            height: '40px',
-            fontSize: '18px',
-            flex: 'none',
-          }}
-        >
-          Alterar Foto
-        </Button>
+        />
+        {isFetchingProfile ? (
+          <Skeleton
+            variant="rounded"
+            sx={{ width: 80, height: 80, borderRadius: 80, ml: 1.5 }}
+          />
+        ) : (
+          <Button
+            variant="outlined"
+            sx={{
+              width: 80,
+              height: 80,
+              borderRadius: 80,
+              backgroundImage: imageUploadedUrl
+                ? `url(${imageUploadedUrl})`
+                : 'url(/images/blank-profile-picture.png)',
+              backgroundSize: '170%',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              objectFit: 'cover',
+            }}
+            onClick={() => {
+              if (inputImageRef.current) {
+                inputImageRef.current.click()
+              }
+            }}
+          />
+        )}
+
+        {isFetchingProfile ? (
+          <Skeleton variant="rounded" sx={{ width: '126px', height: '40px' }} />
+        ) : (
+          <Button
+            variant="outlined"
+            sx={{
+              width: '126px',
+              height: '40px',
+              fontSize: '18px',
+              flex: 'none',
+            }}
+            onClick={() => {
+              if (inputImageRef.current) {
+                inputImageRef.current.click()
+              }
+            }}
+          >
+            Alterar Foto
+          </Button>
+        )}
       </FormGroup>
       <Stack
         sx={(theme) => ({
@@ -137,15 +290,21 @@ export default function SettingsMain() {
           },
         })}
       >
-        <TextField
-          label="Nome"
-          type="name"
-          value={formik.values.name}
-          onChange={(e) => {
-            formik.handleChange(e)
-            setSaved(false)
-          }}
-        />
+        {isFetchingProfile ? (
+          <Skeleton variant="rounded" height={56} />
+        ) : (
+          <TextField
+            name="name"
+            label="Nome"
+            type="text"
+            value={formik.values.name}
+            onChange={(e) => {
+              formik.handleChange(e)
+              setSaved(false)
+            }}
+          />
+        )}
+
         <FormControl
           sx={{
             mt: 4,
@@ -169,81 +328,106 @@ export default function SettingsMain() {
                 },
               })}
             >
-              <FormGroup sx={{ mb: 4 }}>
-                <TimePicker
-                  name="sleepPeriodStart"
-                  label="Hora Inicial do Sono"
-                  ampm={false}
-                  slotProps={{
-                    textField: {
-                      name: 'duration',
-                      type: 'text',
-                      variant: 'outlined',
-                      error:
-                        formik.touched.sleepPeriodStart &&
-                        Boolean(formik.errors.sleepPeriodStart),
-                    },
-                  }}
-                  value={formik.values.sleepPeriodStart}
-                  onChange={(newValue) => {
-                    formik.setFieldValue('sleepPeriodStart', newValue)
-                    setSaved(false)
-                  }}
+              {isFetchingProfile ? (
+                <Skeleton
+                  variant="rounded"
+                  height={56}
+                  sx={{ mb: 4, flex: 1 }}
                 />
-                <FormHelperText
-                  error={
-                    formik.touched.sleepPeriodStart &&
-                    Boolean(formik.errors.sleepPeriodStart)
-                  }
-                >
-                  {formik.touched.sleepPeriodStart &&
-                    formik.errors.sleepPeriodStart}
-                </FormHelperText>
-              </FormGroup>
-              <FormGroup>
-                <TimePicker
-                  name="sleepPeriodEnd"
-                  label="Hora Final do Sono"
-                  ampm={false}
-                  slotProps={{
-                    textField: {
-                      name: 'duration',
-                      type: 'text',
-                      variant: 'outlined',
-                      error:
-                        formik.touched.sleepPeriodEnd &&
-                        Boolean(formik.errors.sleepPeriodEnd),
-                    },
-                  }}
-                  value={formik.values.sleepPeriodEnd}
-                  onChange={(newValue) => {
-                    formik.setFieldValue('sleepPeriodEnd', newValue)
-                    setSaved(false)
-                  }}
-                />
-                <FormHelperText
-                  error={
-                    formik.touched.sleepPeriodEnd &&
-                    Boolean(formik.errors.sleepPeriodEnd)
-                  }
-                >
-                  {formik.touched.sleepPeriodEnd &&
-                    formik.errors.sleepPeriodEnd}
-                </FormHelperText>
-              </FormGroup>
+              ) : (
+                <FormGroup sx={{ mb: 4, flex: 1 }}>
+                  <TimePicker
+                    name="sleepPeriodStart"
+                    label="Hora Inicial do Sono"
+                    ampm={false}
+                    slotProps={{
+                      textField: {
+                        name: 'duration',
+                        type: 'text',
+                        variant: 'outlined',
+                        error:
+                          formik.touched.sleepPeriodStart &&
+                          Boolean(formik.errors.sleepPeriodStart),
+                      },
+                    }}
+                    value={formik.values.sleepPeriodStart}
+                    onChange={(newValue) => {
+                      formik.setFieldValue('sleepPeriodStart', newValue)
+                      setSaved(false)
+                    }}
+                  />
+                  <FormHelperText
+                    error={
+                      formik.touched.sleepPeriodStart &&
+                      Boolean(formik.errors.sleepPeriodStart)
+                    }
+                  >
+                    {formik.touched.sleepPeriodStart &&
+                      formik.errors.sleepPeriodStart}
+                  </FormHelperText>
+                </FormGroup>
+              )}
+              {isFetchingProfile ? (
+                <Skeleton variant="rounded" height={56} sx={{ flex: 1 }} />
+              ) : (
+                <FormGroup sx={{ flex: 1 }}>
+                  <TimePicker
+                    name="sleepPeriodEnd"
+                    label="Hora Final do Sono"
+                    ampm={false}
+                    slotProps={{
+                      textField: {
+                        name: 'duration',
+                        type: 'text',
+                        variant: 'outlined',
+                        error:
+                          formik.touched.sleepPeriodEnd &&
+                          Boolean(formik.errors.sleepPeriodEnd),
+                      },
+                    }}
+                    value={formik.values.sleepPeriodEnd}
+                    onChange={(newValue) => {
+                      formik.setFieldValue('sleepPeriodEnd', newValue)
+                      setSaved(false)
+                    }}
+                  />
+                  <FormHelperText
+                    error={
+                      formik.touched.sleepPeriodEnd &&
+                      Boolean(formik.errors.sleepPeriodEnd)
+                    }
+                  >
+                    {formik.touched.sleepPeriodEnd &&
+                      formik.errors.sleepPeriodEnd}
+                  </FormHelperText>
+                </FormGroup>
+              )}
             </Box>
           </LocalizationProvider>
         </FormControl>
       </Stack>
-      <Button
-        variant="contained"
-        sx={{
-          backgroundColor: saved ? 'success.main' : 'primary.main',
-        }}
-        onClick={formik.submitForm}
-      >
-        {saved ? 'Alterações Salvas' : 'Salvar Alterações'}
-      </Button>
+      {isFetchingProfile ? (
+        <Skeleton variant="rounded" sx={{ width: 180, height: 40 }} />
+      ) : (
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: saved ? 'success.main' : 'primary.main',
+            width: 180,
+            height: 40,
+          }}
+          onClick={formik.submitForm}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <CircularProgress size={16} />
+          ) : saved ? (
+            'Alterações Salvas'
+          ) : (
+            'Salvar Alterações'
+          )}
+        </Button>
+      )}
     </Box>
   )
 }
