@@ -6,9 +6,19 @@ import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
 import { X as CloseIcon } from '@phosphor-icons/react'
-import TextField from '@mui/material/TextField'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import React from 'react'
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+} from '@mui/material'
+import { useFormik } from 'formik'
+import * as yup from 'yup'
 
 import './styles.css'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -16,6 +26,31 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 interface DialogAddRoutineProps {
   open: boolean
   onClose: () => void
+}
+
+function BasicSelect() {
+  const [repeat, setRepeat] = React.useState('')
+
+  const handleChange = (event: any) => {
+    setRepeat(event.target.value as string)
+  }
+
+  return (
+    <FormControl fullWidth>
+      <InputLabel id="repeat-select-label">Repetir</InputLabel>
+      <Select
+        labelId="repeat-select-label"
+        id="repeat-select"
+        value={repeat}
+        label="Repeat"
+        onChange={handleChange}
+      >
+        <MenuItem value="daily">Diariamente</MenuItem>
+        <MenuItem value="weekly">Semanalmente</MenuItem>
+        <MenuItem value="monthly">Mensalmente</MenuItem>
+      </Select>
+    </FormControl>
+  )
 }
 
 export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
@@ -44,13 +79,16 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
       </IconButton>
       <Divider />
       <DialogContent>
-        <TextField id="outlined-basic" label="Título" variant="outlined" />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <TimePicker label="Inicia às" name="startTime" />
-        </LocalizationProvider>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <TimePicker label="Duração" name="startTime" />
-        </LocalizationProvider>
+        <Stack direction='column' spacing={3}>
+          <TextField id="outlined-basic" label="Título" variant="outlined" />
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+            <TimePicker name="startTime" label="Inicia às" />
+          </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+            <TimePicker name="duration" label="Duração" ampm={false} />
+          </LocalizationProvider>
+          <BasicSelect></BasicSelect>
+        </Stack>
       </DialogContent>
       <DialogActions>
         <Button
