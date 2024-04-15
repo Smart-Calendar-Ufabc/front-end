@@ -164,7 +164,7 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
               </FormHelperText>
             </FormControl>
           </LocalizationProvider>
-          <FormControl fullWidth>
+          <FormControl fullWidth size="small">
             <InputLabel id="repeat-select-label">Repetir</InputLabel>
             <Select
               name="repeat"
