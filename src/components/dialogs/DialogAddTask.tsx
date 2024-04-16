@@ -22,7 +22,7 @@ import {
   FormLabel,
   FormHelperText,
 } from '@mui/material'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
@@ -63,10 +63,16 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
     },
     validationSchema,
     onSubmit: (values) => {
-      const dueDate = values.dueDate
       let deadline: Date = new Date()
-      if (dueDate) {
-        deadline = dueDate.set('hour', dueDate.hour()).toDate()
+      if (values?.dueDate && values?.dueTime) {
+        console.log('values.dueDate', values.dueDate)
+        console.log('values.dueTime', values.dueTime)
+        deadline = dayjs(values.dueDate)
+          .set('hour', values.dueTime.hour())
+          .set('minute', values.dueTime.minute())
+          .toDate()
+
+        console.log('deadline', deadline)
       }
 
       let duration = values.duration || null

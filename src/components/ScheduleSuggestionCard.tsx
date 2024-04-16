@@ -119,7 +119,11 @@ export const ScheduleSuggestionCard = ({
           height: '100%',
         }}
       >
-        <Box>
+        <Box
+          sx={{
+            width: '100%',
+          }}
+        >
           <Box
             sx={{
               display: 'flex',

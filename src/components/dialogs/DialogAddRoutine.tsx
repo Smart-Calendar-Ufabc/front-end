@@ -25,6 +25,7 @@ import {
 } from '@mui/material'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import 'dayjs/locale/pt-br'
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import dayjs, { Dayjs } from 'dayjs'
@@ -274,6 +275,7 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
             width: 400,
             [theme.breakpoints.down('sm')]: {
               width: '100%',
+              minWidth: '100%',
               minHeight: '100%',
               borderRadius: 0,
             },

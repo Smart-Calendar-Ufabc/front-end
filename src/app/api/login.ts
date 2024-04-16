@@ -1,8 +1,10 @@
 import { USER_BASE_API } from '@/config'
+import { Profile } from '@/entities/Profile'
 
 interface LoginResponse {
   message?: string
   token?: string
+  profile?: Profile
   errors?: {
     email?: string[]
     password?: string[]

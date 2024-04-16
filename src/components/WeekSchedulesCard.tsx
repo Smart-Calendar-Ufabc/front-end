@@ -31,7 +31,7 @@ export const WeekSchedulesCard = ({
   return (
     <Card
       variant="outlined"
-      sx={{
+      sx={(theme) => ({
         backgroundColor: 'grey.100',
         borderRadius: 2,
         borderColor: 'grey.300',
@@ -44,8 +44,11 @@ export const WeekSchedulesCard = ({
         pt: 1.5,
         // pb: 1.5,
         minWidth: 166,
-        minHeight: 500,
-      }}
+        minHeight: 400,
+        [theme.breakpoints.down('sm')]: {
+          minHeight: 300,
+        },
+      })}
     >
       <Box
         sx={{

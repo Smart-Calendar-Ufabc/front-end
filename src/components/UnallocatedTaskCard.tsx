@@ -16,7 +16,7 @@ import { createScheduleSuggestion } from '@/helpers/schedule/createScheduleSugge
 import { useSchedulesStates } from '@/store/useSchedulesStates'
 import { DialogSuggestionSchedule } from './dialogs/DialogSuggestionSchedule'
 import { useSchedulesSuggestionsStates } from '@/store/useSchedulesSuggestionStates'
-import { useProfileStates } from '@/store/useProfileStates'
+import { Profile } from '@/entities/Profile'
 
 interface UnallocatedTaskCardProps {
   id: string
@@ -40,7 +40,6 @@ export default function UnallocatedTaskCard({
   const { schedules } = useSchedulesStates()
   const { setSchedulesSuggestions } = useSchedulesSuggestionsStates()
   const { unallocatedTasks, deleteUnallocatedTask } = useUnallocatedTaskStates()
-  const { profile } = useProfileStates()
 
   const getBrazilianDuration = () => {
     const hour = duration.split(':')[0].replace(/^0/, '')
@@ -87,13 +86,23 @@ export default function UnallocatedTaskCard({
   }
 
   const handleAllocate = useCallback(() => {
+    let sleepHours: Profile['sleepHours'] | undefined
+    if (typeof window !== 'undefined') {
+      const profile = JSON.parse(
+        window.localStorage.getItem('profile') || '{}',
+      ) as Profile
+      if (profile?.sleepHours) {
+        sleepHours = profile.sleepHours
+      }
+    }
+
     const thisUnallocatedTask = unallocatedTasks.find((task) => task.id === id)
     const data = createScheduleSuggestion(
       thisUnallocatedTask ? [thisUnallocatedTask] : [],
       schedules,
       {
         dates: [],
-        intervals: profile?.sleepHours ? [profile?.sleepHours] : [],
+        intervals: sleepHours ? [sleepHours] : [],
         weekDays: [],
       },
     )
@@ -101,7 +110,7 @@ export default function UnallocatedTaskCard({
       setSchedulesSuggestions(data)
     }
     setOpenSuggestionSchedule(true)
-  }, [id, unallocatedTasks, schedules, profile, setSchedulesSuggestions])
+  }, [id, unallocatedTasks, schedules, setSchedulesSuggestions])
 
   return (
     <Card

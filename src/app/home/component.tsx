@@ -85,7 +85,14 @@ export default function HomeMain() {
                 <Skeleton
                   variant="rounded"
                   key={`skeleton-week-card-${index}`}
-                  sx={{ width: 166, height: 500, borderRadius: 2 }}
+                  sx={(theme) => ({
+                    width: 166,
+                    height: 400,
+                    borderRadius: 2,
+                    [theme.breakpoints.down('sm')]: {
+                      minHeight: 300,
+                    },
+                  })}
                 />
               ))
             : Object.entries(list).map(([startDate, schedules]) => (

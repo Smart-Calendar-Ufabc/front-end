@@ -1,24 +1,25 @@
+import dayjs from 'dayjs'
+import 'dayjs/locale/pt-br'
+
+dayjs.locale('pt-br')
+
 export const getBrazilianDate = (
   date: Date = new Date(),
   options?: {
     type: 'short' | 'long'
   },
 ) => {
-  const dateX = new Date(date)
-  dateX.setUTCDate(dateX.getUTCDate() + 1)
-  dateX.setUTCHours(date.getUTCHours() - 3)
+  const dateX = dayjs(date).utc()
 
-  return dateX.toLocaleDateString('pt-BR', {
-    weekday: options?.type || 'long',
-    year: 'numeric',
-    month: options?.type || 'long',
-    day: 'numeric',
-  })
+  const format =
+    options?.type === 'short' ? 'DD/MM/YYYY' : 'dddd, D [de] MMMM [de] YYYY'
+
+  return dateX.format(format)
 }
 
 export const getBrazilianTime = (date: Date = new Date()) => {
   const dateX = new Date(date)
-  dateX.setUTCHours(date.getUTCHours() - 3)
+  dateX.setHours(date.getHours())
 
   return dateX.toLocaleTimeString('pt-BR', {
     hour: 'numeric',

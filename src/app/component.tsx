@@ -37,6 +37,9 @@ export default function FormLogin() {
         setAuthToken(data.token)
         if (typeof window !== 'undefined') {
           window.localStorage.setItem('authToken', data.token)
+          if (data?.profile) {
+            window.localStorage.setItem('profile', JSON.stringify(data.profile))
+          }
           window.location.href = '/home'
         }
       } else if (data?.errors) {
