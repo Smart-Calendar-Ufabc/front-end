@@ -37,6 +37,7 @@ export default function ProfileMenu() {
 
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem('authToken')
+      window.localStorage.removeItem('profile')
       window.location.href = '/'
     }
   }

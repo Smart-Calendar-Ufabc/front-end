@@ -166,6 +166,7 @@ export default function SettingsMain() {
     try {
       const { status, data } = await getProfileFetch()
 
+      console.log('data', data)
       if (status === 200 && data?.profile) {
         if (typeof window !== 'undefined') {
           window.localStorage.setItem('profile', JSON.stringify(data.profile))
@@ -186,9 +187,13 @@ export default function SettingsMain() {
             data.profile?.sleepHours?.end.minutes,
           ),
         )
-        console.log('data.profile.avatar', data.profile.avatar)
         if (data.profile.avatar) {
           setImageUploadedUrl(data.profile.avatar)
+        }
+      } else if (status === 200 && !data?.profile) {
+        setProfile(null)
+        if (typeof window !== 'undefined') {
+          window.localStorage.removeItem('profile')
         }
       } else if (status !== 200) {
         setOpenAlert(true)

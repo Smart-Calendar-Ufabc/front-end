@@ -3,7 +3,7 @@ import { create } from 'zustand'
 
 interface AppStates {
   profile: Profile | null
-  setProfile: (profile: Profile) => void
+  setProfile: (profile: Profile | null) => void
 }
 
 export const useProfileStates = create<AppStates>()((set) => ({

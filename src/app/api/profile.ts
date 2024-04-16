@@ -35,10 +35,12 @@ export const getProfileFetch = async () => {
 
     return {
       data: {
-        profile: {
-          ...data.profile,
-          avatar: data.profile?.avatar_image_url,
-        },
+        profile: data.profile
+          ? {
+              ...data.profile,
+              avatar: data.profile?.avatar_image_url,
+            }
+          : undefined,
       },
       status: response.status,
     }
