@@ -106,6 +106,7 @@ export default function SettingsMain() {
           setIsLoading(false)
           setProfile({
             name: values.name,
+            avatarUrl: data.profile.avatar_image_url,
             sleepHours: {
               start: {
                 hour: values?.sleepPeriodStart?.hour() || 0,
@@ -146,7 +147,7 @@ export default function SettingsMain() {
           setIsLoading(false)
           setProfile({
             name: values.name,
-            avatarUrl: data.profile.avatar,
+            avatarUrl: data.profile.avatar_image_url,
             sleepHours: {
               start: {
                 hour: values?.sleepPeriodStart?.hour() || 0,

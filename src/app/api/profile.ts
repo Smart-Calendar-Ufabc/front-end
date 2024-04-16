@@ -56,7 +56,7 @@ interface CreateProfileResponse {
   message?: string
   profile?: {
     name: string
-    avatar?: string
+    avatar_image_url?: string
     sleepHours?: {
       start: {
         hour: number
@@ -125,7 +125,7 @@ interface UpdateProfileResponse {
   message?: string
   profile?: {
     name: string
-    avatar?: string
+    avatar_image_url?: string
     sleepHours?: {
       start: {
         hour: number

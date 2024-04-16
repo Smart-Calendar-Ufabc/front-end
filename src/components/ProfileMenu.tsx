@@ -7,17 +7,10 @@ import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Link from 'next/link'
 import { useAppStates } from '@/store/useAppStates'
+import { useProfileStates } from '@/store/useProfileStates'
 
 export default function ProfileMenu() {
-  let profile: {
-    avatar_image_url: string
-  } | null = null
-
-  if (typeof window !== 'undefined') {
-    profile = JSON.parse(localStorage.getItem('profile') || 'null') as {
-      avatar_image_url: string
-    }
-  }
+  const { profile, setProfile } = useProfileStates()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -42,6 +35,45 @@ export default function ProfileMenu() {
     }
   }
 
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const profileStorage = localStorage.getItem('profile')
+
+      if (profileStorage) {
+        const newProfile = JSON.parse(profileStorage) as {
+          name: string
+          avatar_image_url?: string
+          sleepHours?: {
+            start: {
+              hour: number
+              minutes: number
+            }
+            end: {
+              hour: number
+              minutes: number
+            }
+          }
+        }
+
+        setProfile({
+          name: newProfile.name,
+          avatarUrl:
+            newProfile?.avatar_image_url && newProfile.avatar_image_url,
+          sleepHours: newProfile?.sleepHours && {
+            start: {
+              hour: newProfile.sleepHours.start.hour,
+              minutes: newProfile.sleepHours.start.minutes,
+            },
+            end: {
+              hour: newProfile.sleepHours.end.hour,
+              minutes: newProfile.sleepHours.end.minutes,
+            },
+          },
+        })
+      }
+    }
+  }, [])
+
   return (
     <Box>
       <Box>
@@ -54,13 +86,13 @@ export default function ProfileMenu() {
           sx={{
             borderRadius: '50%',
             backgroundColor: 'grey.200',
-            p: profile?.avatar_image_url && 0,
+            p: profile?.avatarUrl && 0,
           }}
         >
-          {profile?.avatar_image_url ? (
+          {profile?.avatarUrl ? (
             <Box
               sx={{
-                backgroundImage: `url(${profile.avatar_image_url})`,
+                backgroundImage: `url(${profile.avatarUrl})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 borderRadius: '50%',
