@@ -167,6 +167,9 @@ export default function SettingsMain() {
       const { status, data } = await getProfileFetch()
 
       if (status === 200 && data?.profile) {
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem('profile', JSON.stringify(data.profile))
+        }
         setProfile(data.profile)
         formik.setFieldValue('name', data.profile.name)
         formik.setFieldValue(
@@ -247,7 +250,7 @@ export default function SettingsMain() {
         {isFetchingProfile ? (
           <Skeleton
             variant="rounded"
-            sx={{ width: 80, height: 80, borderRadius: 80, ml: 1.5 }}
+            sx={{ width: 80, height: 80, borderRadius: 80 }}
           />
         ) : (
           <Button
@@ -276,14 +279,14 @@ export default function SettingsMain() {
         {isFetchingProfile ? (
           <Skeleton
             variant="rounded"
-            sx={{ width: '126px', height: '40px', mb: 3 }}
+            sx={{ width: '140px', height: '40px', mb: 3 }}
           />
         ) : (
           <Box>
             <Button
               variant="outlined"
               sx={{
-                width: '126px',
+                width: '140px',
                 height: '40px',
                 fontSize: '18px',
                 flex: 'none',
@@ -309,11 +312,8 @@ export default function SettingsMain() {
       </FormGroup>
       <Stack
         sx={(theme) => ({
-          minWidth: 500,
+          width: 500,
           mt: 5,
-          [theme.breakpoints.down('md')]: {
-            minWidth: '100%',
-          },
           [theme.breakpoints.down('sm')]: {
             width: '100%',
           },
