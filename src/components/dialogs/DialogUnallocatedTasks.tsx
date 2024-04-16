@@ -10,7 +10,6 @@ import { X as CloseIcon } from '@phosphor-icons/react'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 import UnallocatedTaskCard from '../UnallocatedTaskCard'
 import Stack from '@mui/material/Stack'
-import { unallocatedTasks as initialUnallocatedTasks } from '@/seed/unallocatedTasks'
 import { useSchedulesStates } from '@/store/useSchedulesStates'
 import Box from '@mui/material/Box'
 
@@ -33,8 +32,7 @@ export function DialogUnallocatedTasks({
 }: DialogUnallocatedTasksProps) {
   const [openSuggestionSchedule, setOpenSuggestionSchedule] = useState(false)
   const { setSchedulesSuggestions } = useSchedulesSuggestionsStates()
-  const { unallocatedTasks, countUnallocatedTasks, setUnallocatedTasks } =
-    useUnallocatedTaskStates()
+  const { unallocatedTasks, countUnallocatedTasks } = useUnallocatedTaskStates()
   const { schedules } = useSchedulesStates()
   const { profile } = useProfileStates()
 
@@ -58,9 +56,9 @@ export function DialogUnallocatedTasks({
     }
   }, [schedules, unallocatedTasks, setSchedulesSuggestions])
 
-  useEffect(() => {
-    setUnallocatedTasks(initialUnallocatedTasks)
-  }, [setUnallocatedTasks])
+  // useEffect(() => {
+  //   setUnallocatedTasks(initialUnallocatedTasks)
+  // }, [setUnallocatedTasks])
 
   useEffect(() => {
     if (!countUnallocatedTasks) {
@@ -83,8 +81,9 @@ export function DialogUnallocatedTasks({
             width: '80%',
             maxWidth: 820,
             [theme.breakpoints.down('sm')]: {
-              minWidth: '85%',
-              maxWidth: '85%',
+              minWidth: '100%',
+              minHeight: '100%',
+              borderRadius: 0,
             },
           },
         })}

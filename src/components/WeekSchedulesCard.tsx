@@ -1,7 +1,12 @@
 import { Schedule } from '@/entities/Schedule'
 import Card from '@mui/material/Card'
 import { ScheduleCard } from './ScheduleCard'
-import { Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
+import { Plus as PlusIcon } from '@phosphor-icons/react'
+import dayjs, { Dayjs } from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+
+dayjs.extend(utc)
 
 interface WeekSchedulesCardProps {
   date: string
@@ -12,21 +17,15 @@ export const WeekSchedulesCard = ({
   date,
   schedules,
 }: WeekSchedulesCardProps) => {
-  const newDate = new Date(date)
-
   const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-  const weekUTCDay = newDate.getUTCDay()
+  const weekUTCDay = dayjs(date).utc().get('day')
   const weekDay = days[weekUTCDay]
 
-  const day = newDate.getUTCDate()
+  const day = dayjs(date).utc().get('date')
 
-  const isToday = (date: Date) => {
-    const today = new Date()
-    return (
-      date.getUTCDate() === today.getUTCDate() &&
-      date.getUTCMonth() === today.getUTCMonth() &&
-      date.getUTCFullYear() === today.getUTCFullYear()
-    )
+  const isToday = (date: Dayjs) => {
+    const today = dayjs().utc()
+    return date.isSame(today, 'day')
   }
 
   return (
@@ -39,35 +38,69 @@ export const WeekSchedulesCard = ({
         display: 'flex',
         flexDirection: 'column',
         gap: 1.25,
-        alignItems: 'flex-start',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         px: 1.5,
         pt: 1.5,
-        pb: 2,
+        // pb: 1.5,
+        minWidth: 166,
+        minHeight: 500,
       }}
     >
-      <Typography
+      <Box
         sx={{
-          fontWeight: '600',
-          textAlign: 'center',
-          width: '100%',
-          color: isToday(newDate) ? 'primary.main' : 'grey.800',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1.25,
+          mb: 2,
+          alignItems: 'flex-start',
         }}
       >
-        {weekDay} {day}
-      </Typography>
-      {schedules
-        .sort((a, b) => a.startAt.getTime() - b.startAt.getTime())
-        .map((schedule) => (
-          <ScheduleCard
-            key={schedule.id}
-            id={schedule.id}
-            title={schedule.title}
-            status={schedule.status}
-            priority={schedule.priority}
-            startTime={`${schedule.startAt.getUTCHours().toString().padStart(2, '0')}:${schedule.startAt.getUTCMinutes().toString().padStart(2, '0')}`}
-            endTime={`${schedule.endAt.getUTCHours().toString().padStart(2, '0')}:${schedule.endAt.getUTCMinutes().toString().padStart(2, '0')}`}
-          />
-        ))}
+        <Typography
+          sx={{
+            fontWeight: '600',
+            textAlign: 'center',
+            width: '100%',
+            color: isToday(dayjs(date).utc()) ? 'primary.main' : 'grey.800',
+          }}
+        >
+          {weekDay} {day}
+        </Typography>
+        {schedules
+          .sort((a, b) => a.startAt.getTime() - b.startAt.getTime())
+          .map((schedule) => (
+            <ScheduleCard
+              key={schedule.id}
+              id={schedule.id}
+              title={schedule.title}
+              status={schedule.status}
+              priority={schedule.priority}
+              startTime={`${schedule.startAt.getUTCHours().toString().padStart(2, '0')}:${schedule.startAt.getUTCMinutes().toString().padStart(2, '0')}`}
+              endTime={`${schedule.endAt.getUTCHours().toString().padStart(2, '0')}:${schedule.endAt.getUTCMinutes().toString().padStart(2, '0')}`}
+            />
+          ))}
+      </Box>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderTopWidth: 1,
+          borderTopColor: 'divider',
+        }}
+      >
+        <Button
+          startIcon={<PlusIcon size={16} weight="bold" />}
+          sx={{
+            fontSize: '.875rem',
+            color: 'grey.600',
+            px: 0,
+          }}
+        >
+          Adicionar Tarefa
+        </Button>
+      </Box>
     </Card>
   )
 }

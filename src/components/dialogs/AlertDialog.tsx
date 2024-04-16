@@ -9,6 +9,9 @@ interface AlertDialogProps {
   open: boolean
   title: string
   message?: string
+  children?: React.ReactNode
+  confirmText?: string
+  cancelText?: string | false
   onConfirm: () => void
   onClose: () => void
 }
@@ -17,6 +20,9 @@ export default function AlertDialog({
   open,
   title,
   message,
+  children,
+  cancelText,
+  confirmText,
   onConfirm,
   onClose,
 }: AlertDialogProps) {
@@ -43,13 +49,16 @@ export default function AlertDialog({
           <DialogContentText id="alert-dialog-description">
             {message}
           </DialogContentText>
+          {children && children}
         </DialogContent>
       )}
 
       <DialogActions>
-        <Button onClick={handleClose}>Cancelar</Button>
+        {cancelText !== false && (
+          <Button onClick={handleClose}>{cancelText || 'Cancelar'}</Button>
+        )}
         <Button onClick={handleConfirm} autoFocus>
-          Sim
+          {confirmText || 'Sim'}
         </Button>
       </DialogActions>
     </Dialog>

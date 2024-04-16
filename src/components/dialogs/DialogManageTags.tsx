@@ -58,9 +58,11 @@ export function DialogManageTags({ open, onClose }: DialogManageTagsProps) {
       onClose={onClose}
       sx={(theme) => ({
         '& .MuiDialog-paper': {
-          width: 400,
+          minWidth: 400,
           [theme.breakpoints.down('sm')]: {
-            width: '85%',
+            minWidth: '100%',
+            minHeight: '100%',
+            borderRadius: 0,
           },
         },
       })}

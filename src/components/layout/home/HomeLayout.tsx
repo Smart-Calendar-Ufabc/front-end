@@ -13,7 +13,7 @@ const FullSection = ({ children }: { children: React.ReactNode }) => {
       component="section"
       sx={(theme) => ({
         backgroundColor: theme.palette.background.default,
-        minHeight: 'calc(100vh - 80px)',
+        minHeight: 'calc(100vh - 200px)',
         width: '100vw',
         p: 0,
         m: 0,

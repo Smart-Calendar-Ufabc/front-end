@@ -91,8 +91,9 @@ export function DialogSuggestionSchedule({
           width: '90%',
           maxWidth: 800,
           [theme.breakpoints.down('sm')]: {
-            minWidth: '85%',
-            maxWidth: '85%',
+            minWidth: '100%',
+            minHeight: '100%',
+            borderRadius: 0,
           },
         },
       })}
@@ -189,7 +190,7 @@ export function DialogSuggestionSchedule({
                                 priority={task.priority}
                                 startTime={getDuration(task.startAt)}
                                 endTime={getDuration(task.endAt)}
-                                deadline={task.deadline}
+                                deadline={task.deadline ?? new Date()}
                                 onApprove={handleApproveSuggestion}
                                 onRemove={handleRemoveFromSuggestions}
                               />

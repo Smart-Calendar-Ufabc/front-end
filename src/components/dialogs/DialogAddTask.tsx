@@ -102,7 +102,9 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
         '& .MuiDialog-paper': {
           width: 400,
           [theme.breakpoints.down('sm')]: {
-            width: '85%',
+            minWidth: '100%',
+            minHeight: '100%',
+            borderRadius: 0,
           },
         },
       })}
