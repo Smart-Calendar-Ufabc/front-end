@@ -14,7 +14,7 @@ interface AppStates {
 export const useAppStates = create<AppStates>()(
   persist(
     (set) => ({
-      authToken: '263d7adc-16e0-4eb8-bac5-dca0b7dac285',
+      authToken: '',
       setAuthToken: (authToken) =>
         set({
           authToken,

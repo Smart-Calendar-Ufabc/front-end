@@ -12,6 +12,7 @@ export type BlockedTimeType = {
 
 export type Profile = {
   name?: string
+  avatarUrl?: string
   blockedTimes?: BlockedTimeType
   sleepHours?: {
     start: {

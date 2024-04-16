@@ -35,13 +35,29 @@ export default function SettingsMain() {
   const [saved, setSaved] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const inputImageRef = useRef<HTMLInputElement>(null)
-  const [imageUploadedUrl, setImageUploadedUrl] = useState<string | null>(null)
+  const [imageUploadedUrl, setImageUploadedUrl] = useState<string | null>(
+    '/images/blank-profile-picture.png',
+  )
   const [isFetchingProfile, setIsFetchingProfile] = useState(false)
 
   const validationSchema = yup.object({
     name: yup.string().required('Informe o seu nome'),
     sleepPeriodStart: yup.date().required('Informe o período inicial do sono'),
     sleepPeriodEnd: yup.date().required('Informe o período final do sono'),
+    avatar: yup
+      .mixed()
+      .test('fileFormat', 'Formato de imagem inválido', (value: unknown) => {
+        if (value instanceof Blob) {
+          return (
+            value.type === 'image/png' ||
+            value.type === 'image/jpeg' ||
+            value.type === 'image/jpg' ||
+            value.type === 'image/heic'
+          )
+        }
+        return true
+      })
+      .notRequired(),
   })
 
   const getDayjsDateFromHoursAndMinutes = (hour?: number, minutes?: number) => {
@@ -124,6 +140,7 @@ export default function SettingsMain() {
           setIsLoading(false)
           setProfile({
             name: values.name,
+            avatarUrl: data.profile.avatar,
             sleepHours: {
               start: {
                 hour: values?.sleepPeriodStart?.hour() || 0,
@@ -218,14 +235,12 @@ export default function SettingsMain() {
           ref={inputImageRef}
           type="file"
           hidden
-          accept="image/png, image/jpeg"
+          accept="image/png, image/jpeg, image/jpg, image/heic"
           onChange={(e) => {
             if (e.target.files) {
               formik.setFieldValue('avatar', e.target.files[0])
               setSaved(false)
-              if (formik.values.avatar) {
-                setImageUploadedUrl(URL.createObjectURL(formik.values.avatar))
-              }
+              setImageUploadedUrl(URL.createObjectURL(e.target.files[0]))
             }
           }}
         />
@@ -241,13 +256,14 @@ export default function SettingsMain() {
               width: 80,
               height: 80,
               borderRadius: 80,
-              backgroundImage: imageUploadedUrl
-                ? `url(${imageUploadedUrl})`
-                : 'url(/images/blank-profile-picture.png)',
-              backgroundSize: '170%',
+              backgroundImage: `url(${imageUploadedUrl})`,
+              objectFit: 'cover',
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
-              objectFit: 'cover',
+              backgroundSize:
+                imageUploadedUrl === '/images/blank-profile-picture.png'
+                  ? '170%'
+                  : 'cover',
             }}
             onClick={() => {
               if (inputImageRef.current) {
@@ -258,24 +274,37 @@ export default function SettingsMain() {
         )}
 
         {isFetchingProfile ? (
-          <Skeleton variant="rounded" sx={{ width: '126px', height: '40px' }} />
+          <Skeleton
+            variant="rounded"
+            sx={{ width: '126px', height: '40px', mb: 3 }}
+          />
         ) : (
-          <Button
-            variant="outlined"
-            sx={{
-              width: '126px',
-              height: '40px',
-              fontSize: '18px',
-              flex: 'none',
-            }}
-            onClick={() => {
-              if (inputImageRef.current) {
-                inputImageRef.current.click()
-              }
-            }}
-          >
-            Alterar Foto
-          </Button>
+          <Box>
+            <Button
+              variant="outlined"
+              sx={{
+                width: '126px',
+                height: '40px',
+                fontSize: '18px',
+                flex: 'none',
+              }}
+              onClick={() => {
+                if (inputImageRef.current) {
+                  inputImageRef.current.click()
+                }
+              }}
+            >
+              Alterar Foto
+            </Button>
+            <FormHelperText
+              sx={{ mt: 1, maxWidth: 131 }}
+              error={formik.touched.avatar && Boolean(formik.errors.avatar)}
+            >
+              {formik.touched.avatar && Boolean(formik.errors.avatar)
+                ? formik.touched.avatar && formik.errors.avatar
+                : 'Tamanho: 80x80 pixels'}
+            </FormHelperText>
+          </Box>
         )}
       </FormGroup>
       <Stack
