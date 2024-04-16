@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Box, Button, Icon, Stack, Typography } from '@mui/material'
-import { Tag as TagIcon, Plus as PlusIcon } from '@phosphor-icons/react'
+import { Plus as PlusIcon } from '@phosphor-icons/react'
 import { DialogManageTags } from '@/components/dialogs/DialogManageTags'
 import { DialogAddTask } from './dialogs/DialogAddTask'
 import { DialogAddRoutine } from './dialogs/DialogAddRoutine'
@@ -90,7 +90,7 @@ export default function ActionToolbar() {
                 })}
               />
             </Tooltip>
-            <Button
+            {/* <Button
               variant="outlined"
               endIcon={<TagIcon />}
               onClick={() => setOpenDialogManageTags(true)}
@@ -105,7 +105,7 @@ export default function ActionToolbar() {
                   },
                 },
               })}
-            ></Button>
+            ></Button> */}
             <Button
               variant="outlined"
               endIcon={<PlusIcon />}
