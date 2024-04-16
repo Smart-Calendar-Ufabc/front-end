@@ -100,6 +100,9 @@ export default function SettingsMain() {
         })
 
         if (status === 201 && data?.profile) {
+          if (typeof window !== 'undefined') {
+            window.localStorage.setItem('profile', JSON.stringify(data.profile))
+          }
           setIsLoading(false)
           setProfile({
             name: values.name,
@@ -137,6 +140,9 @@ export default function SettingsMain() {
         })
 
         if (status === 200 && data?.profile) {
+          if (typeof window !== 'undefined') {
+            window.localStorage.setItem('profile', JSON.stringify(data.profile))
+          }
           setIsLoading(false)
           setProfile({
             name: values.name,
@@ -166,7 +172,6 @@ export default function SettingsMain() {
     try {
       const { status, data } = await getProfileFetch()
 
-      console.log('data', data)
       if (status === 200 && data?.profile) {
         if (typeof window !== 'undefined') {
           window.localStorage.setItem('profile', JSON.stringify(data.profile))
