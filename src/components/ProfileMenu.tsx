@@ -24,6 +24,7 @@ import dayjs from 'dayjs'
 import { downloadJSON } from '@/helpers/file'
 import Popover from '@mui/material/Popover'
 import Typography from '@mui/material/Typography'
+import Icon from '@mui/material/Icon'
 
 export default function ProfileMenu() {
   const { setAuthToken } = useAppStates()
@@ -162,6 +163,54 @@ export default function ProfileMenu() {
           Fazer Backup
         </Button>
       </AlertDialog>
+      <Menu
+        id="fade-menu"
+        MenuListProps={{
+          'aria-labelledby': 'fade-button',
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Fade}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&::before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 26,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+      >
+        <Link href="/profile">
+          <MenuItem onClick={handleClose}>Profile</MenuItem>
+        </Link>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            setOpenLogoutAlertDialog(true)
+          }}
+        >
+          Logout
+        </MenuItem>
+      </Menu>
       <Box
         sx={{
           display: 'flex',
@@ -244,18 +293,22 @@ export default function ProfileMenu() {
             color: open ? 'primary.main' : 'grey.500',
             cursor: 'pointer',
             borderColor: open ? 'primary.main' : 'grey.200',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 0.5,
             '&:hover': {
               borderColor: 'primary.main',
               color: 'primary.main',
             },
           }}
+          id="fade-button"
+          aria-controls={open ? 'fade-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleClick}
         >
-          <IconButton
-            id="fade-button"
-            aria-controls={open ? 'fade-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}
+          <Icon
             sx={{
               borderRadius: '50%',
               backgroundColor: 'grey.200',
@@ -263,6 +316,8 @@ export default function ProfileMenu() {
               borderWidth: 1,
               borderStyle: 'solid',
               borderColor: 'inherit',
+              height: 40,
+              width: 40,
             }}
           >
             {profile?.avatarUrl ? (
@@ -280,70 +335,15 @@ export default function ProfileMenu() {
             ) : (
               <UserIcon size={24} weight="bold" />
             )}
-          </IconButton>
-          <IconButton
-            id="fade-button"
-            aria-controls={open ? 'fade-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}
+          </Icon>
+          <Icon
             sx={{
-              pr: 0,
-              pb: 1.25,
-              pt: 1.25,
               color: 'inherit',
+              fontSize: 16,
             }}
           >
             <MenuIcon size={16} weight="bold" />
-          </IconButton>
-          <Menu
-            id="fade-menu"
-            MenuListProps={{
-              'aria-labelledby': 'fade-button',
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            TransitionComponent={Fade}
-            PaperProps={{
-              elevation: 0,
-              sx: {
-                overflow: 'visible',
-                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                mt: 1.5,
-                '& .MuiAvatar-root': {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
-                '&::before': {
-                  content: '""',
-                  display: 'block',
-                  position: 'absolute',
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  bgcolor: 'background.paper',
-                  transform: 'translateY(-50%) rotate(45deg)',
-                  zIndex: 0,
-                },
-              },
-            }}
-          >
-            <Link href="/profile">
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-            </Link>
-            <MenuItem
-              onClick={() => {
-                handleClose()
-                setOpenLogoutAlertDialog(true)
-              }}
-            >
-              Logout
-            </MenuItem>
-          </Menu>
+          </Icon>
         </Box>
       </Box>
     </Box>
