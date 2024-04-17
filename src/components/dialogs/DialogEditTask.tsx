@@ -64,7 +64,7 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
       startTime: Dayjs | null
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: () => {
       formik.resetForm()
       onClose()
     },

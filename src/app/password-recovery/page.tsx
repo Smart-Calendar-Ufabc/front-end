@@ -6,43 +6,43 @@ import FormContainer from '@/components/form/FormContainer'
 import FormGroup from '@/components/form/FormGroup'
 import FormTitle from '@/components/form/FormTitle'
 import OnboardingLayout from '@/components/layout/OnboardingLayout'
-import { useAppStates } from '@/store/useAppStates'
+// import { useAppStates } from '@/store/useAppStates'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { signUpFetch } from '../api/sign-up'
-import { Alert, CircularProgress } from '@mui/material'
+// import { signUpFetch } from '../api/sign-up'
+import { CircularProgress } from '@mui/material'
 
 export default function SignUp() {
-  const [openAlert, setOpenAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
-  const { setOnboarding } = useAppStates()
+  // const [openAlert, setOpenAlert] = useState(false)
+  // const [alertMessage, setAlertMessage] = useState('')
+  // const { setOnboarding } = useAppStates()
   const [isLoading, setIsLoading] = useState(false)
-
 
   const formik = useFormik({
     initialValues: {
       email: '',
-      
     },
-    onSubmit: async (values) => {
+    onSubmit: async () => {
       setIsLoading(true)
-      const { data, status } = await signUpFetch(values)
+      // const { data, status } = await signUpFetch(values)
 
-      if (status === 200) {
-        setOpenAlert(true)
-        setAlertMessage('Um link para redefinição de senha foi enviado para o seu e-mail.')
-        formik.resetForm()
-      } else if (status === 404) {
-        setIsLoading(false)
-        formik.setErrors({
-          email: 'Email não encontrado. Verifique se digitou corretamente.',
-        })
-      } else if (status === 500) {
-        setIsLoading(false)
-        setOpenAlert(true)
-        setAlertMessage('Erro interno no servidor.')
-      }
+      // if (status === 200) {
+      //   setOpenAlert(true)
+      //   setAlertMessage(
+      //     'Um link para redefinição de senha foi enviado para o seu e-mail.',
+      //   )
+      //   formik.resetForm()
+      // } else if (status === 404) {
+      //   setIsLoading(false)
+      //   formik.setErrors({
+      //     email: 'Email não encontrado. Verifique se digitou corretamente.',
+      //   })
+      // } else if (status === 500) {
+      //   setIsLoading(false)
+      //   setOpenAlert(true)
+      //   setAlertMessage('Erro interno no servidor.')
+      // }
     },
   })
 
@@ -50,7 +50,7 @@ export default function SignUp() {
     <OnboardingLayout>
       <FormContainer>
         <FormTitle>Recuperar Conta</FormTitle>
-        {openAlert && (
+        {/* {openAlert && (
           <Alert
             severity="error"
             onClose={() => {
@@ -59,10 +59,11 @@ export default function SignUp() {
           >
             {alertMessage}
           </Alert>
-        )}
+        )} */}
         <Typography>
-            Insira seu email para receber um código de confirmação e recuperar sua conta.
-          </Typography>
+          Insira seu email para receber um código de confirmação e recuperar sua
+          conta.
+        </Typography>
         <FormGroup>
           <FormGroup>
             <TextField
@@ -76,7 +77,6 @@ export default function SignUp() {
               helperText={formik.touched.email && formik.errors.email}
             />
           </FormGroup>
-          
         </FormGroup>
         <Button
           variant="contained"
