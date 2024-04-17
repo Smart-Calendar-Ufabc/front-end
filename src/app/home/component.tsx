@@ -225,7 +225,7 @@ const StorageManager = () => {
         open={openDeleteAlertDialog}
         onClose={() => setOpenDeleteAlertDialog(false)}
         onConfirm={handleDeletePermanently}
-        title="Apagar Todos os Dados"
+        title="Apagar todos os agendamentos e tarefas não alocadas"
         message="Você pode fazer o backup antes de deletar clicando no botão abaixo. Deseja continuar?"
         confirmText="Deletar"
         cancelText="Cancelar"

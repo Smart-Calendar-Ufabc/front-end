@@ -7,6 +7,8 @@ import {
   CaretDown as MenuIcon,
   CloudArrowDown as BackupIcon,
   BellRinging as NotificationIcon,
+  SignOut as LogoutIcon,
+  User as ProfileIcon,
 } from '@phosphor-icons/react'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
@@ -201,16 +203,50 @@ export default function ProfileMenu() {
           },
         }}
       >
-        <Link href="/profile">
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-        </Link>
+        <MenuItem onClick={handleClose}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pb: 0.5,
+            }}
+          >
+            <Link href="/profile">
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon>
+                  <ProfileIcon />
+                </Icon>
+                <Typography sx={{ ml: '8px', mt: '4px' }}>Perfil</Typography>
+              </Box>
+            </Link>
+          </Box>
+        </MenuItem>
         <MenuItem
           onClick={() => {
             handleClose()
             setOpenLogoutAlertDialog(true)
           }}
         >
-          Logout
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pb: 0.5,
+            }}
+          >
+            <Icon>
+              <LogoutIcon />
+            </Icon>
+            <Typography sx={{ ml: '8px', mt: '4px' }}>Sair</Typography>
+          </Box>
         </MenuItem>
       </Menu>
       <Box

@@ -15,12 +15,17 @@ import Typography from '@mui/material/Typography'
 import { signUpFetch } from '../api/sign-up'
 import { Alert, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/navigation'
+import {
+  EyeSlash as EyeClosedIcon,
+  Eye as EyeOpenIcon,
+} from '@phosphor-icons/react'
 
 export default function SignUp() {
   const [openAlert, setOpenAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const { setOnboarding } = useAppStates()
   const [isLoading, setIsLoading] = useState(false)
+  const [visibility, setVisibility] = useState(false)
 
   const router = useRouter()
 
@@ -95,7 +100,7 @@ export default function SignUp() {
             <TextField
               name="password"
               label="Senha"
-              type="password"
+              type={visibility ? 'text' : 'password'}
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -105,6 +110,21 @@ export default function SignUp() {
                   ? formik.errors.password
                   : 'A senha deve conter ao menos 6 caracteres.'
               }
+              InputProps={{
+                endAdornment: visibility ? (
+                  <EyeOpenIcon
+                    onClick={() => setVisibility(false)}
+                    size={24}
+                    style={{ cursor: 'pointer' }}
+                  />
+                ) : (
+                  <EyeClosedIcon
+                    onClick={() => setVisibility(true)}
+                    size={24}
+                    style={{ cursor: 'pointer' }}
+                  />
+                ),
+              }}
             />
           </FormGroup>
         </FormGroup>
