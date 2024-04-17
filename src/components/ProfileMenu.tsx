@@ -2,7 +2,11 @@ import * as React from 'react'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Fade from '@mui/material/Fade'
-import { User as UserIcon, CaretDown as MenuIcon } from '@phosphor-icons/react'
+import {
+  User as UserIcon,
+  CaretDown as MenuIcon,
+  CloudArrowDown as BackupIcon,
+} from '@phosphor-icons/react'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Link from 'next/link'
@@ -14,13 +18,18 @@ import AlertDialog from './dialogs/AlertDialog'
 import { useRouter } from 'next/navigation'
 import { useSchedulesStates } from '@/store/useSchedulesStates'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
+import Button from '@mui/material/Button'
+import dayjs from 'dayjs'
+import { downloadJSON } from '@/helpers/file'
 
 export default function ProfileMenu() {
   const { setAuthToken } = useAppStates()
   const { profile, setProfile } = useProfileStates()
-  const { setSchedules } = useSchedulesStates()
-  const { setUnallocatedTasks } = useUnallocatedTaskStates()
+  const { schedules, setSchedules } = useSchedulesStates()
+  const { unallocatedTasks, setUnallocatedTasks } = useUnallocatedTaskStates()
 
+  const [openLogoutAlertDialog, setOpenLogoutAlertDialog] =
+    React.useState<boolean>(false)
   const [openAlertDialog, setOpenAlertDialog] = React.useState<boolean>(false)
   const [alertDialogMessage, setAlertDialogMessage] = React.useState<string>('')
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
@@ -40,11 +49,10 @@ export default function ProfileMenu() {
   const handleLogout = React.useCallback(async () => {
     setIsLoading(true)
     handleClose()
-    setAuthToken(null)
 
     const { status } = await logoutFetch()
 
-    if (status === 204) {
+    if (status === 200) {
       setAuthToken(null)
       setProfile(null)
       setSchedules([])
@@ -99,6 +107,18 @@ export default function ProfileMenu() {
     }
   }, [setProfile])
 
+  const handleBackup = React.useCallback(() => {
+    const date = dayjs().utc().format('YYYY-MM-DD')
+
+    downloadJSON({
+      data: {
+        schedules,
+        unallocatedTasks,
+      },
+      fileName: `ease-calendar-${date}.json`,
+    })
+  }, [schedules, unallocatedTasks])
+
   return (
     <Box>
       <LoadingDialog open={isLoading} message="Encerrando a sessão..." />
@@ -109,10 +129,28 @@ export default function ProfileMenu() {
         title={alertDialogMessage}
         confirmText="Ok"
       />
-
+      <AlertDialog
+        open={openLogoutAlertDialog}
+        onClose={() => setOpenLogoutAlertDialog(false)}
+        onConfirm={handleLogout}
+        title="Deseja realmente sair?"
+        message="Como este sistema está em desenvolvimento ao encerrar a sessão todos os dados serão perdidos. Recomendamos fazer o Backup do calendário clidando no botão abaixo antes de sair."
+        confirmText="Sair"
+        cancelText="Cancelar"
+      >
+        <Button
+          variant="contained"
+          startIcon={<BackupIcon />}
+          onClick={handleBackup}
+          sx={{ mt: 2 }}
+        >
+          Fazer Backup
+        </Button>
+      </AlertDialog>
       <Box
         sx={{
           color: open ? 'primary.main' : 'grey.500',
+          cursor: 'pointer',
           borderColor: open ? 'primary.main' : 'grey.200',
           '&:hover': {
             borderColor: 'primary.main',
@@ -206,7 +244,9 @@ export default function ProfileMenu() {
         <Link href="/profile">
           <MenuItem onClick={handleClose}>Profile</MenuItem>
         </Link>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem onClick={() => setOpenLogoutAlertDialog(true)}>
+          Logout
+        </MenuItem>
       </Menu>
     </Box>
   )
