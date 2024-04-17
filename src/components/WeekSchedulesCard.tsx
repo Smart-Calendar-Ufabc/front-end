@@ -24,14 +24,14 @@ export const WeekSchedulesCard = ({
   const [openDialogAddTask, setOpenDialogAddTask] = useState(false)
 
   const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-  const weekUTCDay = dayjs(date).utc().get('day')
+  const weekUTCDay = dayjs(date).get('day')
   const weekDay = days[weekUTCDay]
 
-  const day = dayjs(date).utc().get('date')
+  const day = dayjs(date).get('date')
 
   const areInToday = () => {
-    const thisDate = dayjs(date).utc()
-    const today = dayjs().utc()
+    const thisDate = dayjs.utc(date)
+    const today = dayjs.utc()
     return thisDate.isSame(today, 'day')
   }
 

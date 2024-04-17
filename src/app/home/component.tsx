@@ -6,20 +6,20 @@ import ActionToolbar from '@/components/ActionToolbar'
 import { WeekSchedulesCard } from '@/components/WeekSchedulesCard'
 import { Schedule } from '@/entities/Schedule'
 import { useSchedulesStates } from '@/store/useSchedulesStates'
-import { Button, Skeleton } from '@mui/material'
+import { Button, Card, Skeleton } from '@mui/material'
 import {
   CloudArrowDown as BackupIcon,
   CloudArrowUp as RestoreIcon,
+  Trash as DeleteIcon,
 } from '@phosphor-icons/react'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-
-import 'dayjs/locale/pt-br'
-import MobileUp from '@/components/layout/responsive/MobileUp'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 import { downloadJSON, uploadJSON } from '@/helpers/file'
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
 import AlertDialog from '@/components/dialogs/AlertDialog'
+
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import 'dayjs/locale/pt-br'
 
 dayjs.locale('pt-br')
 dayjs.extend(utc)
@@ -64,6 +64,8 @@ export default function HomeMain() {
 
     schedules.forEach((schedule) => {
       const key = dayjs(schedule.startAt).startOf('day').toISOString()
+      console.log('schedule key', key)
+      console.log('schedule title', schedule.title)
       if (!grouped[key]) {
         grouped[key] = []
       }
@@ -74,6 +76,7 @@ export default function HomeMain() {
 
     days.forEach((day) => {
       const key = day.startOf('day').toISOString()
+      console.log('days key', key)
       newGrouped[key] = grouped[key] || []
     })
 
@@ -134,6 +137,8 @@ const StorageManager = () => {
   const { schedules, setSchedules } = useSchedulesStates()
   const { unallocatedTasks, setUnallocatedTasks } = useUnallocatedTaskStates()
 
+  const [openDeleteAlertDialog, setOpenDeleteAlertDialog] =
+    useState<boolean>(false)
   const [openRestoreAlertDialog, setOpenRestoreAlertDialog] =
     useState<boolean>(false)
   const [openAlertErrorDialog, setOpenAlertErrorDialog] =
@@ -153,6 +158,11 @@ const StorageManager = () => {
     })
   }, [schedules, unallocatedTasks])
 
+  const handleDeletePermanently = useCallback(() => {
+    setSchedules([])
+    setUnallocatedTasks([])
+  }, [setSchedules, setUnallocatedTasks])
+
   const handleRestore = useCallback(
     async (file: File) => {
       try {
@@ -164,15 +174,34 @@ const StorageManager = () => {
         if (restore) {
           const parsedSchedules: Schedule[] = restore.schedules.map(
             (schedule) => {
+              const startHour = dayjs.utc(schedule.startAt).get('hour')
+              const startMinutes = dayjs.utc(schedule.startAt).get('minute')
+              const endHour = dayjs.utc(schedule.endAt).get('hour')
+              const endMinutes = dayjs.utc(schedule.endAt).get('minute')
+
+              const newStartAt = dayjs
+                .utc(schedule.startAt)
+                .set('hour', startHour)
+                .set('minute', startMinutes)
+                .toDate()
+
+              const newEndAt = dayjs
+                .utc(schedule.endAt)
+                .set('hour', endHour)
+                .set('minute', endMinutes)
+                .toDate()
+
+              const newDeadline =
+                schedule?.deadline && dayjs.utc(schedule?.deadline).toDate()
+
               return {
                 ...schedule,
-                startAt: new Date(schedule.startAt),
-                endAt: new Date(schedule.endAt),
-                deadline: schedule?.deadline && new Date(schedule?.deadline),
+                startAt: newStartAt,
+                endAt: newEndAt,
+                deadline: newDeadline,
               }
             },
           )
-          console.log('parsedSchedules', parsedSchedules)
           setSchedules(parsedSchedules)
           setUnallocatedTasks(restore.unallocatedTasks)
         }
@@ -196,6 +225,24 @@ const StorageManager = () => {
         confirmText="Ok"
       />
       <AlertDialog
+        open={openDeleteAlertDialog}
+        onClose={() => setOpenDeleteAlertDialog(false)}
+        onConfirm={handleDeletePermanently}
+        title="Apagar Todos os Dados"
+        message="Você pode fazer o backup antes de deletar clicando no botão abaixo. Deseja continuar?"
+        confirmText="Deletar"
+        cancelText="Cancelar"
+      >
+        <Button
+          variant="contained"
+          startIcon={<BackupIcon />}
+          onClick={handleBackup}
+          sx={{ mt: 2 }}
+        >
+          Fazer Backup
+        </Button>
+      </AlertDialog>
+      <AlertDialog
         open={openRestoreAlertDialog}
         onClose={() => setOpenRestoreAlertDialog(false)}
         onConfirm={() => inputFileRef.current?.click()}
@@ -207,11 +254,10 @@ const StorageManager = () => {
       <Box
         sx={{
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-end',
           justifyContent: 'flex-end',
-          flexDirection: 'row',
-          gap: 3,
-          width: '100%',
+          flexDirection: 'column',
+          gap: 2,
         }}
       >
         <input
@@ -226,17 +272,65 @@ const StorageManager = () => {
             }
           }}
         />
-        <Button startIcon={<BackupIcon />} onClick={handleBackup}>
-          Fazer Backup
-        </Button>
-        <MobileUp>
+        <Card
+          elevation={2}
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            borderRadius: 2,
+            p: 1,
+            columnGap: 1,
+            flexWrap: 'wrap',
+          }}
+        >
+          <Button
+            startIcon={<BackupIcon />}
+            onClick={handleBackup}
+            sx={(theme) => ({
+              '&:after': {
+                content: '"Fazer Backup"',
+              },
+              [theme.breakpoints.down('sm')]: {
+                '&:after': {
+                  content: '"Backup"',
+                },
+              },
+            })}
+          />
           <Button
             startIcon={<RestoreIcon />}
             onClick={() => setOpenRestoreAlertDialog(true)}
-          >
-            Restaurar Backup
-          </Button>
-        </MobileUp>
+            sx={(theme) => ({
+              '&:after': {
+                content: '"Restaurar Backup"',
+              },
+              [theme.breakpoints.down('sm')]: {
+                '&:after': {
+                  content: '"Restaurar"',
+                },
+              },
+            })}
+          />
+        </Card>
+        <Button
+          startIcon={<DeleteIcon />}
+          onClick={() => setOpenDeleteAlertDialog(true)}
+          sx={(theme) => ({
+            color: 'grey.500',
+            '&:hover': {
+              color: 'error.main',
+            },
+            '&:after': {
+              content: '"Apagar Tudo"',
+            },
+            [theme.breakpoints.down('sm')]: {
+              '&:after': {
+                content: '"Apagar Tudo"',
+              },
+            },
+          })}
+        />
       </Box>
     </>
   )
