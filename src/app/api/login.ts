@@ -1,10 +1,22 @@
 import { USER_BASE_API } from '@/config'
-import { Profile } from '@/entities/Profile'
 
 interface LoginResponse {
   message?: string
   token?: string
-  profile?: Profile
+  profile?: {
+    name: string
+    avatar_image_url?: string
+    sleepHours?: {
+      start: {
+        hour: number
+        minutes: number
+      }
+      end: {
+        hour: number
+        minutes: number
+      }
+    }
+  }
   errors?: {
     email?: string[]
     password?: string[]

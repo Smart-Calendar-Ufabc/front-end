@@ -3,7 +3,7 @@ import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import MuiCheckbox, { CheckboxProps } from '@mui/material/Checkbox'
 import Box from '@mui/material/Box'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import Menu from '@mui/material/Menu'
 import Fade from '@mui/material/Fade'
 import MenuItem from '@mui/material/MenuItem'
@@ -37,7 +37,7 @@ export const ScheduleCard = ({
   const [completed, setCompleted] = useState(status === 'done')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
-  const { deleteSchedule } = useSchedulesStates()
+  const { deleteSchedule, changeCompleted } = useSchedulesStates()
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -47,20 +47,20 @@ export const ScheduleCard = ({
     setAnchorEl(null)
   }
 
-  const handleOpenEdit = () => {
-    switch (priority) {
-      case 'routine': {
-        setOpenEditRoutineDialog(true)
-        break
-      }
-      default: {
-        setOpenEditTaskDialog(true)
-        break
-      }
-    }
+  // const handleOpenEdit = () => {
+  //   switch (priority) {
+  //     case 'routine': {
+  //       setOpenEditRoutineDialog(true)
+  //       break
+  //     }
+  //     default: {
+  //       setOpenEditTaskDialog(true)
+  //       break
+  //     }
+  //   }
 
-    handleClose()
-  }
+  //   handleClose()
+  // }
 
   const handleOpenDeleteModal = () => {
     setOpenDeleteDialog(true)
@@ -71,6 +71,13 @@ export const ScheduleCard = ({
     deleteSchedule(id)
     handleClose()
   }
+
+  const handleChangeCompleted = useCallback(() => {
+    changeCompleted(id)
+    setCompleted((prev) => {
+      return !prev
+    })
+  }, [changeCompleted, id])
 
   return (
     <Card
@@ -133,7 +140,7 @@ export const ScheduleCard = ({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 36, vertical: 24 }}
       >
-        <MenuItem onClick={handleOpenEdit}>Editar</MenuItem>
+        {/* <MenuItem onClick={handleOpenEdit}>Editar</MenuItem> */}
         <MenuItem onClick={handleOpenDeleteModal}>Excluir</MenuItem>
       </Menu>
       <Box
@@ -165,7 +172,7 @@ export const ScheduleCard = ({
           </Typography>
           <Checkbox
             checked={completed}
-            onChange={() => setCompleted(!completed)}
+            onChange={handleChangeCompleted}
             sx={{
               '&.MuiCheckbox-root': {
                 p: 0,
@@ -213,10 +220,13 @@ export const ScheduleCard = ({
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
               sx={{
-                color: 'grey.500',
+                color: open ? 'primary.main' : 'grey.500',
                 pr: 0,
                 pb: 0,
                 pt: 0.25,
+                '&:hover': {
+                  color: 'primary.main',
+                },
               }}
             >
               <MenuIcon size={16} weight="bold" />

@@ -19,7 +19,7 @@ import Mobile from '../layout/responsive/Mobile'
 import MobileUp from '../layout/responsive/MobileUp'
 import { DialogSuggestionSchedule } from './DialogSuggestionSchedule'
 import { useSchedulesSuggestionsStates } from '@/store/useSchedulesSuggestionStates'
-import { Profile } from '@/entities/Profile'
+import { useProfileStates } from '@/store/useProfileStates'
 
 interface DialogUnallocatedTasksProps {
   open: boolean
@@ -34,54 +34,31 @@ export function DialogUnallocatedTasks({
   const { setSchedulesSuggestions } = useSchedulesSuggestionsStates()
   const { unallocatedTasks, countUnallocatedTasks } = useUnallocatedTaskStates()
   const { schedules } = useSchedulesStates()
+  const { profile } = useProfileStates()
 
   const handleGenerateScheduleSuggestion = useCallback(() => {
-    let sleepHours: Profile['sleepHours'] | undefined
-    if (typeof window !== 'undefined') {
-      const profile = JSON.parse(
-        window.localStorage.getItem('profile') || '{}',
-      ) as Profile
-      if (profile?.sleepHours) {
-        sleepHours = profile.sleepHours
-      }
-    }
-
     onClose()
     const data = createScheduleSuggestion(unallocatedTasks, schedules, {
       dates: [],
-      intervals: sleepHours ? [sleepHours] : [],
+      intervals: profile?.sleepHours ? [profile?.sleepHours] : [],
       weekDays: [],
     })
     if (data) {
       setSchedulesSuggestions(data)
     }
     setOpenSuggestionSchedule(true)
-  }, [unallocatedTasks, schedules, setSchedulesSuggestions, onClose])
+  }, [unallocatedTasks, schedules, setSchedulesSuggestions, onClose, profile])
 
   const handleRegenerateScheduleSuggestion = useCallback(() => {
-    let sleepHours: Profile['sleepHours'] | undefined
-    if (typeof window !== 'undefined') {
-      const profile = JSON.parse(
-        window.localStorage.getItem('profile') || '{}',
-      ) as Profile
-      if (profile?.sleepHours) {
-        sleepHours = profile.sleepHours
-      }
-    }
-
     const data = createScheduleSuggestion(unallocatedTasks, schedules, {
       dates: [],
-      intervals: sleepHours ? [sleepHours] : [],
+      intervals: profile?.sleepHours ? [profile?.sleepHours] : [],
       weekDays: [],
     })
     if (data) {
       setSchedulesSuggestions(data)
     }
-  }, [schedules, unallocatedTasks, setSchedulesSuggestions])
-
-  // useEffect(() => {
-  //   setUnallocatedTasks(initialUnallocatedTasks)
-  // }, [setUnallocatedTasks])
+  }, [schedules, unallocatedTasks, setSchedulesSuggestions, profile])
 
   useEffect(() => {
     if (!countUnallocatedTasks) {

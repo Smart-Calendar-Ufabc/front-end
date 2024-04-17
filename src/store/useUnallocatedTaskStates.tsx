@@ -1,5 +1,6 @@
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 interface AppStates {
   unallocatedTasks: UnallocatedTask[]
@@ -17,43 +18,53 @@ interface AppStates {
   ) => void
 }
 
-export const useUnallocatedTaskStates = create<AppStates>()((set) => ({
-  unallocatedTasks: [],
-  countUnallocatedTasks: 0,
-  unallocatedTasksInSuggestion: [],
-  setUnallocatedTasks: (unallocatedTasks) => {
-    set(() => ({
-      unallocatedTasks,
-      countUnallocatedTasks: unallocatedTasks.length,
-    }))
-  },
-  addUnallocatedTask: (unallocatedTasks) => {
-    set((state) => ({
-      unallocatedTasks: [...state.unallocatedTasks, unallocatedTasks],
-      countUnallocatedTasks: state.countUnallocatedTasks + 1,
-    }))
-  },
-  deleteUnallocatedTask: (id) => {
-    set((state) => ({
-      unallocatedTasks: state.unallocatedTasks.filter((task) => task.id !== id),
-      countUnallocatedTasks: state.countUnallocatedTasks - 1,
-    }))
-  },
-  clearUnallocatedTasks: () => {
-    set(() => ({
+export const useUnallocatedTaskStates = create<AppStates>()(
+  persist(
+    (set) => ({
       unallocatedTasks: [],
       countUnallocatedTasks: 0,
-    }))
-  },
-  addUnallocatedTaskInSuggestion: (task, reason) => {
-    set((state) => ({
-      unallocatedTasksInSuggestion: [
-        ...state.unallocatedTasksInSuggestion,
-        {
-          ...task,
-          reason,
-        },
-      ],
-    }))
-  },
-}))
+      unallocatedTasksInSuggestion: [],
+      setUnallocatedTasks: (unallocatedTasks) => {
+        set(() => ({
+          unallocatedTasks,
+          countUnallocatedTasks: unallocatedTasks.length,
+        }))
+      },
+      addUnallocatedTask: (unallocatedTasks) => {
+        set((state) => ({
+          unallocatedTasks: [...state.unallocatedTasks, unallocatedTasks],
+          countUnallocatedTasks: state.countUnallocatedTasks + 1,
+        }))
+      },
+      deleteUnallocatedTask: (id) => {
+        set((state) => ({
+          unallocatedTasks: state.unallocatedTasks.filter(
+            (task) => task.id !== id,
+          ),
+          countUnallocatedTasks: state.countUnallocatedTasks - 1,
+        }))
+      },
+      clearUnallocatedTasks: () => {
+        set(() => ({
+          unallocatedTasks: [],
+          countUnallocatedTasks: 0,
+        }))
+      },
+      addUnallocatedTaskInSuggestion: (task, reason) => {
+        set((state) => ({
+          unallocatedTasksInSuggestion: [
+            ...state.unallocatedTasksInSuggestion,
+            {
+              ...task,
+              reason,
+            },
+          ],
+        }))
+      },
+    }),
+    {
+      name: 'easeCalendarUnallocatedTaskStates',
+      getStorage: () => localStorage,
+    },
+  ),
+)

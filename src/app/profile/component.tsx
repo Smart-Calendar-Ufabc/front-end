@@ -100,9 +100,6 @@ export default function SettingsMain() {
         })
 
         if (status === 201 && data?.profile) {
-          if (typeof window !== 'undefined') {
-            window.localStorage.setItem('profile', JSON.stringify(data.profile))
-          }
           setIsLoading(false)
           setProfile({
             name: values.name,
@@ -141,9 +138,6 @@ export default function SettingsMain() {
         })
 
         if (status === 200 && data?.profile) {
-          if (typeof window !== 'undefined') {
-            window.localStorage.setItem('profile', JSON.stringify(data.profile))
-          }
           setIsLoading(false)
           setProfile({
             name: values.name,
@@ -174,9 +168,6 @@ export default function SettingsMain() {
       const { status, data } = await getProfileFetch()
 
       if (status === 200 && data?.profile) {
-        if (typeof window !== 'undefined') {
-          window.localStorage.setItem('profile', JSON.stringify(data.profile))
-        }
         setProfile(data.profile)
         formik.setFieldValue('name', data.profile.name)
         formik.setFieldValue(
@@ -193,14 +184,11 @@ export default function SettingsMain() {
             data.profile?.sleepHours?.end.minutes,
           ),
         )
-        if (data.profile.avatar) {
-          setImageUploadedUrl(data.profile.avatar)
+        if (data.profile.avatarUrl) {
+          setImageUploadedUrl(data.profile.avatarUrl)
         }
       } else if (status === 200 && !data?.profile) {
         setProfile(null)
-        if (typeof window !== 'undefined') {
-          window.localStorage.removeItem('profile')
-        }
       } else if (status !== 200) {
         setOpenAlert(true)
         setAlertMessage('Erro interno no servidor')

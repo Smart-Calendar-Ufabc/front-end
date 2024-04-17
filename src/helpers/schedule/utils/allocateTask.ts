@@ -84,10 +84,18 @@ const getPeriodsToSearch = (
       )
     }
 
-    periodsToSearch.push({
-      start,
-      end,
-    })
+    if (
+      sleepHours &&
+      i === 0 &&
+      currentDate.getHours() >= sleepHours.start.hour
+    ) {
+      // se a hora atual for maior ou igual ao horário de início do intervalo de sono
+    } else {
+      periodsToSearch.push({
+        start,
+        end,
+      })
+    }
 
     currentDay += 1
 
@@ -107,12 +115,7 @@ const getPeriodsToSearch = (
   }
 
   if (task.priority === 'high') {
-    const middleIndex = Math.floor(periodsToSearch.length / 2)
-    const firstHalf = periodsToSearch.slice(0, middleIndex).reverse()
-    const secondHalf = periodsToSearch.slice(middleIndex)
-    const sortedPeriods = firstHalf.concat(secondHalf)
-
-    return sortedPeriods
+    return periodsToSearch
   } else if (task.priority === 'medium') {
     const thirdIndex = Math.floor(periodsToSearch.length / 3)
     let firstThird: { start: Date; end: Date }[],
@@ -171,9 +174,13 @@ export const allocateTask = (
 
   while (end || spaceFounded) {
     const period = periodsToSearch[index]
-    const schedulesInTheSameDayOfPeriod = schedules.filter(
-      (schedule) => schedule.startAt.getUTCDate() === period.start.getUTCDate(),
-    )
+
+    const schedulesInTheSameDayOfPeriod = schedules.filter((schedule) => {
+      const scheduleStartAt = new Date(schedule.startAt).getDate()
+      const periodStartAt = period.start.getUTCDate()
+
+      return scheduleStartAt === periodStartAt
+    })
 
     if (schedulesInTheSameDayOfPeriod.length === 0) {
       spaceFounded = true
@@ -196,10 +203,13 @@ export const allocateTask = (
 
       const spaceStart = Math.max(
         period.start.getTime(),
-        currentSchedule.endAt.getTime(),
+        new Date(currentSchedule.endAt).getTime(),
       )
       const spaceEnd = nextSchedule
-        ? Math.min(period.end.getTime(), nextSchedule.startAt.getTime())
+        ? Math.min(
+            period.end.getTime(),
+            new Date(nextSchedule.startAt).getTime(),
+          )
         : period.end.getTime()
 
       const spaceDuration = (spaceEnd - spaceStart) / (60 * 1000) // convert milliseconds to minutes
@@ -227,15 +237,4 @@ export const allocateTask = (
   }
 
   throw new DeadlineExceededException()
-}
-
-export const isThereGapBetweenSchedules = (
-  newScheduleDurationMs: number,
-  previousSchedule: Schedule,
-  currentSchedule: Schedule,
-) => {
-  const diff =
-    currentSchedule.startAt.getTime() - previousSchedule.endAt.getTime()
-
-  return diff >= newScheduleDurationMs
 }

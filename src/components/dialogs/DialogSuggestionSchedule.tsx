@@ -59,9 +59,15 @@ export function DialogSuggestionSchedule({
       if (schedule) {
         addSchedule(schedule)
         handleRemoveFromSuggestions(id)
+        deleteUnallocatedTask(id)
       }
     },
-    [addSchedule, handleRemoveFromSuggestions, schedulesSuggestions],
+    [
+      addSchedule,
+      handleRemoveFromSuggestions,
+      schedulesSuggestions,
+      deleteUnallocatedTask,
+    ],
   )
 
   useEffect(() => {
@@ -153,7 +159,7 @@ export function DialogSuggestionSchedule({
                   .map(([startDate, schedules]) => (
                     <Box key={startDate}>
                       <Typography mb={2}>
-                        {getBrazilianDate(new Date(startDate))}
+                        {getBrazilianDate(new Date(startDate), { utc: true })}
                       </Typography>
                       <Box
                         display="grid"
@@ -178,18 +184,24 @@ export function DialogSuggestionSchedule({
                           }}
                         >
                           {schedules
-                            .sort(
-                              (a, b) =>
-                                a.startAt.getTime() - b.startAt.getTime(),
-                            )
+                            .sort((a, b) => {
+                              return (
+                                new Date(a.startAt).getTime() -
+                                new Date(b.startAt).getTime()
+                              )
+                            })
                             .map((task) => (
                               <ScheduleSuggestionCard
                                 key={task.id}
                                 id={task.id}
                                 title={task.title}
                                 priority={task.priority}
-                                startTime={getDuration(task.startAt)}
-                                endTime={getDuration(task.endAt)}
+                                startTime={getDuration(task.startAt, {
+                                  utc: false,
+                                })}
+                                endTime={getDuration(task.endAt, {
+                                  utc: false,
+                                })}
                                 deadline={task.deadline ?? new Date()}
                                 onApprove={handleApproveSuggestion}
                                 onRemove={handleRemoveFromSuggestions}

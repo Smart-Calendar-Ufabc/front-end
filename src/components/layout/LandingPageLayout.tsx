@@ -17,9 +17,12 @@ import LogoType from '../LogoType'
 import MobileUp from './responsive/MobileUp'
 import Mobile from './responsive/Mobile'
 import { User as UserIcon, List as ListIcon } from '@phosphor-icons/react'
+import { useRouter } from 'next/navigation'
 
 const Header = () => {
   const [openMenu, setOpenMenu] = useState(false)
+
+  const router = useRouter()
 
   const handleOpenMenu = () => {
     setOpenMenu(true)
@@ -45,15 +48,12 @@ const Header = () => {
       </Box>
       <MobileUp>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button
-            variant="contained"
-            onClick={() => window.open('/sign-up', '_self')}
-          >
+          <Button variant="contained" onClick={() => router.push('/sign-up')}>
             {'Cadastre-se'}
           </Button>
           <Button
             startIcon={<UserIcon />}
-            onClick={() => window.open('/login', '_self')}
+            onClick={() => router.push('/login')}
           >
             {'Entrar'}
           </Button>
@@ -72,24 +72,12 @@ const Header = () => {
         >
           <List>
             <ListItem disablePadding>
-              <ListItemButton
-                onClick={() =>
-                  typeof window !== 'undefined'
-                    ? window.open('/sign-up', '_self')
-                    : {}
-                }
-              >
+              <ListItemButton onClick={() => router.push('/sign-up')}>
                 <ListItemText primary={'Cadastre-se'} />
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton
-                onClick={() =>
-                  typeof window !== 'undefined'
-                    ? window.open('/login', '_self')
-                    : {}
-                }
-              >
+              <ListItemButton onClick={() => router.push('/login')}>
                 <ListItemText primary={'Entrar'} />
               </ListItemButton>
             </ListItem>

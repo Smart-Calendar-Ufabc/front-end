@@ -15,12 +15,15 @@ import Typography from '@mui/material/Typography'
 import { signUpCodeValidationFetch } from '@/app/api/sign-up'
 import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
+import { useRouter } from 'next/navigation'
 
 export default function SignUpCodeValidation() {
   const [openAlert, setOpenAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { onboarding, setAuthToken } = useAppStates()
+
+  const router = useRouter()
 
   const validationSchema = yup.object({
     code: yup
@@ -32,7 +35,7 @@ export default function SignUpCodeValidation() {
 
   const formik = useFormik({
     initialValues: {
-      code: onboarding.code,
+      code: '',
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -44,10 +47,7 @@ export default function SignUpCodeValidation() {
 
       if (status === 200 && data?.token) {
         setAuthToken(data.token)
-        if (typeof window !== 'undefined') {
-          window.localStorage.setItem('authToken', data.token)
-          window.location.href = '/home'
-        }
+        router.push('/home')
       } else if (data?.errors?.code) {
         setIsLoading(false)
         formik.setErrors({
@@ -77,7 +77,7 @@ export default function SignUpCodeValidation() {
         )}
         <FormGroup>
           <Typography>
-            Confirme o código abaixo para finalizar o cadastro do e-mail{' '}
+            Enviamos um e-mail com um código de verificação para{' '}
             <b>{onboarding.email}</b>. (<Link to="/sign-up">não é você?</Link>)
           </Typography>
           <Typography>
@@ -85,8 +85,9 @@ export default function SignUpCodeValidation() {
           </Typography>
           <FormGroup>
             <TextField
+              name="code"
               label="Código"
-              type="code"
+              type="text"
               value={formik.values.code}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -96,13 +97,19 @@ export default function SignUpCodeValidation() {
                   ? formik.errors.code
                   : 'O código deve conter 6 dígitos.'
               }
-            ></TextField>
+              InputProps={{
+                inputMode: 'numeric',
+              }}
+            />
           </FormGroup>
         </FormGroup>
         <Button
           variant="contained"
           onClick={formik.submitForm}
           disabled={isLoading}
+          sx={{
+            height: 43,
+          }}
         >
           {isLoading ? <CircularProgress size={16} /> : 'Verificar'}
         </Button>

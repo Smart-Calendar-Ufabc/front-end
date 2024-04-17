@@ -148,10 +148,13 @@ export const ScheduleSuggestionCard = ({
               aria-expanded={open ? 'true' : undefined}
               onClick={handleOpenMenu}
               sx={{
-                color: 'grey.500',
+                color: open ? 'primary.main' : 'grey.500',
                 pr: 0,
                 pb: 0,
                 pt: 0.25,
+                '&:hover': {
+                  color: 'primary.main',
+                },
               }}
             >
               <MenuIcon size={16} weight="bold" />

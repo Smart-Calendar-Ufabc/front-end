@@ -5,7 +5,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
-import { X as CloseIcon, Trash as TrashIcon, ClockClockwise as ClockIcon, Columns } from '@phosphor-icons/react'
+import { X as CloseIcon } from '@phosphor-icons/react'
 import {
   FormGroup,
   FormControl,
@@ -14,14 +14,13 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  SvgIcon
 } from '@mui/material'
 import { Dayjs } from 'dayjs'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { FormHelperTag } from '../typography/FormHelperTag'
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
 import { DatePicker, TimePicker } from '@mui/x-date-pickers'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -41,7 +40,7 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
     dueDate: yup.date().required('Data é obrigatória'),
     dueTime: yup.date().required('Hora é obrigatória'),
     startDate: yup.date().nullable(),
-    startTime: yup.date().nullable()
+    startTime: yup.date().nullable(),
   })
 
   const formik = useFormik({
@@ -61,14 +60,13 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
       duration: Dayjs | null
       dueDate: Dayjs | null
       dueTime: Dayjs | null
-      startDate: Dayjs | null,
-      startTime: Dayjs | null,
+      startDate: Dayjs | null
+      startTime: Dayjs | null
     },
     validationSchema,
     onSubmit: (values) => {
-      // formik.resetForm()
-
-      // onClose()
+      formik.resetForm()
+      onClose()
     },
   })
 
@@ -76,11 +74,17 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
     <Dialog
       open={open}
       onClose={onClose}
-      sx={{
+      sx={(theme) => ({
         '& .MuiDialog-paper': {
-          minWidth: 500,
+          width: 400,
+          [theme.breakpoints.down('sm')]: {
+            width: '100%',
+            minWidth: '100%',
+            minHeight: '100%',
+            borderRadius: 0,
+          },
         },
-      }}
+      })}
     >
       <DialogTitle sx={{ m: 0, p: 2 }}>Editar Tarefa</DialogTitle>
       <IconButton
@@ -175,7 +179,7 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
               <FormLabel component="legend">Data de início</FormLabel>
               <FormGroup>
                 <Stack direction="row" spacing={2} mt={2}>
-                  <FormControl sx={{ flex: 2 }}>
+                  <FormControl sx={{ flex: 1 }}>
                     <LocalizationProvider
                       dateAdapter={AdapterDayjs}
                       adapterLocale="pt-br"
@@ -201,7 +205,8 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
                       />
                       <FormHelperText
                         error={
-                          formik.touched.startDate && Boolean(formik.errors.startDate)
+                          formik.touched.startDate &&
+                          Boolean(formik.errors.startDate)
                         }
                       >
                         {formik.touched.startDate && formik.errors.startDate}
@@ -235,7 +240,8 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
                       />
                       <FormHelperText
                         error={
-                          formik.touched.startTime && Boolean(formik.errors.startTime)
+                          formik.touched.startTime &&
+                          Boolean(formik.errors.startTime)
                         }
                       >
                         {formik.touched.startTime && formik.errors.startTime}
@@ -252,7 +258,7 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
               <FormLabel component="legend">Data limite de entrega</FormLabel>
               <FormGroup>
                 <Stack direction="row" spacing={2} mt={2}>
-                  <FormControl sx={{ flex: 2 }}>
+                  <FormControl sx={{ flex: 1 }}>
                     <LocalizationProvider
                       dateAdapter={AdapterDayjs}
                       adapterLocale="pt-br"
@@ -278,7 +284,8 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
                       />
                       <FormHelperText
                         error={
-                          formik.touched.dueDate && Boolean(formik.errors.dueDate)
+                          formik.touched.dueDate &&
+                          Boolean(formik.errors.dueDate)
                         }
                       >
                         {formik.touched.dueDate && formik.errors.dueDate}
@@ -312,7 +319,8 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
                       />
                       <FormHelperText
                         error={
-                          formik.touched.dueTime && Boolean(formik.errors.dueTime)
+                          formik.touched.dueTime &&
+                          Boolean(formik.errors.dueTime)
                         }
                       >
                         {formik.touched.dueTime && formik.errors.dueTime}
@@ -346,9 +354,18 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
               {formik.touched.priority && formik.errors.priority}
             </FormHelperText>
           </FormControl>
-          {/* Botões */}
-          <Stack direction="row" spacing={2} sx={{bgcolor: 'grey.100', width: 'Fill', placeContent: 'center', justifyContent: 'space-evenly'}}>
-            {/* Opção Excluir */}
+
+          {/* <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              bgcolor: 'grey.100',
+              width: 'Fill',
+              placeContent: 'center',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            
             <Button
               sx={(theme) => ({
                 py: '10px',
@@ -360,19 +377,19 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
                   color: 'error.main',
                   backgroundColor: 'grey.100',
                 },
-                flexDirection: 'column'
+                flexDirection: 'column',
               })}
             >
               <SvgIcon
-                sx={({
-                  marginBottom: '12px'
-                })}
+                sx={{
+                  marginBottom: '12px',
+                }}
               >
                 <TrashIcon />
               </SvgIcon>
               Excluir
             </Button>
-            {/* Opção Reagendar */}
+            
             <Button
               sx={(theme) => ({
                 py: '10px',
@@ -383,30 +400,28 @@ export function DialogEditTask({ open, onClose }: DialogEditTaskProps) {
                 '&:hover': {
                   color: 'primary.main',
                 },
-                flexDirection: 'column'
+                flexDirection: 'column',
               })}
             >
               <SvgIcon
-                sx={({
-                  marginBottom: '12px'
-                })}
+                sx={{
+                  marginBottom: '12px',
+                }}
               >
                 <ClockIcon />
               </SvgIcon>
               Reagendar
             </Button>
-          </Stack>
+          </Stack> */}
         </Stack>
       </DialogContent>
-      <DialogActions>
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{
-            py: '10px',
-          }}
-          onClick={formik.submitForm}
-        >
+      <DialogActions
+        sx={{
+          px: 3,
+          pb: 3,
+        }}
+      >
+        <Button variant="contained" fullWidth onClick={formik.submitForm}>
           Salvar Alterações
         </Button>
       </DialogActions>

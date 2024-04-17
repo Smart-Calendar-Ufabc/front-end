@@ -2,7 +2,6 @@ import { USER_BASE_API } from '@/config'
 
 interface SignUpResponse {
   message?: string
-  code?: string
   errors?: {
     email?: string[]
     password?: string[]

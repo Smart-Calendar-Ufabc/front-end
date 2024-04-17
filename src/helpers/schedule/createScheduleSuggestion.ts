@@ -47,5 +47,7 @@ export const createScheduleSuggestion = (
 }
 
 const sortByStartDate = (schedules: Schedule[]): Schedule[] => {
-  return schedules.sort((a, b) => a.startAt.getTime() - b.startAt.getTime())
+  return schedules.sort((a, b) => {
+    return new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+  })
 }

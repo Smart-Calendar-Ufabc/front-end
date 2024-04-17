@@ -110,10 +110,13 @@ export default function UnallocatedTaskInSuggestionCard({
               onMouseEnter={handleOpenInfoPopover}
               onMouseLeave={handleCloseInfoPopover}
               sx={{
-                color: 'grey.500',
+                color: openInfoPopover ? 'error.main' : 'grey.500',
                 pr: 0,
                 pb: 0,
                 pt: 0.25,
+                '&:hover': {
+                  color: 'error.main',
+                },
               }}
             >
               <InfoIcon size={16} weight="bold" />

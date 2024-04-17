@@ -12,12 +12,17 @@ import { loginFetch } from './api/login'
 import { useAppStates } from '@/store/useAppStates'
 import Alert from '@mui/material/Alert'
 import { CircularProgress } from '@mui/material'
+import { useRouter } from 'next/navigation'
+import { useProfileStates } from '@/store/useProfileStates'
 
 export default function FormLogin() {
   const [isLoading, setIsLoading] = useState(false)
   const [openAlert, setOpenAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const { setAuthToken } = useAppStates()
+  const { setProfile } = useProfileStates()
+
+  const router = useRouter()
 
   const validationSchema = yup.object({
     email: yup.string().required('Informe o email').email('Email inválido'),
@@ -33,15 +38,18 @@ export default function FormLogin() {
     onSubmit: async (values) => {
       setIsLoading(true)
       const { data, status } = await loginFetch(values)
+
       if (status === 200 && data?.token) {
         setAuthToken(data.token)
-        if (typeof window !== 'undefined') {
-          window.localStorage.setItem('authToken', data.token)
-          if (data?.profile) {
-            window.localStorage.setItem('profile', JSON.stringify(data.profile))
-          }
-          window.location.href = '/home'
+
+        if (data?.profile) {
+          setProfile({
+            name: data.profile.name,
+            avatarUrl: data.profile?.avatar_image_url,
+            sleepHours: data.profile?.sleepHours,
+          })
         }
+        router.push('/home')
       } else if (data?.errors) {
         setIsLoading(false)
         formik.setErrors({

@@ -4,9 +4,8 @@ import { persist } from 'zustand/middleware'
 interface AppStates {
   onboarding: {
     email: string
-    code: string
   }
-  setOnboarding: (data: { email?: string; code?: string }) => void
+  setOnboarding: (data: { email?: string }) => void
   authToken: string | null
   setAuthToken: (authToken: string | null) => void
 }
@@ -14,7 +13,7 @@ interface AppStates {
 export const useAppStates = create<AppStates>()(
   persist(
     (set) => ({
-      authToken: '263d7adc-16e0-4eb8-bac5-dca0b7dac285',
+      authToken: '',
       setAuthToken: (authToken) =>
         set({
           authToken,
@@ -32,7 +31,7 @@ export const useAppStates = create<AppStates>()(
         })),
     }),
     {
-      name: 'app-states',
+      name: 'easeCalendarAppStates',
       getStorage: () => localStorage,
     },
   ),

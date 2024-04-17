@@ -14,12 +14,15 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { signUpFetch } from '../api/sign-up'
 import { Alert, CircularProgress } from '@mui/material'
+import { useRouter } from 'next/navigation'
 
 export default function SignUp() {
   const [openAlert, setOpenAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const { setOnboarding } = useAppStates()
   const [isLoading, setIsLoading] = useState(false)
+
+  const router = useRouter()
 
   const validationSchema = yup.object({
     email: yup.string().required('Informe o email').email('Email inválido'),
@@ -39,11 +42,9 @@ export default function SignUp() {
       setIsLoading(true)
       const { data, status } = await signUpFetch(values)
 
-      if (status === 200 && data?.code) {
-        setOnboarding({ email: values.email, code: data.code })
-        if (typeof window !== 'undefined') {
-          window.location.href = '/sign-up/code-validation'
-        }
+      if (status === 200) {
+        setOnboarding({ email: values.email })
+        router.push('/sign-up/code-validation')
       } else if (status === 409) {
         setIsLoading(false)
         formik.setErrors({
@@ -111,6 +112,9 @@ export default function SignUp() {
           variant="contained"
           onClick={formik.submitForm}
           disabled={isLoading}
+          sx={{
+            height: 43,
+          }}
         >
           {isLoading ? <CircularProgress size={16} /> : 'Cadastrar'}
         </Button>

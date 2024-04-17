@@ -65,19 +65,17 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
     onSubmit: (values) => {
       let deadline: Date = new Date()
       if (values?.dueDate && values?.dueTime) {
-        console.log('values.dueDate', values.dueDate)
-        console.log('values.dueTime', values.dueTime)
         deadline = dayjs(values.dueDate)
+          .utc()
           .set('hour', values.dueTime.hour())
           .set('minute', values.dueTime.minute())
           .toDate()
-
-        console.log('deadline', deadline)
       }
 
       let duration = values.duration || null
       if (duration) {
         duration = duration
+          .utc()
           .set('hour', duration.hour())
           .set('minute', duration.minute())
           .set('second', duration.second())

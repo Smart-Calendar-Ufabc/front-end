@@ -23,13 +23,21 @@ export default function ActionToolbar() {
   const date = getBrazilianDate()
 
   return (
-    <>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'flex-end',
+        flexDirection: 'column',
+        gap: 3,
+      }}
+    >
       <Box
         sx={(theme) => ({
           display: 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap',
           gap: 2,
+          width: '100%',
           alignItems: 'center',
           justifyContent: 'space-between',
           [theme.breakpoints.down('sm')]: {
@@ -157,6 +165,6 @@ export default function ActionToolbar() {
         open={openDialogUnallocatedTasks}
         onClose={() => setOpenDialogUnallocatedTasks(false)}
       />
-    </>
+    </Box>
   )
 }

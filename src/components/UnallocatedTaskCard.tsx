@@ -16,7 +16,7 @@ import { createScheduleSuggestion } from '@/helpers/schedule/createScheduleSugge
 import { useSchedulesStates } from '@/store/useSchedulesStates'
 import { DialogSuggestionSchedule } from './dialogs/DialogSuggestionSchedule'
 import { useSchedulesSuggestionsStates } from '@/store/useSchedulesSuggestionStates'
-import { Profile } from '@/entities/Profile'
+import { useProfileStates } from '@/store/useProfileStates'
 
 interface UnallocatedTaskCardProps {
   id: string
@@ -40,11 +40,12 @@ export default function UnallocatedTaskCard({
   const { schedules } = useSchedulesStates()
   const { setSchedulesSuggestions } = useSchedulesSuggestionsStates()
   const { unallocatedTasks, deleteUnallocatedTask } = useUnallocatedTaskStates()
+  const { profile } = useProfileStates()
 
   const getBrazilianDuration = () => {
     const hour = duration.split(':')[0].replace(/^0/, '')
     const minutes = duration.split(':')[1].replace(/^0/, '')
-    return `${hour}h${minutes}min`
+    return `${hour ? hour + ' horas ' : ''}${hour && minutes ? ' e ' : ''}${minutes ? minutes + ' minutos' : ''}`
   }
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -55,20 +56,20 @@ export default function UnallocatedTaskCard({
     setAnchorEl(null)
   }
 
-  const handleOpenEdit = () => {
-    switch (priority) {
-      case 'routine': {
-        setOpenEditRoutineDialog(true)
-        break
-      }
-      default: {
-        setOpenEditTaskDialog(true)
-        break
-      }
-    }
+  // const handleOpenEdit = () => {
+  //   switch (priority) {
+  //     case 'routine': {
+  //       setOpenEditRoutineDialog(true)
+  //       break
+  //     }
+  //     default: {
+  //       setOpenEditTaskDialog(true)
+  //       break
+  //     }
+  //   }
 
-    handleClose()
-  }
+  //   handleClose()
+  // }
 
   const handleOpenDeleteModal = () => {
     setOpenDeleteDialog(true)
@@ -86,23 +87,13 @@ export default function UnallocatedTaskCard({
   }
 
   const handleAllocate = useCallback(() => {
-    let sleepHours: Profile['sleepHours'] | undefined
-    if (typeof window !== 'undefined') {
-      const profile = JSON.parse(
-        window.localStorage.getItem('profile') || '{}',
-      ) as Profile
-      if (profile?.sleepHours) {
-        sleepHours = profile.sleepHours
-      }
-    }
-
     const thisUnallocatedTask = unallocatedTasks.find((task) => task.id === id)
     const data = createScheduleSuggestion(
       thisUnallocatedTask ? [thisUnallocatedTask] : [],
       schedules,
       {
         dates: [],
-        intervals: sleepHours ? [sleepHours] : [],
+        intervals: profile?.sleepHours ? [profile?.sleepHours] : [],
         weekDays: [],
       },
     )
@@ -110,12 +101,13 @@ export default function UnallocatedTaskCard({
       setSchedulesSuggestions(data)
     }
     setOpenSuggestionSchedule(true)
-  }, [id, unallocatedTasks, schedules, setSchedulesSuggestions])
+  }, [id, unallocatedTasks, schedules, setSchedulesSuggestions, profile])
 
   return (
     <Card
       sx={{
-        width: '180px',
+        width: 180,
+        minHeight: 140,
         '&.MuiCard-root': {
           borderWidth: '1px',
           borderStyle: 'solid',
@@ -181,7 +173,7 @@ export default function UnallocatedTaskCard({
         anchorOrigin={{ horizontal: 36, vertical: 24 }}
       >
         <MenuItem onClick={handleOpenAllocateSuggestions}>Alocar</MenuItem>
-        <MenuItem onClick={handleOpenEdit}>Editar</MenuItem>
+        {/* <MenuItem onClick={handleOpenEdit}>Editar</MenuItem> */}
         <MenuItem onClick={handleOpenDeleteModal}>Excluir</MenuItem>
       </Menu>
       <Box
@@ -227,10 +219,13 @@ export default function UnallocatedTaskCard({
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
             sx={{
-              color: 'grey.500',
+              color: open ? 'primary.main' : 'grey.500',
               pr: 0,
               pb: 0,
               pt: 0.25,
+              '&:hover': {
+                color: 'primary.main',
+              },
             }}
           >
             <MenuIcon size={16} weight="bold" />

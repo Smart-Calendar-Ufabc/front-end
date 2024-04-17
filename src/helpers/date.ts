@@ -6,10 +6,11 @@ dayjs.locale('pt-br')
 export const getBrazilianDate = (
   date: Date = new Date(),
   options?: {
-    type: 'short' | 'long'
+    type?: 'short' | 'long'
+    utc?: boolean
   },
 ) => {
-  const dateX = dayjs(date).utc()
+  const dateX = options?.utc ? dayjs(date).utc() : dayjs(date)
 
   const format =
     options?.type === 'short' ? 'DD/MM/YYYY' : 'dddd, D [de] MMMM [de] YYYY'
@@ -19,7 +20,7 @@ export const getBrazilianDate = (
 
 export const getBrazilianTime = (date: Date = new Date()) => {
   const dateX = new Date(date)
-  dateX.setHours(date.getHours())
+  dateX.setHours(dateX.getHours())
 
   return dateX.toLocaleTimeString('pt-BR', {
     hour: 'numeric',
