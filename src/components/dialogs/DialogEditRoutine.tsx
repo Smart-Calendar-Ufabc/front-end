@@ -5,7 +5,6 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
-import MuiCheckbox, { CheckboxProps } from '@mui/material/Checkbox'
 import { X as CloseIcon } from '@phosphor-icons/react'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -18,9 +17,6 @@ import {
   Select,
   Stack,
   FormHelperText,
-  FormLabel,
-  FormGroup,
-  FormControlLabel,
   Box,
 } from '@mui/material'
 import { useFormik } from 'formik'
@@ -79,19 +75,19 @@ const isThereConflict = (schedule: Schedule, newSchedule: Schedule) => {
   )
 }
 
-export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
-  const [repeatWeekdays, setRepeatWeekdays] = useState({
-    sunday: false,
-    monday: false,
-    tuesday: false,
-    wednesday: false,
-    thursday: false,
-    friday: false,
-    saturday: false,
-  })
+export const DialogEditRoutine = ({ open, onClose }: DialogAddRoutineProps) => {
+  // const [repeatWeekdays, setRepeatWeekdays] = useState({
+  //   sunday: false,
+  //   monday: false,
+  //   tuesday: false,
+  //   wednesday: false,
+  //   thursday: false,
+  //   friday: false,
+  //   saturday: false,
+  // })
 
-  const { sunday, monday, tuesday, wednesday, thursday, friday, saturday } =
-    repeatWeekdays
+  // const { sunday, monday, tuesday, wednesday, thursday, friday, saturday } =
+  //   repeatWeekdays
 
   const { schedules, addSchedule } = useSchedulesStates()
   const [datesConflict, setDatesConflict] = useState<string[]>([])
@@ -99,12 +95,12 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
   const [alertDialogTitle, setAlertDialogTitle] = useState('')
   const [alertDialogMessage, setAlertDialogMessage] = useState('')
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRepeatWeekdays((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.checked,
-    }))
-  }
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setRepeatWeekdays((prev) => ({
+  //     ...prev,
+  //     [event.target.name]: event.target.checked,
+  //   }))
+  // }
 
   const validationSchema = yup.object({
     title: yup.string().required('Informe um título'),
@@ -171,51 +167,51 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
         })
       }
 
-      if (repeatAs === 'weekly') {
-        for (let week = 0; week < 4; week++) {
-          Object.values(repeatWeekdays).forEach((isRepeat, index) => {
-            if (isRepeat) {
-              index -= 1
-              const routineStartDate = dayjs()
-                .utc()
-                .add(index + week * 7 - 1, 'day')
-                .hour(startTime?.hour() || 0)
-                .minute(startTime?.minute() || 0)
-                .second(0)
+      // if (repeatAs === 'weekly') {
+      //   for (let week = 0; week < 4; week++) {
+      //     Object.values(repeatWeekdays).forEach((isRepeat, index) => {
+      //       if (isRepeat) {
+      //         index -= 1
+      //         const routineStartDate = dayjs()
+      //           .utc()
+      //           .add(index + week * 7 - 1, 'day')
+      //           .hour(startTime?.hour() || 0)
+      //           .minute(startTime?.minute() || 0)
+      //           .second(0)
 
-              const routineEndDate = dayjs()
-                .utc()
-                .add(index + week * 7 - 1, 'day')
-                .hour(endTime?.hour() || 0)
-                .minute(endTime?.minute() || 0)
-                .second(0)
+      //         const routineEndDate = dayjs()
+      //           .utc()
+      //           .add(index + week * 7 - 1, 'day')
+      //           .hour(endTime?.hour() || 0)
+      //           .minute(endTime?.minute() || 0)
+      //           .second(0)
 
-              newSchedules.push({
-                id: crypto.randomUUID(),
-                title,
-                status: 'pending',
-                priority: 'routine',
-                startAt: routineStartDate.toDate(),
-                endAt: routineEndDate.toDate(),
-              })
-            }
-          })
-        }
+      //         newSchedules.push({
+      //           id: crypto.randomUUID(),
+      //           title,
+      //           status: 'pending',
+      //           priority: 'routine',
+      //           startAt: routineStartDate.toDate(),
+      //           endAt: routineEndDate.toDate(),
+      //         })
+      //       }
+      //     })
+      //   }
 
-        newSchedules.map((newSchedule) => {
-          const isConflicting = schedules.some((schedule) =>
-            isThereConflict(schedule, newSchedule),
-          )
+      //   newSchedules.map((newSchedule) => {
+      //     const isConflicting = schedules.some((schedule) =>
+      //       isThereConflict(schedule, newSchedule),
+      //     )
 
-          if (!isConflicting) {
-            addSchedule(newSchedule)
-          } else {
-            datesConflicting.push(newSchedule.startAt.toString())
-          }
+      //     if (!isConflicting) {
+      //       addSchedule(newSchedule)
+      //     } else {
+      //       datesConflicting.push(newSchedule.startAt.toString())
+      //     }
 
-          return newSchedule
-        })
-      }
+      //     return newSchedule
+      //   })
+      // }
 
       if (datesConflicting.length) {
         setDatesConflict(datesConflicting)
@@ -378,7 +374,9 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
               </FormControl>
             </LocalizationProvider>
             <FormControl fullWidth size="small">
-              <InputLabel id="repeat-select-label">Repetir Semanalmente</InputLabel>
+              <InputLabel id="repeat-select-label">
+                Repetir Semanalmente
+              </InputLabel>
               <Select
                 name="repeatAs"
                 labelId="repeat-select-label"
@@ -401,18 +399,17 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
               </Select>
             </FormControl>
             <FormControl component="fieldset" variant="standard">
-            <Box
-              display="flex"
-              padding="16px"
-              justifyContent="center"
-              alignItems="center"
-              gap="80px"
-              alignSelf="stretch"
-            >
-              <Button variant="contained">Excluir Tudo</Button>
-            </Box>
+              <Box
+                display="flex"
+                padding="16px"
+                justifyContent="center"
+                alignItems="center"
+                gap="80px"
+                alignSelf="stretch"
+              >
+                <Button variant="contained">Excluir Tudo</Button>
+              </Box>
             </FormControl>
-            
           </Stack>
         </DialogContent>
         <DialogActions
@@ -427,16 +424,5 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
         </DialogActions>
       </Dialog>
     </>
-  )
-}
-
-function Checkbox(props: CheckboxProps) {
-  return (
-    <MuiCheckbox
-      disableRipple
-      color="primary"
-      inputProps={{ 'aria-label': 'Checkbox demo' }}
-      {...props}
-    />
   )
 }

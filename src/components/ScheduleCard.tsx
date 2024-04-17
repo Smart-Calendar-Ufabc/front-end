@@ -9,10 +9,10 @@ import Fade from '@mui/material/Fade'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import { CaretDown as MenuIcon } from '@phosphor-icons/react'
-import { DialogEditRoutine } from './dialogs/DialogEditRoutine'
 import { DialogEditTask } from './dialogs/DialogEditTask'
 import { useSchedulesStates } from '@/store/useSchedulesStates'
 import AlertDialog from './dialogs/AlertDialog'
+import { DialogEditRoutine } from './dialogs/DialogEditRoutine'
 
 interface ScheduleCardProps {
   id: string

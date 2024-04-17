@@ -5,10 +5,10 @@ import Box from '@mui/material/Box'
 import { useState } from 'react'
 import IconButton from '@mui/material/IconButton'
 import { Info as InfoIcon } from '@phosphor-icons/react'
-import { DialogEditRoutine } from './dialogs/DialogEditRoutine'
 import { DialogEditTask } from './dialogs/DialogEditTask'
 import Popover from '@mui/material/Popover'
 import { getBrazilianTime } from '@/helpers/date'
+import { DialogEditRoutine } from './dialogs/DialogEditRoutine'
 
 interface UnallocatedTaskInSuggestionCardProps {
   id: string
