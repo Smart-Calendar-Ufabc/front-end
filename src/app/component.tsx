@@ -14,10 +14,15 @@ import Alert from '@mui/material/Alert'
 import { CircularProgress } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { useProfileStates } from '@/store/useProfileStates'
+import {
+  EyeSlash as EyeClosedIcon,
+  Eye as EyeOpenIcon,
+} from '@phosphor-icons/react'
 
 export default function FormLogin() {
   const [isLoading, setIsLoading] = useState(false)
   const [openAlert, setOpenAlert] = useState(false)
+  const [visibility, setVisibility] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const { setAuthToken } = useAppStates()
   const { setProfile } = useProfileStates()
@@ -94,11 +99,26 @@ export default function FormLogin() {
         <TextField
           name="password"
           label="Senha"
-          type="password"
+          type={visibility ? 'text' : 'password'}
           value={formik.values.password}
           onChange={formik.handleChange}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
+          InputProps={{
+            endAdornment: visibility ? (
+              <EyeOpenIcon
+                onClick={() => setVisibility(false)}
+                size={24}
+                style={{ cursor: 'pointer' }}
+              />
+            ) : (
+              <EyeClosedIcon
+                onClick={() => setVisibility(true)}
+                size={24}
+                style={{ cursor: 'pointer' }}
+              />
+            ),
+          }}
         />
         <Link to="/password-recovery">Esqueceu a senha?</Link>
       </FormGroup>
