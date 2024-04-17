@@ -241,6 +241,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
                       onChange={(newValue) => {
                         formik.setFieldValue('dueDate', newValue)
                       }}
+                      disablePast
                     />
                     <FormHelperText
                       error={

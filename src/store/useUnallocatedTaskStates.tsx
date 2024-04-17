@@ -16,6 +16,7 @@ interface AppStates {
     task: UnallocatedTask,
     reason: { key: 'deadline-exceeded'; message: string },
   ) => void
+  clearUnallocatedTasksInSuggestion: () => void
 }
 
 export const useUnallocatedTaskStates = create<AppStates>()(
@@ -59,6 +60,11 @@ export const useUnallocatedTaskStates = create<AppStates>()(
               reason,
             },
           ],
+        }))
+      },
+      clearUnallocatedTasksInSuggestion: () => {
+        set(() => ({
+          unallocatedTasksInSuggestion: [],
         }))
       },
     }),

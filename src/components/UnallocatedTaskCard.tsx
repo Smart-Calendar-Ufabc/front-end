@@ -39,7 +39,11 @@ export default function UnallocatedTaskCard({
   const open = Boolean(anchorEl)
   const { schedules } = useSchedulesStates()
   const { setSchedulesSuggestions } = useSchedulesSuggestionsStates()
-  const { unallocatedTasks, deleteUnallocatedTask } = useUnallocatedTaskStates()
+  const {
+    unallocatedTasks,
+    deleteUnallocatedTask,
+    clearUnallocatedTasksInSuggestion,
+  } = useUnallocatedTaskStates()
   const { profile } = useProfileStates()
 
   const getBrazilianDuration = () => {
@@ -86,8 +90,14 @@ export default function UnallocatedTaskCard({
     handleAllocate()
   }
 
+  const handleCloseDialogSuggestionSchedule = () => {
+    setOpenSuggestionSchedule(false)
+    clearUnallocatedTasksInSuggestion()
+  }
+
   const handleAllocate = useCallback(() => {
     const thisUnallocatedTask = unallocatedTasks.find((task) => task.id === id)
+
     const data = createScheduleSuggestion(
       thisUnallocatedTask ? [thisUnallocatedTask] : [],
       schedules,
@@ -97,6 +107,8 @@ export default function UnallocatedTaskCard({
         weekDays: [],
       },
     )
+
+    console.log('data', data)
     if (data) {
       setSchedulesSuggestions(data)
     }
@@ -124,7 +136,7 @@ export default function UnallocatedTaskCard({
       />
       <DialogSuggestionSchedule
         open={openSuggestionSchedule}
-        onClose={() => setOpenSuggestionSchedule(false)}
+        onClose={handleCloseDialogSuggestionSchedule}
       />
       <DialogEditRoutine
         open={openEditRoutineDialog}

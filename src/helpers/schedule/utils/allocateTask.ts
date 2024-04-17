@@ -18,14 +18,14 @@ const getPeriodsToSearch = (
     sleepHours = blockedTimes.intervals[0]
   }
 
-  const endDate = new Date(task.deadline)
+  const taskEndDate = new Date(task.deadline)
 
   const [taskDurationHours, taskDurationMinutes] = task.duration
     .split(':')
     .map(Number)
 
-  endDate.setHours(endDate.getUTCHours() - taskDurationHours)
-  endDate.setMinutes(endDate.getUTCMinutes() - taskDurationMinutes)
+  taskEndDate.setHours(taskEndDate.getHours() - taskDurationHours)
+  taskEndDate.setMinutes(taskEndDate.getMinutes() - taskDurationMinutes)
 
   const currentDate = new Date()
 
@@ -33,9 +33,9 @@ const getPeriodsToSearch = (
   let currentMonth = currentDate.getUTCMonth()
   let currentYear = currentDate.getUTCFullYear()
 
-  const endDay = endDate.getUTCDate()
-  const endMonth = endDate.getUTCMonth()
-  const endYear = endDate.getUTCFullYear()
+  const endDay = taskEndDate.getDate()
+  const endMonth = taskEndDate.getMonth()
+  const endYear = taskEndDate.getFullYear()
 
   const periodsToSearch = []
 
@@ -47,7 +47,14 @@ const getPeriodsToSearch = (
   ) {
     let start =
       i === 0
-        ? currentDate
+        ? new Date(
+            currentYear,
+            currentMonth,
+            currentDay,
+            currentDate.getHours() - 3, // Tasks is in UTC-3
+            currentDate.getMinutes(),
+            0,
+          )
         : new Date(currentYear, currentMonth, currentDay, 0, 0, 0)
 
     if (sleepHours && i !== 0) {
@@ -55,7 +62,7 @@ const getPeriodsToSearch = (
         currentYear,
         currentMonth,
         currentDay,
-        sleepHours.end.hour,
+        sleepHours.end.hour - 3, // Tasks is in UTC-3
         0,
         sleepHours.end.minutes,
       )
@@ -67,8 +74,8 @@ const getPeriodsToSearch = (
             currentYear,
             currentMonth,
             currentDay,
-            endDate.getHours(),
-            endDate.getMinutes(),
+            taskEndDate.getHours() - 3, // Tasks is in UTC-3
+            taskEndDate.getMinutes(),
             0,
           )
         : new Date(currentYear, currentMonth, currentDay, 23, 59, 59)
@@ -78,7 +85,7 @@ const getPeriodsToSearch = (
         currentYear,
         currentMonth,
         currentDay,
-        sleepHours.start.hour,
+        sleepHours.start.hour - 3, // Tasks is in UTC-3
         0,
         sleepHours.start.minutes,
       )
@@ -115,6 +122,13 @@ const getPeriodsToSearch = (
   }
 
   if (task.priority === 'high') {
+    if (periodsToSearch.length > 2) {
+      const firstElement = periodsToSearch[0]
+      const firstElements = periodsToSearch.slice(1)
+      const sortedPeriods = [...firstElements, firstElement]
+
+      return sortedPeriods
+    }
     return periodsToSearch
   } else if (task.priority === 'medium') {
     const thirdIndex = Math.floor(periodsToSearch.length / 3)
@@ -177,7 +191,7 @@ export const allocateTask = (
 
     const schedulesInTheSameDayOfPeriod = schedules.filter((schedule) => {
       const scheduleStartAt = new Date(schedule.startAt).getDate()
-      const periodStartAt = period.start.getUTCDate()
+      const periodStartAt = period.start.getDate()
 
       return scheduleStartAt === periodStartAt
     })

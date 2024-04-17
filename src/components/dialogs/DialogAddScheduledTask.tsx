@@ -278,7 +278,6 @@ export function DialogAddScheduledTask({
                         onChange={(newValue) => {
                           formik.setFieldValue('startTime', newValue)
                         }}
-                        disablePast
                       />
                       <FormHelperText
                         error={

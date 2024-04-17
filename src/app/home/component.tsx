@@ -64,8 +64,6 @@ export default function HomeMain() {
 
     schedules.forEach((schedule) => {
       const key = dayjs(schedule.startAt).startOf('day').toISOString()
-      console.log('schedule key', key)
-      console.log('schedule title', schedule.title)
       if (!grouped[key]) {
         grouped[key] = []
       }
@@ -76,7 +74,6 @@ export default function HomeMain() {
 
     days.forEach((day) => {
       const key = day.startOf('day').toISOString()
-      console.log('days key', key)
       newGrouped[key] = grouped[key] || []
     })
 

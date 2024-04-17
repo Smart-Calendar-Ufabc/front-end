@@ -197,10 +197,10 @@ export function DialogSuggestionSchedule({
                                 title={task.title}
                                 priority={task.priority}
                                 startTime={getDuration(task.startAt, {
-                                  utc: false,
+                                  utc: true,
                                 })}
                                 endTime={getDuration(task.endAt, {
-                                  utc: false,
+                                  utc: true,
                                 })}
                                 deadline={task.deadline ?? new Date()}
                                 onApprove={handleApproveSuggestion}
@@ -242,7 +242,11 @@ export function DialogSuggestionSchedule({
                   })}
                 >
                   {unallocatedTasksInSuggestion
-                    .sort((a, b) => a.deadline.getTime() - b.deadline.getTime())
+                    .sort(
+                      (a, b) =>
+                        new Date(a.deadline).getTime() -
+                        new Date(b.deadline).getTime(),
+                    )
                     .map((task) => (
                       <UnallocatedTaskInSuggestionCard
                         key={task.id}

@@ -172,6 +172,8 @@ export default function ProfileMenu() {
         open={open}
         onClose={handleClose}
         TransitionComponent={Fade}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 72, vertical: 36 }}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -189,7 +191,7 @@ export default function ProfileMenu() {
               display: 'block',
               position: 'absolute',
               top: 0,
-              right: 26,
+              right: 14,
               width: 10,
               height: 10,
               bgcolor: 'background.paper',
@@ -216,7 +218,7 @@ export default function ProfileMenu() {
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          gap: 4,
+          columnGap: 4,
         }}
       >
         <Box>
@@ -226,7 +228,7 @@ export default function ProfileMenu() {
             aria-haspopup="true"
             onMouseEnter={handleOpenInfoPopover}
             onMouseLeave={handleCloseInfoPopover}
-            sx={{
+            sx={(theme) => ({
               color: openInfoPopover ? 'error.main' : 'grey.500',
               pr: 0,
               pb: 0,
@@ -234,7 +236,16 @@ export default function ProfileMenu() {
               '&:hover': {
                 color: 'primary.main',
               },
-            }}
+              '&:focus': {
+                color: 'primary.main',
+              },
+              '&:active': {
+                color: 'primary.main',
+              },
+              [theme.breakpoints.down(350)]: {
+                display: 'none',
+              },
+            })}
           >
             <NotificationIcon size={24} weight="duotone" />
           </IconButton>
@@ -243,9 +254,18 @@ export default function ProfileMenu() {
             anchorEl={anchorElInfoPopover}
             onClose={handleCloseInfoPopover}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 36, vertical: 24 }}
+            anchorOrigin={{ horizontal: 40, vertical: 24 }}
             sx={{
               pointerEvents: 'none',
+              '&.MuiPaper-root': {
+                ml: '-14px',
+              },
+              '&.MuiPopover-paper': {
+                ml: '-14px',
+              },
+              '&.MuiMenu-paper': {
+                ml: '-14px',
+              },
             }}
             PaperProps={{
               elevation: 0,
@@ -275,11 +295,14 @@ export default function ProfileMenu() {
             }}
           >
             <Typography
-              sx={{
+              sx={(theme) => ({
                 p: 1.5,
                 maxWidth: 300,
                 color: 'text.secondary',
-              }}
+                [theme.breakpoints.down('sm')]: {
+                  maxWidth: 200,
+                },
+              })}
             >
               Estamos empenhados em garantir a segurança dos seus agendamentos.
               Enquanto o sistema está em desenvolvimento, os dados não estão
@@ -330,10 +353,13 @@ export default function ProfileMenu() {
                   backgroundRepeat: 'no-repeat',
                   width: '40px',
                   height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               />
             ) : (
-              <UserIcon size={24} weight="bold" />
+              <UserIcon size={24} weight="bold" style={{ marginTop: '6px' }} />
             )}
           </Icon>
           <Icon

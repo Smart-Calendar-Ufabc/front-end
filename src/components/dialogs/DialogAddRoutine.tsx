@@ -175,7 +175,7 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
         for (let week = 0; week < 4; week++) {
           Object.values(repeatWeekdays).forEach((isRepeat, index) => {
             if (isRepeat) {
-              index -= 1
+              index -= 2
               const routineStartDate = dayjs()
                 .utc()
                 .add(index + week * 7 - 1, 'day')
@@ -190,14 +190,16 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
                 .minute(endTime?.minute() || 0)
                 .second(0)
 
-              newSchedules.push({
-                id: crypto.randomUUID(),
-                title,
-                status: 'pending',
-                priority: 'routine',
-                startAt: routineStartDate.toDate(),
-                endAt: routineEndDate.toDate(),
-              })
+              if (routineStartDate.isAfter(dayjs().utc())) {
+                newSchedules.push({
+                  id: crypto.randomUUID(),
+                  title,
+                  status: 'pending',
+                  priority: 'routine',
+                  startAt: routineStartDate.toDate(),
+                  endAt: routineEndDate.toDate(),
+                })
+              }
             }
           })
         }
