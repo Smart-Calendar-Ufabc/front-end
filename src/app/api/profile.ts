@@ -75,7 +75,7 @@ export const createProfileFetch = async ({
   avatar,
   sleepHours,
 }: {
-  name: string
+  name?: string
   avatar?: File
   sleepHours?: {
     start: {
@@ -144,7 +144,7 @@ export const updateProfileFetch = async ({
   sleepHours,
   avatar,
 }: {
-  name: string
+  name?: string
   avatar?: File
   sleepHours?: {
     start: {

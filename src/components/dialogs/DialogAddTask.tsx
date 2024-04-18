@@ -100,6 +100,7 @@ export function DialogAddTask({ open, onClose }: DialogAddTaskProps) {
 
   return (
     <Dialog
+      className="add-task-modal"
       open={open}
       onClose={onClose}
       sx={(theme) => ({

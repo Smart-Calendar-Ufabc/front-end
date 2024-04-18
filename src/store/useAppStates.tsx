@@ -4,8 +4,9 @@ import { persist } from 'zustand/middleware'
 interface AppStates {
   onboarding: {
     email: string
+    completed?: boolean
   }
-  setOnboarding: (data: { email?: string }) => void
+  setOnboarding: (data: { email?: string; completed?: boolean }) => void
   authToken: string | null
   setAuthToken: (authToken: string | null) => void
 }
@@ -20,7 +21,6 @@ export const useAppStates = create<AppStates>()(
         }),
       onboarding: {
         email: '',
-        code: '',
       },
       setOnboarding: (data) =>
         set((state) => ({

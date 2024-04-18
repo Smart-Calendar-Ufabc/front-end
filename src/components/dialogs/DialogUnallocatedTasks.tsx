@@ -20,6 +20,7 @@ import MobileUp from '../layout/responsive/MobileUp'
 import { DialogSuggestionSchedule } from './DialogSuggestionSchedule'
 import { useSchedulesSuggestionsStates } from '@/store/useSchedulesSuggestionStates'
 import { useProfileStates } from '@/store/useProfileStates'
+import { useTour } from '@reactour/tour'
 
 interface DialogUnallocatedTasksProps {
   open: boolean
@@ -36,8 +37,14 @@ export function DialogUnallocatedTasks({
   const { schedules } = useSchedulesStates()
   const { profile } = useProfileStates()
 
+  const { setIsOpen, currentStep, setCurrentStep, isOpen } = useTour()
+
   const handleGenerateScheduleSuggestion = useCallback(() => {
     onClose()
+    if (isOpen) {
+      setIsOpen(false)
+      setCurrentStep(currentStep + 1)
+    }
     const data = createScheduleSuggestion(unallocatedTasks, schedules, {
       dates: [],
       intervals: profile?.sleepHours ? [profile?.sleepHours] : [],
@@ -47,7 +54,15 @@ export function DialogUnallocatedTasks({
       setSchedulesSuggestions(data)
     }
     setOpenSuggestionSchedule(true)
-  }, [unallocatedTasks, schedules, setSchedulesSuggestions, onClose, profile])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    unallocatedTasks,
+    schedules,
+    setSchedulesSuggestions,
+    onClose,
+    profile,
+    isOpen,
+  ])
 
   const handleRegenerateScheduleSuggestion = useCallback(() => {
     const data = createScheduleSuggestion(unallocatedTasks, schedules, {
@@ -60,17 +75,25 @@ export function DialogUnallocatedTasks({
     }
   }, [schedules, unallocatedTasks, setSchedulesSuggestions, profile])
 
+  const handleCloseSuggestionSchedule = useCallback(() => {
+    setOpenSuggestionSchedule(false)
+  }, [])
+
   useEffect(() => {
     if (!countUnallocatedTasks) {
       onClose()
     }
-  }, [countUnallocatedTasks, onClose])
+    if (currentStep === 2) {
+      setIsOpen(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countUnallocatedTasks, onClose, currentStep])
 
   return (
     <>
       <DialogSuggestionSchedule
         open={openSuggestionSchedule}
-        onClose={() => setOpenSuggestionSchedule(false)}
+        onClose={handleCloseSuggestionSchedule}
         onReschedule={handleRegenerateScheduleSuggestion}
       />
       <Dialog
@@ -165,6 +188,7 @@ export function DialogUnallocatedTasks({
           >
             <Button
               variant="contained"
+              className="allocate-tasks-button"
               fullWidth
               onClick={handleGenerateScheduleSuggestion}
               sx={{

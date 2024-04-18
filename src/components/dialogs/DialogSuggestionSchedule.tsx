@@ -18,6 +18,7 @@ import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 import { useSchedulesSuggestionsStates } from '@/store/useSchedulesSuggestionStates'
 import { getDuration } from '@/helpers/schedule/getDuration'
 import UnallocatedTaskInSuggestionCard from '../UnallocatedTaskInSuggestionCard'
+import { useTour } from '@reactour/tour'
 
 interface DialogSuggestionScheduleProps {
   open: boolean
@@ -36,12 +37,16 @@ export function DialogSuggestionSchedule({
   const { unallocatedTasksInSuggestion, deleteUnallocatedTask } =
     useUnallocatedTaskStates()
 
+  const { setIsOpen, setCurrentStep, currentStep } = useTour()
+
   const handleAddToSchedules = useCallback(() => {
     schedulesSuggestions.forEach((schedule) => {
       addSchedule(schedule)
       deleteUnallocatedTask(schedule.id)
     })
+    setCurrentStep(currentStep + 1)
     onClose()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [schedulesSuggestions, addSchedule, deleteUnallocatedTask, onClose])
 
   const handleRemoveFromSuggestions = useCallback(
@@ -87,6 +92,13 @@ export function DialogSuggestionSchedule({
 
     setList(newList)
   }, [schedulesSuggestions])
+
+  useEffect(() => {
+    if (currentStep === 3) {
+      setIsOpen(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep])
 
   return (
     <Dialog
@@ -272,6 +284,7 @@ export function DialogSuggestionSchedule({
           }}
         >
           <Button
+            className="suggestion-schedule-button"
             variant="contained"
             fullWidth
             onClick={handleAddToSchedules}

@@ -3,6 +3,7 @@ import { USER_BASE_API } from '@/config'
 interface LoginResponse {
   message?: string
   token?: string
+  onboardingCompleted?: boolean
   profile?: {
     name: string
     avatar_image_url?: string

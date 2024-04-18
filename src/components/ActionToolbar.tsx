@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Button, Icon, Stack, Typography } from '@mui/material'
 import { Plus as PlusIcon } from '@phosphor-icons/react'
 import { DialogManageTags } from '@/components/dialogs/DialogManageTags'
@@ -8,6 +8,7 @@ import { DialogUnallocatedTasks } from './dialogs/DialogUnallocatedTasks'
 import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 import { getBrazilianDate } from '@/helpers/date'
 import { Tooltip } from './typography/Tooltip'
+import { useTour } from '@reactour/tour'
 
 export default function ActionToolbar() {
   const [openDialogManageTags, setOpenDialogManageTags] =
@@ -18,9 +19,45 @@ export default function ActionToolbar() {
   const [openDialogUnallocatedTasks, setOpenDialogUnallocatedTasks] =
     useState<boolean>(false)
 
+  const { setIsOpen, setCurrentStep, isOpen, currentStep } = useTour()
+
   const { countUnallocatedTasks } = useUnallocatedTaskStates()
 
   const date = getBrazilianDate()
+
+  const handleOpenDialogAddTask = useCallback(() => {
+    setOpenDialogAddTask(true)
+    if (isOpen) {
+      setIsOpen(false)
+      setCurrentStep(currentStep + 1)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, currentStep])
+
+  const handleCloseDialogAddTask = useCallback(() => {
+    setOpenDialogAddTask(false)
+    if (currentStep === 1) {
+      setIsOpen(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep])
+
+  const handleOpenDialogUnallocatedTasks = useCallback(() => {
+    setOpenDialogUnallocatedTasks(true)
+    if (isOpen) {
+      setIsOpen(false)
+      setCurrentStep(currentStep + 1)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, currentStep])
+
+  const handleCloseDialogUnallocatedTasks = useCallback(() => {
+    setOpenDialogUnallocatedTasks(false)
+    // if (isOpen) {
+    //   setIsOpen(false)
+    //   setCurrentStep(currentStep + 1)
+    // }
+  }, [])
 
   return (
     <Box
@@ -61,9 +98,10 @@ export default function ActionToolbar() {
               disableHoverListener={Boolean(countUnallocatedTasks)}
             >
               <Button
+                className="unallocated-tasks-button"
                 variant="outlined"
                 disabled={!countUnallocatedTasks}
-                onClick={() => setOpenDialogUnallocatedTasks(true)}
+                onClick={handleOpenDialogUnallocatedTasks}
                 endIcon={
                   countUnallocatedTasks ? (
                     <Icon
@@ -131,9 +169,10 @@ export default function ActionToolbar() {
               })}
             ></Button>
             <Button
+              className="add-task-button"
               variant="contained"
               endIcon={<PlusIcon />}
-              onClick={() => setOpenDialogAddTask(true)}
+              onClick={handleOpenDialogAddTask}
               sx={(theme) => ({
                 flex: 'none',
                 '&::before': {
@@ -155,7 +194,7 @@ export default function ActionToolbar() {
       />
       <DialogAddTask
         open={openDialogAddTask}
-        onClose={() => setOpenDialogAddTask(false)}
+        onClose={handleCloseDialogAddTask}
       />
       <DialogAddRoutine
         open={openDialogAddRoutine}
@@ -163,7 +202,7 @@ export default function ActionToolbar() {
       />
       <DialogUnallocatedTasks
         open={openDialogUnallocatedTasks}
-        onClose={() => setOpenDialogUnallocatedTasks(false)}
+        onClose={handleCloseDialogUnallocatedTasks}
       />
     </Box>
   )

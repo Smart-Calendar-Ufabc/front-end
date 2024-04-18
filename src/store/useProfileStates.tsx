@@ -12,8 +12,11 @@ export const useProfileStates = create<AppStates>()(
     (set) => ({
       profile: null,
       setProfile: (profile) => {
-        set(() => ({
-          profile,
+        set((state) => ({
+          profile: {
+            ...state.profile,
+            ...profile,
+          },
         }))
       },
     }),

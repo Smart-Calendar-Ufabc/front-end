@@ -17,3 +17,25 @@
   border-radius: 4px;
   border: none;
 }
+
+.ease-calendar-tour {
+  border-radius: 8px;
+}
+
+.ease-calendar-tour .reactour__close-button {
+  color: #8257e5 !important;
+  display: none !important;
+}
+
+.ease-calendar-tour > span {
+  background: #8257e5 !important;
+}
+
+.ease-calendar-tour > div[dir="ltr"] button {
+  display: none !important;
+}
+
+.ease-calendar-tour > div[dir="ltr"] > div > button {
+  color: #8257e5 !important;
+  background: #8257e5 !important;
+}

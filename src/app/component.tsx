@@ -24,7 +24,7 @@ export default function FormLogin() {
   const [openAlert, setOpenAlert] = useState(false)
   const [visibility, setVisibility] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
-  const { setAuthToken } = useAppStates()
+  const { setAuthToken, setOnboarding } = useAppStates()
   const { setProfile } = useProfileStates()
 
   const router = useRouter()
@@ -46,6 +46,9 @@ export default function FormLogin() {
 
       if (status === 200 && data?.token) {
         setAuthToken(data.token)
+        setOnboarding({
+          completed: Boolean(data?.onboardingCompleted),
+        })
 
         if (data?.profile) {
           setProfile({

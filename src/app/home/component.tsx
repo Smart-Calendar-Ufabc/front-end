@@ -16,10 +16,13 @@ import { useUnallocatedTaskStates } from '@/store/useUnallocatedTaskStates'
 import { downloadJSON, uploadJSON } from '@/helpers/file'
 import { UnallocatedTask } from '@/entities/UnallocatedTask'
 import AlertDialog from '@/components/dialogs/AlertDialog'
+import { useTour } from '@reactour/tour'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import 'dayjs/locale/pt-br'
+import { DialogOnboarding } from '@/components/dialogs/DialogOnboarding'
+import { useAppStates } from '@/store/useAppStates'
 
 dayjs.locale('pt-br')
 dayjs.extend(utc)
@@ -28,6 +31,11 @@ export default function HomeMain() {
   const [list, setList] = useState<Record<string, Schedule[]>>({})
   const [firstLoad, setFirstLoad] = useState(true)
   const { schedules } = useSchedulesStates()
+  const [openOnboardingDialog, setOpenOnboardingDialog] =
+    useState<boolean>(false)
+  const { onboarding } = useAppStates()
+
+  const { setIsOpen } = useTour()
 
   useEffect(() => {
     if (firstLoad) {
@@ -80,8 +88,21 @@ export default function HomeMain() {
     setList(newGrouped)
   }, [schedules])
 
+  useEffect(() => {
+    if (!onboarding.completed) {
+      setOpenOnboardingDialog(true)
+    }
+  }, [onboarding.completed])
+
   return (
     <>
+      <DialogOnboarding
+        open={openOnboardingDialog}
+        onClose={() => {
+          setOpenOnboardingDialog(false)
+          setIsOpen(true)
+        }}
+      />
       <ActionToolbar />
       <Box
         sx={{
@@ -142,6 +163,8 @@ const StorageManager = () => {
     useState<boolean>(false)
   const [alertErrorMessage, setOpenAlertErrorMessage] = useState('')
   const inputFileRef = useRef<HTMLInputElement>(null)
+
+  const { isOpen, setIsOpen } = useTour()
 
   const handleBackup = useCallback(() => {
     const date = dayjs().utc().format('YYYY-MM-DD')
@@ -227,7 +250,7 @@ const StorageManager = () => {
         onConfirm={handleDeletePermanently}
         title="Apagar todos os agendamentos e tarefas não alocadas"
         message="Você pode fazer o backup antes de deletar clicando no botão abaixo. Deseja continuar?"
-        confirmText="Deletar"
+        confirmText="Apagar Tudo"
         cancelText="Cancelar"
       >
         <Button
@@ -311,8 +334,14 @@ const StorageManager = () => {
           />
         </Card>
         <Button
+          className="delete-all-button"
           startIcon={<DeleteIcon />}
-          onClick={() => setOpenDeleteAlertDialog(true)}
+          onClick={() => {
+            setOpenDeleteAlertDialog(true)
+            if (isOpen) {
+              setIsOpen(false)
+            }
+          }}
           sx={(theme) => ({
             color: 'grey.500',
             '&:hover': {
