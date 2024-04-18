@@ -46,7 +46,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
     {
       selector: '.add-task-button',
       content:
-        'Vamos começar! Clique neste botão para simular uma criação de adicionar tarefa',
+        'Vamos começar! Clique neste botão para simular uma criação tarefa',
     },
     {
       selector: '.unallocated-tasks-button',

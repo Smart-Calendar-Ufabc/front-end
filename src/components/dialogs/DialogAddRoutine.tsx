@@ -175,7 +175,7 @@ export function DialogAddRoutine({ open, onClose }: DialogAddRoutineProps) {
         for (let week = 0; week < 4; week++) {
           Object.values(repeatWeekdays).forEach((isRepeat, index) => {
             if (isRepeat) {
-              index -= 2
+              index -= 3 // TODO: fix
               const routineStartDate = dayjs()
                 .utc()
                 .add(index + week * 7 - 1, 'day')
