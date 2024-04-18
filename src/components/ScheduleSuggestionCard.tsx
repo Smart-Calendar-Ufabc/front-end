@@ -176,7 +176,7 @@ export const ScheduleSuggestionCard = ({
                 year: 'numeric',
                 month: 'numeric',
               })}
-              {' às ' + getBrazilianTime(deadline)}
+              {' às ' + getBrazilianTime(deadline, { utc: true })}
             </Typography>
           </Box>
         </Box>

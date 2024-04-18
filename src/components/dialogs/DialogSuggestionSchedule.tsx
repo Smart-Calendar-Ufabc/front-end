@@ -159,7 +159,7 @@ export function DialogSuggestionSchedule({
                     width: '100%',
                   }}
                 >
-                  Nenhuma tarefa foi agendada.
+                  Nenhum agendamento para exibir.
                 </Typography>
               ) : (
                 Object.entries(list)

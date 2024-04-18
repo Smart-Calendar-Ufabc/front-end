@@ -87,7 +87,7 @@ export function DialogUnallocatedTasks({
       setIsOpen(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [countUnallocatedTasks, onClose, currentStep])
+  }, [countUnallocatedTasks, currentStep])
 
   return (
     <>

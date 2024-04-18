@@ -122,13 +122,6 @@ const getPeriodsToSearch = (
   }
 
   if (task.priority === 'high') {
-    if (periodsToSearch.length > 2) {
-      const firstElement = periodsToSearch[0]
-      const firstElements = periodsToSearch.slice(1)
-      const sortedPeriods = [...firstElements, firstElement]
-
-      return sortedPeriods
-    }
     return periodsToSearch
   } else if (task.priority === 'medium') {
     const thirdIndex = Math.floor(periodsToSearch.length / 3)

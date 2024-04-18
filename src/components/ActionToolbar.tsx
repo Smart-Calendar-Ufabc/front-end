@@ -53,10 +53,6 @@ export default function ActionToolbar() {
 
   const handleCloseDialogUnallocatedTasks = useCallback(() => {
     setOpenDialogUnallocatedTasks(false)
-    // if (isOpen) {
-    //   setIsOpen(false)
-    //   setCurrentStep(currentStep + 1)
-    // }
   }, [])
 
   return (
