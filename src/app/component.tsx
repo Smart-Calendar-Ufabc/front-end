@@ -123,7 +123,7 @@ export default function FormLogin() {
             ),
           }}
         />
-        <Link to="/password-recovery">Esqueceu a senha?</Link>
+        {/* <Link to="/password-recovery">Esqueceu a senha?</Link> */}
       </FormGroup>
       <Button
         variant="contained"
