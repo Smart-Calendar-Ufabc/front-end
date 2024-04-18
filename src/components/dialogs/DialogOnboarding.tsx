@@ -84,6 +84,7 @@ export const DialogOnboarding = ({ open, onClose }: DialogOnboardingProps) => {
               },
             },
           })
+          handleClose()
         } else {
           setIsLoading(false)
           setOpenAlert(true)
