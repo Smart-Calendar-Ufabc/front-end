@@ -30,7 +30,7 @@ import Icon from '@mui/material/Icon'
 
 export default function ProfileMenu() {
   const { setAuthToken } = useAppStates()
-  const { profile, setProfile } = useProfileStates()
+  const { profile, setProfile, resetProfile } = useProfileStates()
   const { schedules, setSchedules } = useSchedulesStates()
   const { unallocatedTasks, setUnallocatedTasks } = useUnallocatedTaskStates()
 
@@ -70,12 +70,14 @@ export default function ProfileMenu() {
 
     const { status } = await logoutFetch()
 
+    console.log('Status', status)
+
     if (status === 200) {
+      console.log('Logout')
       setAuthToken(null)
-      setProfile(null)
+      resetProfile()
       setSchedules([])
       setUnallocatedTasks([])
-      setAuthToken(null)
       router.push('/')
     } else {
       setIsLoading(false)
@@ -84,7 +86,7 @@ export default function ProfileMenu() {
         'Ops... Ocorreu um erro ao encerrar a sessão. Verifique a sua conexão com a internet e tente novamente!',
       )
     }
-  }, [setAuthToken, setProfile, setSchedules, setUnallocatedTasks, router])
+  }, [setAuthToken, setSchedules, setUnallocatedTasks, resetProfile, router])
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {

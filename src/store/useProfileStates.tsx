@@ -5,6 +5,7 @@ import { persist } from 'zustand/middleware'
 interface AppStates {
   profile: Profile | null
   setProfile: (profile: Profile | null) => void
+  resetProfile: () => void
 }
 
 export const useProfileStates = create<AppStates>()(
@@ -18,6 +19,9 @@ export const useProfileStates = create<AppStates>()(
             ...profile,
           },
         }))
+      },
+      resetProfile: () => {
+        set({ profile: null })
       },
     }),
     {

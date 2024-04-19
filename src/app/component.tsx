@@ -24,7 +24,7 @@ export default function FormLogin() {
   const [openAlert, setOpenAlert] = useState(false)
   const [visibility, setVisibility] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
-  const { setAuthToken, setOnboarding } = useAppStates()
+  const { setAuthToken, onboarding, setOnboarding } = useAppStates()
   const { setProfile } = useProfileStates()
 
   const router = useRouter()
@@ -42,6 +42,7 @@ export default function FormLogin() {
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true)
+      setOnboarding({ openAlert: false, alertMessage: '' })
       const { data, status } = await loginFetch(values)
 
       if (status === 200 && data?.token) {
@@ -89,6 +90,16 @@ export default function FormLogin() {
           {alertMessage}
         </Alert>
       )}
+      {onboarding.openAlert && (
+        <Alert
+          severity="success"
+          onClose={() => {
+            setOnboarding({ openAlert: false })
+          }}
+        >
+          {onboarding.alertMessage}
+        </Alert>
+      )}
       <FormGroup>
         <TextField
           name="email"
@@ -123,7 +134,7 @@ export default function FormLogin() {
             ),
           }}
         />
-        {/* <Link to="/password-recovery">Esqueceu a senha?</Link> */}
+        <Link to="/password-recovery">Esqueceu a senha?</Link>
       </FormGroup>
       <Button
         variant="contained"

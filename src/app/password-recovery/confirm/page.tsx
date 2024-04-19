@@ -1,27 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
-import * as yup from 'yup'
 import FormContainer from '@/components/form/FormContainer'
 import FormGroup from '@/components/form/FormGroup'
 import FormTitle from '@/components/form/FormTitle'
 import OnboardingLayout from '@/components/layout/OnboardingLayout'
-import Link from '@/components/typography/Link'
-import { useAppStates } from '@/store/useAppStates'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { signUpCodeValidationFetch } from '@/app/api/sign-up'
-import Alert from '@mui/material/Alert'
-import CircularProgress from '@mui/material/CircularProgress'
+import { Alert, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/navigation'
+import { passwordRecoveryConfirmCodeFetch } from '@/app/api/password-recovery'
+import Link from '@/components/typography/Link'
+import { useAppStates } from '@/store/useAppStates'
 
-export default function SignUpCodeValidation() {
+import * as yup from 'yup'
+
+export default function PasswordRecoveryConfirm() {
   const [openAlert, setOpenAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const { onboarding, setOnboarding, setAuthToken } = useAppStates()
+
+  const { onboarding, setOnboarding } = useAppStates()
 
   const router = useRouter()
 
@@ -40,29 +41,42 @@ export default function SignUpCodeValidation() {
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true)
-      const { status, data } = await signUpCodeValidationFetch({
+      const { status, data } = await passwordRecoveryConfirmCodeFetch({
         email: onboarding?.email as string,
         code: values.code,
       })
 
       if (status === 200 && data?.token) {
-        setOnboarding({
-          email: null,
-        })
-        setAuthToken(data.token)
-        router.push('/home')
-      } else if (data?.errors?.code) {
+        setOnboarding({ token: data.token })
+        router.push('/password-recovery/update')
+        formik.resetForm()
+      } else if (status === 404) {
         setIsLoading(false)
         formik.setErrors({
-          code: data.errors.code?.join(', '),
+          code: 'Seu código expirou. Solicite um novo código.',
+        })
+      } else if (status === 400) {
+        setIsLoading(false)
+        formik.setErrors({
+          code: 'Código inválido. Verifique se digitou corretamente.',
         })
       } else if (status === 500) {
         setIsLoading(false)
         setOpenAlert(true)
-        setAlertMessage('Erro interno no servidor')
+        setAlertMessage('Erro interno no servidor.')
       }
     },
   })
+
+  useEffect(() => {
+    if (!onboarding?.email) {
+      setOnboarding({
+        openAlert: true,
+        alertMessage: 'Seu código expirou. Solicite um novo código.',
+      })
+      router.push('/password-recovery')
+    }
+  }, [onboarding.email, router, setOnboarding])
 
   return (
     <OnboardingLayout>
@@ -81,7 +95,8 @@ export default function SignUpCodeValidation() {
         <FormGroup>
           <Typography>
             Enviamos um e-mail com um código de verificação para{' '}
-            <b>{onboarding.email}</b>. (<Link to="/sign-up">não é você?</Link>)
+            <b>{onboarding.email}</b>. (
+            <Link to="/password-recovery">não é você?</Link>)
           </Typography>
           <Typography>
             Insira-o código abaixo para confirmar o seu e-mail.

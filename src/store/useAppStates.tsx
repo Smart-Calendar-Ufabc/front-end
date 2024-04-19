@@ -3,10 +3,19 @@ import { persist } from 'zustand/middleware'
 
 interface AppStates {
   onboarding: {
-    email: string
+    email?: string | null
     completed?: boolean
+    token?: string | null
+    openAlert?: boolean
+    alertMessage?: string
   }
-  setOnboarding: (data: { email?: string; completed?: boolean }) => void
+  setOnboarding: (data: {
+    email?: string | null
+    token?: string | null
+    openAlert?: boolean
+    alertMessage?: string
+    completed?: boolean
+  }) => void
   authToken: string | null
   setAuthToken: (authToken: string | null) => void
 }
@@ -20,7 +29,8 @@ export const useAppStates = create<AppStates>()(
           authToken,
         }),
       onboarding: {
-        email: '',
+        email: null,
+        token: null,
       },
       setOnboarding: (data) =>
         set((state) => ({
