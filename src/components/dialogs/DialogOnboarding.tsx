@@ -24,7 +24,7 @@ import 'dayjs/locale/pt-br'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { useProfileStates } from '@/store/useProfileStates'
-import { createProfileFetch, updateProfileFetch } from '@/api/profile'
+import { createProfileFetch, updateProfileFetch } from '@/app/api/profile'
 import { useCallback, useState } from 'react'
 import { useAppStates } from '@/store/useAppStates'
 

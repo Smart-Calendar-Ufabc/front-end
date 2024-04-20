@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { Alert, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/navigation'
-import { passwordRecoveryUpdatePasswordFetch } from '@/api/password-recovery'
+import { passwordRecoveryUpdatePasswordFetch } from '@/app/api/password-recovery'
 import { useAppStates } from '@/store/useAppStates'
 import {
   EyeSlash as EyeClosedIcon,

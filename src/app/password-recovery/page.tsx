@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { Alert, CircularProgress } from '@mui/material'
-import { passwordRecoverySendCodeFetch } from '../../api/password-recovery'
+import { passwordRecoverySendCodeFetch } from '../api/password-recovery'
 import { useRouter } from 'next/navigation'
 
 import * as yup from 'yup'

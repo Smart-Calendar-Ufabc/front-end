@@ -25,7 +25,3 @@ export default async function middleware(req: NextRequest) {
 
   return NextResponse.next()
 }
-
-export const config = {
-  matcher: ['/', '/signup/:path*', '/password-recovery/:path*'],
-}

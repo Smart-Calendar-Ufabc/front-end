@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { Alert, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/navigation'
-import { passwordRecoveryConfirmCodeFetch } from '@/api/password-recovery'
+import { passwordRecoveryConfirmCodeFetch } from '@/app/api/password-recovery'
 import Link from '@/components/typography/Link'
 import { useAppStates } from '@/store/useAppStates'
 
