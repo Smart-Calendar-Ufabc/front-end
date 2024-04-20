@@ -12,7 +12,7 @@ import { useAppStates } from '@/store/useAppStates'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { signUpFetch } from '../api/sign-up'
+import { signUpFetch } from '../../api/sign-up'
 import { Alert, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import {
@@ -49,7 +49,7 @@ export default function SignUp() {
 
       if (status === 200) {
         setOnboarding({ email: values.email })
-        router.push('/sign-up/code-validation')
+        router.push('/signup/code-validation')
       } else if (status === 409) {
         setIsLoading(false)
         formik.setErrors({

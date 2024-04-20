@@ -48,7 +48,7 @@ const Header = () => {
       </Box>
       <MobileUp>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button variant="contained" onClick={() => router.push('/sign-up')}>
+          <Button variant="contained" onClick={() => router.push('/signup')}>
             {'Cadastre-se'}
           </Button>
           <Button
@@ -72,7 +72,7 @@ const Header = () => {
         >
           <List>
             <ListItem disablePadding>
-              <ListItemButton onClick={() => router.push('/sign-up')}>
+              <ListItemButton onClick={() => router.push('/signup')}>
                 <ListItemText primary={'Cadastre-se'} />
               </ListItemButton>
             </ListItem>

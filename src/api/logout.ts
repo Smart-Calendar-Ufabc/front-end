@@ -10,6 +10,7 @@ export const logoutFetch = async () => {
   try {
     const response = await fetch(`${USER_BASE_API}/sessions`, {
       method: 'DELETE',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `${token}`,

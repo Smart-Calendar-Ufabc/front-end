@@ -8,7 +8,7 @@ import FormContainer from '@/components/form/FormContainer'
 import FormGroup from '@/components/form/FormGroup'
 import FormTitle from '@/components/form/FormTitle'
 import Link from '@/components/typography/Link'
-import { loginFetch } from './api/login'
+import { loginFetch } from '../api/login'
 import { useAppStates } from '@/store/useAppStates'
 import Alert from '@mui/material/Alert'
 import { CircularProgress } from '@mui/material'
@@ -41,6 +41,7 @@ export default function FormLogin() {
     },
     validationSchema,
     onSubmit: async (values) => {
+      setOpenAlert(false)
       setIsLoading(true)
       setOnboarding({ openAlert: false, alertMessage: '' })
       const { data, status } = await loginFetch(values)
@@ -147,7 +148,7 @@ export default function FormLogin() {
         {isLoading ? <CircularProgress size={16} /> : 'Entrar'}
       </Button>
       <Typography>
-        Ainda não é cadastrado? <Link to="/sign-up">Criar conta.</Link>
+        Ainda não é cadastrado? <Link to="/signup">Criar conta.</Link>
       </Typography>
     </FormContainer>
   )

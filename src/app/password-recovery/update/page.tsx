@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { Alert, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/navigation'
-import { passwordRecoveryUpdatePasswordFetch } from '@/app/api/password-recovery'
+import { passwordRecoveryUpdatePasswordFetch } from '@/api/password-recovery'
 import { useAppStates } from '@/store/useAppStates'
 import {
   EyeSlash as EyeClosedIcon,
@@ -133,7 +133,7 @@ export default function PasswordRecoveryUpdate() {
           />
           <TextField
             name="confirmPassword"
-            label="Senha"
+            label="Confirmar Senha"
             type={visibility2 ? 'text' : 'password'}
             value={formik.values.confirmPassword}
             onChange={formik.handleChange}

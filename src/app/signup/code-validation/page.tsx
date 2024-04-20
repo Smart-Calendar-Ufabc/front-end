@@ -12,7 +12,7 @@ import { useAppStates } from '@/store/useAppStates'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { signUpCodeValidationFetch } from '@/app/api/sign-up'
+import { signUpCodeValidationFetch } from '@/api/sign-up'
 import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useRouter } from 'next/navigation'
@@ -81,7 +81,7 @@ export default function SignUpCodeValidation() {
         <FormGroup>
           <Typography>
             Enviamos um e-mail com um código de verificação para{' '}
-            <b>{onboarding.email}</b>. (<Link to="/sign-up">não é você?</Link>)
+            <b>{onboarding.email}</b>. (<Link to="/signup">não é você?</Link>)
           </Typography>
           <Typography>
             Insira-o código abaixo para confirmar o seu e-mail.

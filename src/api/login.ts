@@ -34,6 +34,7 @@ export const loginFetch = async ({
   try {
     const response = await fetch(`${USER_BASE_API}/sessions`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
